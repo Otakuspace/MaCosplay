@@ -22,10 +22,10 @@
 
 <!-- GitHub Badges -->
 <p align="center">
-  <a href="https://github.com/idea2547/MaCosplay/stargazers"><img src="https://img.shields.io/github/stars/idea2547/MaCosplay?style=for-the-badge" alt="Stars"/></a>
-  <a href="https://github.com/idea2547/MaCosplay/network/members"><img src="https://img.shields.io/github/forks/idea2547/MaCosplay?style=for-the-badge" alt="Forks"/></a>
-  <a href="https://github.com/idea2547/MaCosplay/issues"><img src="https://img.shields.io/github/issues/idea2547/MaCosplay?style=for-the-badge" alt="Issues"/></a>
-  <a href="https://github.com/idea2547/MaCosplay/blob/master/LICENSE"><img src="https://img.shields.io/github/license/idea2547/MaCosplay?style=for-the-badge" alt="License"/></a>
+  <a href="https://github.com/idea2547/MaCosplay/actions"><img src="https://img.shields.io/github/actions/workflow/status/idea2547/MaCosplay/ci.yml?branch=main&style=flat-square" alt="CI Status"/></a>
+  <a href="https://github.com/idea2547/MaCosplay/stargazers"><img src="https://img.shields.io/github/stars/idea2547/MaCosplay?style=flat-square" alt="Stars"/></a>
+  <a href="https://github.com/idea2547/MaCosplay/blob/master/LICENSE"><img src="https://img.shields.io/github/license/idea2547/MaCosplay?style=flat-square" alt="License"/></a>
+  <a href="https://discord.gg/vbrKE7WCXZ"><img src="https://img.shields.io/badge/chat-discord-7289DA.svg?style=flat-square" alt="Discord"/></a>
 </p>
 
 <!-- Social Badges -->
@@ -36,7 +36,14 @@
 
 ## 📖 Overview
 
-MaCosplay เป็นแพลตฟอร์ม Open-Source สำหรับชุมชนคอสเพลย์ ที่เปิดให้ทดลองใช้งานแล้ว และมีผู้ลงทะเบียนกว่า 200 คน! 🎉
+<!-- Thai Description -->
+<details>
+  <summary>🇹🇭 Thai</summary>
+  
+  MaCosplay เป็นแพลตฟอร์ม Open-Source สำหรับชุมชนคอสเพลย์ ที่เปิดให้ทดลองใช้งานแล้ว และมีผู้ลงทะเบียนกว่า 200 คน! 🎉
+</details>
+
+<!-- English Description -->
 
 MaCosplay connects cosplayers looking to rent costumes with costume owners across Thailand. With easy-to-use features and secure transactions, you can list your costumes for rent or find the perfect outfit for events or photoshoots.
 
@@ -61,8 +68,8 @@ By creating an open-source platform, we aim to build a thriving ecosystem where 
 ## 🖼️ Screenshots
 
 <p align="center">
-  <img src="./static/images/Example/screenshot1.png" alt="MaCosplay Screenshot" width="400"/>
-  <img src="./static/images/Example/screenshot2.png" alt="MaCosplay Screenshot" width="400"/>
+  <img src="./static/images/screens/screen-main-page.png" alt="Screenshot showing the MaCosplay homepage with costume listings and search functionality" width="500"/>
+  <img src="./static/images/screens/screen-search-page.png" alt="Screenshot of the searching page" width="500"/>
 </p>
 
 ## 🧩 Why Open Source?
@@ -164,6 +171,10 @@ This project follows the [SvelteKit project structure](https://svelte.dev/docs/k
 - [GitHub Issues](https://github.com/idea2547/MaCosplay/issues) - Report bugs or request features
 
 ## 👥 Contributors
+
+<!-- This section is automatically updated by our GitHub Action -->
+
+Thanks to all the contributors who have helped improve MaCosplay! This section is automatically updated by our GitHub Action workflow.
 
 ## 🔮 Roadmap
 
