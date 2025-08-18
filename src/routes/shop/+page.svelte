@@ -344,5 +344,54 @@
         margin-top: 30px;
     }
 	
+	/* Glassmorphism enhancements for /shop */
+	#filter .container {
+		background: rgba(255, 255, 255, 0.08);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		border-radius: 16px;
+	}
+	#features .card {
+		background: rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+	}
+	#features .card:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+		border-color: rgba(255, 255, 255, 0.35);
+	}
+	#features .card figure {
+		overflow: hidden;
+		border-radius: 0.75rem;
+	}
+	#features .card figure img {
+		transition: transform .3s ease;
+	}
+	#features .card:hover figure img {
+		transform: scale(1.02);
+	}
+	#features .badge {
+		font-size: 10px;
+		background: rgba(255, 255, 255, 0.2);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		padding: 2px 8px;
+	}
+	.modal .modal-box {
+		background: rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+	}
+	#filter .btn.btn-outline {
+		background: rgba(255, 255, 255, 0.08);
+		border-color: rgba(255, 255, 255, 0.2);
+	}
+	
 	
 </style>
