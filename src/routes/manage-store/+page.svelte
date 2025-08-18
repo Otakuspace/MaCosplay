@@ -51,7 +51,7 @@
 			<div class="modal-action mb-3">
 				<button class="btn" on:click={() => (fullImage = null)}>X ปิด</button>
 			</div>
-			<img src={fullImage} alt="Full Image" class="h-auto w-full object-cover" />
+			<img src={fullImage} alt="ภาพขยายแบบเต็ม" class="h-auto w-full object-cover" />
 		</div>
 	</div>
 {/if}

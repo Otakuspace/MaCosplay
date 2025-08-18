@@ -575,7 +575,7 @@
                             />
                             {#if createImagePreview}
                                 <div class="mt-4">
-                                    <img src={createImagePreview} alt="Image Preview" class="w-48 h-48 object-cover rounded-lg" />
+                                    <img src={createImagePreview} alt="ตัวอย่างรูปที่กำลังสร้าง" class="w-48 h-48 object-cover rounded-lg" />
                                 </div>
                             {/if}
                         </div>
@@ -1099,10 +1099,10 @@
                     />
                     <div class="mt-4">
                         {#if editImagePreview}
-                            <img src={editImagePreview} alt="Image Preview" class="w-48 h-48 object-cover rounded-lg" />
+                            <img src={editImagePreview} alt="ตัวอย่างรูปที่กำลังแก้ไข" class="w-48 h-48 object-cover rounded-lg" />
                         {:else if editingItem.Image}
                             <img src={`https://file.macosplay.com/mxj3660ce5olheb/${editingItem.id}/${editingItem.Image}`} 
-                                 alt="Current Image" 
+                                 alt="รูปปัจจุบันของสินค้า" 
                                  class="w-48 h-48 object-cover rounded-lg" />
                         {/if}
                     </div>
@@ -1126,7 +1126,7 @@
             <div class="modal-action">
                 <button class="btn" on:click={() => fullImage = null}>X ปิดภาพ</button>
             </div>
-            <img src={fullImage} alt="Full Image" class="w-full h-auto object-cover" />
+            <img src={fullImage} alt="ภาพขยายแบบเต็ม" class="w-full h-auto object-cover" />
         </div>
     </div>
 {/if}
