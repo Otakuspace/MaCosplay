@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 
 const SECRET_STRIPE_KEY = import.meta.env.VITE_STRIPE_SECRET_KEY;
 const baseURL = import.meta.env.VITE_BASE_URL
-const stripe = new Stripe(SECRET_STRIPE_KEY);
+const stripe = SECRET_STRIPE_KEY ? new Stripe(SECRET_STRIPE_KEY) : null as unknown as Stripe;
 
 // POST /stripeCheckout data: items
 // return -> url created by Stripe for our user to use
@@ -34,6 +34,9 @@ export const POST: RequestHandler = async ({ locals, request, cookies }) => {
     });
 
     // It gives us a URL for the person to check out with
+    if (!SECRET_STRIPE_KEY || !stripe) {
+        throw error(500, 'Stripe not configured');
+    }
     const session = await stripe.checkout.sessions.create({
         line_items: lineItems,
         mode: 'payment',

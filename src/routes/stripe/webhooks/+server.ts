@@ -9,19 +9,20 @@ import { custom } from 'zod';
 
 const stripeSecretKey = import.meta.env.VITE_STRIPE_SECRET_KEY;
 const endpointSecret = import.meta.env.VITE_STRIPE_WEBHOOK_KEY; //test endpoint
-const stripe = new Stripe(stripeSecretKey, {
+const stripe = stripeSecretKey ? new Stripe(stripeSecretKey, {
 	apiVersion: "2023-08-16",
-  });
+  }) : null as unknown as Stripe;
 
 
 
-if (!stripeSecretKey) {
-  throw new Error('STRIPE_SECRET_KEY is not set');
-}
+// Do not throw during build; handle missing keys per-request
 //export const POST = async ({ locals, request, cookies }) => {
 // endpoint to handle incoming webhooks
 
 export const POST: RequestHandler = async ({ request, response }) => {
+	if (!stripeSecretKey || !endpointSecret || !stripe) {
+		return json({ status: 'error', updateStatus: 'Failed', messages: 'Stripe not configured' }, { status: 500 });
+	}
 	const signature = await request.headers.get("stripe-signature");
 	// extract body
 	// const body = await request.text()

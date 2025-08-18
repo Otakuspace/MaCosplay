@@ -290,7 +290,7 @@
 			</div>
 			<img 
 				src={`${fullImage}?w=800&format=webp&quality=85`} 
-				alt="Full Image" 
+				alt="Full image preview" 
 				class="h-auto w-full object-cover" 
 			/>
 		</div>
@@ -314,30 +314,8 @@
 
 {/if}
 
+
 <style>
-	.btn-facebook {
-        background-color: #3b5998;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-facebook:hover {
-        background-color: #2d4373;
-    }
-
-    .btn-facebook:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 89, 152, 0.5);
-    }
-
-
 	.join {
         display: flex;
         justify-content: center;
