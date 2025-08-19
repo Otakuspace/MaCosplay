@@ -724,10 +724,6 @@
         </div>
         </dialog>
     
-    </div>
-</section>
-
-
         <!-- Search and Filter Section -->
         <div class="bg-gray-50 rounded-3xl p-8 mb-12">
             <div class="flex flex-wrap gap-4 items-center justify-between">
@@ -962,10 +958,6 @@
                 </div>
             {/if}
         </div>
-    </div>
-</section>
-
-<!--  -->
 
 <!-- Edit Modal -->
 {#if editingItem}
@@ -1224,6 +1216,9 @@
         </div>
     </div>
 {/if}
+
+    </div>
+</section>
 
 <style>
     .file-input {
