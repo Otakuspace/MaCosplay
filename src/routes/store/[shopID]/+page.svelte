@@ -179,63 +179,91 @@
 	
 
 
-<section id="home" class="flex items-center justify-center">
-	<div class="container mx-auto w-full p-4 sm:p-6 flex flex-col items-center">
-        <div class="flex flex-col sm:flex-row sm:space-x-2 w-full items-center justify-center">
-           
-            <img src={`https://file.macosplay.com/nrxs44dis9q1tgb/${data?.StoreDetails.id}/${data?.StoreDetails.banner}`}  alt="cosshop" class="w-full h-auto object-cover">
+<!-- Modern Store Header -->
+<section class="relative">
+	<!-- Store Banner -->
+	<div class="relative h-64 md:h-80 overflow-hidden">
+		<img 
+			src={`https://file.macosplay.com/nrxs44dis9q1tgb/${data?.StoreDetails.id}/${data?.StoreDetails.banner}`}  
+			alt="{data?.StoreDetails.Name} Banner" 
+			class="w-full h-full object-cover"
+		/>
+		<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+	</div>
 
-    </div>
-    <div class="avatar mb-2 flex items-center">
-        <div class="h-8 w-8 overflow-hidden rounded-full mt-4">
-            {#if data?.StoreDetails.expand?.user}
-                <img
-                    src={`https://file.macosplay.com/_pb_users_auth_/${data?.StoreDetails.expand?.user?.id}/${data?.StoreDetails.expand?.user?.avatar}`}
-                    alt="Avatar"
-                    class="h-full w-full object-cover"
-                />
+	<!-- Store Info Card -->
+	<div class="relative -mt-20 mx-4 md:mx-8">
+		<div class="bg-white rounded-3xl shadow-large p-8 border border-gray-100">
+			<div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+				<!-- Store Avatar -->
+				<div class="relative">
+					<div class="w-24 h-24 rounded-2xl overflow-hidden shadow-medium border-4 border-white">
+						{#if data?.StoreDetails.expand?.user}
+							<img
+								src={`https://file.macosplay.com/_pb_users_auth_/${data?.StoreDetails.expand?.user?.id}/${data?.StoreDetails.expand?.user?.avatar}`}
+								alt="{data?.StoreDetails?.expand?.user?.name} Avatar"
+								class="w-full h-full object-cover"
+							/>
+						{:else}
+							<img
+								src="/images/Example/Macosplay.png"
+								alt="Store Avatar"
+								class="w-full h-full object-cover"
+							/>
+						{/if}
+					</div>
+					<div class="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-2 border-white"></div>
+				</div>
 
-            {:else}
-                <img
-                    src="/images/Example/Macosplay.png"
-                    alt="Fallback Avatar"
-                    class="h-full w-full object-cover"
-                />
-            {/if}
-        </div>
-        <span class="ml-2">{limitText((data?.StoreDetails?.expand?.user?.name || ''), 10)}</span>
-    </div>
-        <h2 class="text-center mt-4 text-lg sm:text-xl">{data?.StoreDetails.Name}</h2>
-        <p class="text-center text-sm sm:text-base">{data?.StoreDetails.Details}</p>
-        <label class="label">
-            <p class="text-center">ลิงค์ร้านค้า</p>
-        </label>
+				<!-- Store Details -->
+				<div class="flex-1 text-center md:text-left">
+					<h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+						{data?.StoreDetails.Name}
+					</h1>
+					<p class="text-gray-600 mb-4 leading-relaxed">
+						{data?.StoreDetails.Details}
+					</p>
+					
+					<div class="flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-start">
+						<div class="flex items-center text-sm text-gray-500">
+							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+							</svg>
+							โดย {data?.StoreDetails?.expand?.user?.name || 'ผู้ขาย'}
+						</div>
+						
+						<div class="flex items-center text-sm text-gray-500">
+							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+							</svg>
+							{data?.StoreDetails.slug}
+						</div>
+					</div>
+				</div>
 
-        
-        <a href={`https://macosplay.com/store/${data?.StoreDetails.slug}`} class="link">{`https://macosplay.com/store/${data?.StoreDetails.slug}`} </a>
-        <a href={data?.StoreDetails.fbPage} class="link mt-4">
-            <button type="submit" class="btn btn-facebook mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-2">
-                    <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
-                </svg>
-                ไปที่เพจร้านค้า Facebook
-            </button>
-
-        </a>
-        <a href={data?.StoreDetails.expand?.user?.fbProfile} class="link mt-4">
-            <button type="submit" class="btn btn-facebook mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 mr-2">
-                    <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
-                </svg>
-                ติดต่อผู้ขาย
-            </button>
-
-        </a>
-        
-    
-    </div>
-
-    
+				<!-- Action Buttons -->
+				<div class="flex flex-col gap-3 min-w-[200px]">
+					<a href={data?.StoreDetails.fbPage} target="_blank" class="w-full">
+						<button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl transition-all duration-300 flex items-center justify-center">
+							<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
+							</svg>
+							เพจร้านค้า
+						</button>
+					</a>
+					
+					<a href={data?.StoreDetails.expand?.user?.fbProfile} target="_blank" class="w-full">
+						<button class="w-full btn-secondary-modern flex items-center justify-center">
+							<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+							</svg>
+							ติดต่อผู้ขาย
+						</button>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
 <!-- 
@@ -310,16 +338,24 @@
         <section class="mb-6">
             <h2 class="mb-2 text-2xl font-semibold">จัดการสินค้า</h2>
         </section>
-        <div class="search-filter-container flex flex-wrap gap-4 mb-4">
-            <input 
-                type="text" 
-                placeholder="Search..." 
-                bind:value={searchQuery} 
-                class="input input-bordered flex-grow"
-            />
+        <!-- Modern Filter Section -->
+        <div class="bg-white rounded-2xl shadow-soft border border-gray-100 p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">กรองสินค้า</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        placeholder="ค้นหาสินค้า..." 
+                        bind:value={searchQuery} 
+                        class="input-modern w-full"
+                    />
+                    <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
 
-            <select bind:value={selectedProvince} class="select select-bordered flex-grow">
-                <option value="">เลือกจังหวัด</option>
+                <select bind:value={selectedProvince} class="select-modern">
+                    <option value="">เลือกจังหวัด</option>
 							<option value="กระบี่">กระบี่</option>
 							<option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
 							<option value="กาญจนบุรี">กาญจนบุรี</option>
@@ -399,70 +435,106 @@
                 <!-- Add more provinces as needed -->
             </select>
 
-            <select bind:value={selectedSize} class="select select-bordered flex-grow">
-                <option value="">เลือกขนาด</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
-            </select>
+                <select bind:value={selectedSize} class="select-modern">
+                    <option value="">เลือกขนาด</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                    <option value="XXL">XXL</option>
+                </select>
 
-            <select bind:value={selectedStatus} class="select select-bordered flex-grow">
-                <option value="">สถานะ</option>
-                <option value="พร้อมให้เช่า">พร้อมให้เช่า</option>
-                <option value="กำลังถูกเช่า">กำลังถูกเช่า</option>
-                <option value="ยังไม่พร้อม">ยังไม่พร้อม</option>
-            </select>
+                <select bind:value={selectedStatus} class="select-modern">
+                    <option value="">สถานะ</option>
+                    <option value="พร้อมให้เช่า">พร้อมให้เช่า</option>
+                    <option value="กำลังถูกเช่า">กำลังถูกเช่า</option>
+                    <option value="ยังไม่พร้อม">ยังไม่พร้อม</option>
+                </select>
+            </div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[48rem] overflow-y-auto">
+
+        <!-- Modern Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {#if filteredItems().length > 0}
                 {#each filteredItems() as item}
-                    <div class="card bg-base-100 shadow-xl">
-                        <figure>
+                    <div class="product-card card-hover group animate-scale-in">
+                        <div class="relative overflow-hidden">
                             <img 
-                                src={`https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`} 
-                                alt="{item.Name} Thumbnail" 
-                                class="w-full h-auto max-h-48 object-cover cursor-pointer" 
+                                src={`https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}?w=400&format=avif&quality=70`} 
+                                alt="{item.Name}" 
+                                class="product-image cursor-pointer" 
+                                loading="lazy"
                                 on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
                             />
-                        </figure>
-                        <div class="card-body">
-                            <h2 class="card-title">{limitText(item.Name, 33)}</h2>
-                            <div class="badge badge-neutral">{item.Province}</div>
-                            <div class="badge badge-outline">Size: {item.Size}</div>
-                            <div class="badge {item.Status === 'พร้อมให้เช่า' ? 'badge-success' : item.Status === 'กำลังถูกเช่า' ? 'badge-warning' : item.Status === 'อยู่ระหว่างการซ่อมบำรุง' ? 'badge-error' : ''} gap-2">
-                                {item.Status}
+                            
+                            <!-- Status overlay -->
+                            <div class="absolute top-4 left-4">
+                                <span class="badge-modern {item.Status === 'พร้อมให้เช่า' ? 'badge-available' : item.Status === 'กำลังถูกเช่า' ? 'badge-rented' : 'badge-unavailable'}">
+                                    {item.Status}
+                                </span>
                             </div>
-                            <p>{item.Details}</p>
-                            <p class="font-bold">
-                                {#if item.isPriTest}
-                                ราคา: {item.price_pri.toLocaleString()} (ไพร) / {item.price_test.toLocaleString()} (เทส) บาท
-                                {:else}
-                                ราคา: {item.price.toLocaleString()} บาท
-                                {/if}
-                            </p>
-                            <div class="card-actions justify-end flex space-x-2">
-                                
-                             
-                                <button class="w-auto btn btn-neutral btn-active" on:click={() => openDetailModal(item)}>
+
+                            <!-- Size and Province badges -->
+                            <div class="absolute top-4 right-4 flex flex-col gap-2">
+                                <span class="badge-modern badge-size">
+                                    {item.Size}
+                                </span>
+                                <span class="badge-modern bg-blue-100 text-blue-800">
+                                    {item.Province}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="p-6">
+                            <h3 class="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
+                                {item.Name}
+                            </h3>
+                            
+                            {#if item.Details}
+                                <p class="text-sm text-gray-600 mb-4 line-clamp-2">
+                                    {item.Details}
+                                </p>
+                            {/if}
+
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="text-xl font-bold text-gray-900">
+                                    {#if item.isPriTest}
+                                        <div class="flex flex-col">
+                                            <span class="text-sm text-gray-500">ไพรเวท/ทดสอบ</span>
+                                            <span>฿{item.price_pri.toLocaleString()} / ฿{item.price_test.toLocaleString()}</span>
+                                        </div>
+                                    {:else}
+                                        ฿{item.price.toLocaleString()}
+                                    {/if}
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <button 
+                                    class="flex-1 btn-primary-modern text-sm group-hover:shadow-xl"
+                                    on:click={() => openDetailModal(item)}
+                                >
                                     ดูรายละเอียด
                                 </button>
-                                <a href={data.StoreDetails.fbPage} target="_blank" class="w-auto btn btn-neutral btn-active">
-                                    <button class="w-auto btn btn-neutral btn-active">
-                                        ติดต่อร้านค้า
+                                <a href={data.StoreDetails.fbPage} target="_blank" class="flex-1">
+                                    <button class="w-full btn-secondary-modern text-sm">
+                                        ติดต่อ
                                     </button>
                                 </a>
-                               
                             </div>
                         </div>
                     </div>
                 {/each}
             {:else}
-                <div class="card w-full sm:w-96 bg-base-100 shadow-xl">
-                    <div class="card-body">
-                        <h2 class="card-title">ไม่เจอร้านค้า</h2>
-                        <p>ไม่พบข้อมูลชุดเช่าในขณะนี้</p>
+                <div class="col-span-full">
+                    <div class="text-center py-16">
+                        <div class="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-2">ไม่มีสินค้า</h3>
+                        <p class="text-gray-600">ร้านค้านี้ยังไม่มีสินค้าให้เช่าในขณะนี้</p>
                     </div>
                 </div>
             {/if}
@@ -729,14 +801,136 @@
 {/if}
 
 
-<!-- Detail Modal -->
+<!-- Modern Detail Modal -->
 {#if detailItem}
-	<div class="modal modal-open">
-		<div class="modal-box">
-			<h3 class="font-bold text-lg">รายละเอียดสินค้า</h3>
-			<p style="white-space: pre-wrap;">{detailItem.Desc}</p>
-			<div class="modal-action">
-				<button class="btn" on:click={() => detailItem = null}>ปิด</button>
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+		<div class="bg-white rounded-3xl shadow-large max-w-4xl mx-4 max-h-[90vh] overflow-hidden animate-scale-in">
+			<!-- Modal Header -->
+			<div class="flex items-center justify-between p-6 border-b border-gray-100">
+				<h3 class="text-2xl font-bold text-gray-900">รายละเอียดสินค้า</h3>
+				<button 
+					class="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+					on:click={() => detailItem = null}
+				>
+					<svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Modal Content -->
+			<div class="p-6 overflow-y-auto max-h-[70vh]">
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+					<!-- Product Image -->
+					<div class="relative">
+						{#if detailItem.Image}
+							<img
+								src={`https://file.macosplay.com/mxj3660ce5olheb/${detailItem.id}/${detailItem.Image}?w=800&format=webp&quality=90`}
+								alt="{detailItem.Name}"
+								class="w-full aspect-square object-cover rounded-2xl shadow-medium"
+							/>
+						{:else}
+							<img
+								src="/images/Example/Macosplay.png?w=800&format=webp"
+								alt="{detailItem.Name}"
+								class="w-full aspect-square object-cover rounded-2xl shadow-medium"
+							/>
+						{/if}
+						
+						<!-- Status Badge -->
+						<div class="absolute top-4 left-4">
+							<span class="badge-modern {detailItem.Status === 'พร้อมให้เช่า' ? 'badge-available' : detailItem.Status === 'กำลังถูกเช่า' ? 'badge-rented' : 'badge-unavailable'}">
+								{detailItem.Status}
+							</span>
+						</div>
+					</div>
+
+					<!-- Product Details -->
+					<div class="space-y-6">
+						<div>
+							<h4 class="text-3xl font-bold text-gray-900 mb-3">{detailItem.Name}</h4>
+							<div class="flex items-center gap-2 mb-4">
+								<span class="badge-modern badge-size">ขนาด {detailItem.Size}</span>
+								<span class="badge-modern bg-blue-100 text-blue-800">{detailItem.Province}</span>
+							</div>
+						</div>
+
+						<div class="bg-gray-50 rounded-2xl p-6">
+							<h5 class="font-semibold text-gray-900 mb-3 flex items-center">
+								<svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+								</svg>
+								รายละเอียด
+							</h5>
+							<p class="text-gray-700 whitespace-pre-wrap leading-relaxed">
+								{detailItem.Desc || 'ไม่มีรายละเอียดเพิ่มเติม'}
+							</p>
+						</div>
+
+						<div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6">
+							<h5 class="font-semibold text-gray-900 mb-3 flex items-center">
+								<svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+								</svg>
+								ราคาเช่า
+							</h5>
+							<div class="text-3xl font-bold text-gray-900">
+								{#if detailItem.isPriTest}
+									<div class="space-y-2">
+										<div class="flex items-center justify-between">
+											<span class="text-lg text-gray-600">ไพรเวท:</span>
+											<span>฿{detailItem.price_pri.toLocaleString()}</span>
+										</div>
+										<div class="flex items-center justify-between">
+											<span class="text-lg text-gray-600">ทดสอบ:</span>
+											<span>฿{detailItem.price_test.toLocaleString()}</span>
+										</div>
+									</div>
+								{:else}
+									฿{detailItem.price.toLocaleString()}
+								{/if}
+							</div>
+						</div>
+
+						<!-- Contact Information -->
+						<div class="bg-white border border-gray-200 rounded-2xl p-6">
+							<h5 class="font-semibold text-gray-900 mb-3 flex items-center">
+								<svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+								</svg>
+								ข้อมูลร้านค้า
+							</h5>
+							<p class="text-gray-700 mb-4">{data?.StoreDetails?.Name}</p>
+							<div class="flex gap-3">
+								<a href={data?.StoreDetails?.fbPage} target="_blank" class="flex-1">
+									<button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center">
+										<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+											<path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
+										</svg>
+										เพจร้านค้า
+									</button>
+								</a>
+								<a href={data?.StoreDetails?.expand?.user?.fbProfile} target="_blank" class="flex-1">
+									<button class="w-full btn-secondary-modern flex items-center justify-center">
+										<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+										</svg>
+										ติดต่อผู้ขาย
+									</button>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal Footer -->
+			<div class="p-6 border-t border-gray-100 bg-gray-50">
+				<div class="flex justify-end">
+					<button class="btn-secondary-modern" on:click={() => detailItem = null}>
+						ปิด
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>

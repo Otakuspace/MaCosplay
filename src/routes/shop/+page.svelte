@@ -1,6 +1,7 @@
 <script lang="ts">
 	import PocketBase from 'pocketbase';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 	export let data: { itemList: { items: any[]; totalPages: number; currentPage: number } };
 	let selectedProvince = '';
 	let selectedSize = '';
@@ -90,17 +91,49 @@
 	}
 </script>
 
-<section id="filter" class="pt-12 sm:pt-12 md:pt-14">
-	<div class="container mx-auto flex flex-col gap-4 p-4 sm:flex-row sm:p-6">
-		<label class="input input-bordered flex w-full items-center gap-2 sm:w-auto">
-			<input type="text" class="grow" placeholder="ค้นหา" bind:value={searchQuery} />
-		</label>
+<!-- Hero Section -->
+<section class="hero-gradient min-h-[60vh] flex items-center justify-center relative overflow-hidden">
+	<div class="absolute inset-0 bg-black opacity-20"></div>
+	<div class="container mx-auto px-6 relative z-10 text-center text-white">
+		<h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
+			ค้นหาชุดเช่า
+		</h1>
+		<p class="text-xl md:text-2xl mb-8 opacity-90 animate-slide-up">
+			เช่าชุดคอสเพลย์คุณภาพสูงจากร้านค้าชั้นนำทั่วประเทศ
+		</p>
+		<div class="max-w-2xl mx-auto mb-8">
+			<div class="relative">
+				<input 
+					type="text" 
+					class="w-full px-6 py-4 rounded-2xl text-gray-800 text-lg placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/30 shadow-large"
+					placeholder="ค้นหาชุดที่คุณต้องการ..."
+					bind:value={searchQuery}
+				/>
+				<button 
+					class="absolute right-2 top-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
+					on:click={debouncedHandleSearch}
+				>
+					ค้นหา
+				</button>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Floating elements for visual interest -->
+	<div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+	<div class="absolute bottom-20 right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
+	<div class="absolute top-1/2 left-1/4 w-16 h-16 bg-white/15 rounded-full blur-lg animate-pulse delay-500"></div>
+</section>
 
-		<!-- ตัวกรองจังหวัดใหม่ -->
-		<label class="input input-bordered flex w-full items-center gap-2 sm:w-auto">
-			<select class="grow" bind:value={selectedProvince}>
-				<option value="">เลือกจังหวัด</option>
-							<option value="กระบี่">กระบี่</option>
+<!-- Enhanced Filter Section -->
+<section class="bg-white shadow-soft border-b border-gray-100 sticky top-0 z-40">
+	<div class="container mx-auto px-6 py-6">
+		<div class="flex flex-wrap gap-4 items-center justify-between">
+			<div class="flex flex-wrap gap-4 flex-1">
+				<div class="relative">
+					<select class="select-modern min-w-[200px]" bind:value={selectedProvince}>
+						<option value="">เลือกจังหวัด</option>
+						<option value="กระบี่">กระบี่</option>
 							<option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
 							<option value="กาญจนบุรี">กาญจนบุรี</option>
 							<option value="กาฬสินธุ์">กาฬสินธุ์</option>
@@ -176,90 +209,144 @@
 							<option value="อุตรดิตถ์">อุตรดิตถ์</option>
 							<option value="อุทัยธานี">อุทัยธานี</option>
 							<option value="อุบลราชธานี">อุบลราชธานี</option>
-			</select>
-		</label>
+					</select>
+				</div>
 
-		<!-- ตัวกรองขนาดใหม่ -->
-		<label class="input input-bordered flex w-full items-center gap-2 sm:w-auto">
-			<select class="grow" bind:value={selectedSize}>
-				<option value="">เลือกขนาด</option>
-				<option value="S">S</option>
-				<option value="M">M</option>
-				<option value="L">L</option>
-				<option value="XL">XL</option>
-				<option value="XXL">XXL</option>
-				<!-- เพิ่มขนาดเพิ่มเติมตามต้องการ -->
-			</select>
-		</label>
-		<label class="input input-bordered flex w-full items-center gap-2 sm:w-auto">
-			<select class="grow" bind:value={selectedStatus}>
-				<option value="">เลือกสถานะ</option>
-				<option value="พร้อมให้เช่า">พร้อมให้เช่า</option>
-				<option value="กำลังถูกเช่า">กำลังถูกเช่า</option>
-				<option value="ยังไม่พร้อม">ยังไม่พร้อม</option>
-			</select>
-		</label>
-		<button class="btn btn-outline" on:click={debouncedHandleSearch}>ค้นหาทั้งหมด</button>
-		<button class="btn btn-outline btn-primary" on:click={resetFilters}>Reset</button>
+				<div class="relative">
+					<select class="select-modern min-w-[150px]" bind:value={selectedSize}>
+						<option value="">เลือกขนาด</option>
+						<option value="S">S</option>
+						<option value="M">M</option>
+						<option value="L">L</option>
+						<option value="XL">XL</option>
+						<option value="XXL">XXL</option>
+					</select>
+				</div>
+
+				<div class="relative">
+					<select class="select-modern min-w-[180px]" bind:value={selectedStatus}>
+						<option value="">เลือกสถานะ</option>
+						<option value="พร้อมให้เช่า">พร้อมให้เช่า</option>
+						<option value="กำลังถูกเช่า">กำลังถูกเช่า</option>
+						<option value="ยังไม่พร้อม">ยังไม่พร้อม</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="flex gap-3">
+				<button class="btn-secondary-modern" on:click={resetFilters}>
+					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+					</svg>
+					รีเซ็ต
+				</button>
+				<button class="btn-primary-modern" on:click={debouncedHandleSearch}>
+					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+					</svg>
+					ค้นหา
+				</button>
+			</div>
+		</div>
 	</div>
 </section>
 
-<section id="features" class="pt-12 sm:pt-12 md:pt-14">
-	<div class="container mx-auto p-4 sm:p-6">
-		<!-- Pocketbase Rental Card -->
-		<section class="mb-6">
-			<h2 class="mb-2 text-2xl font-semibold">ตามหาชุด/วิกเช่าได้ที่นี่เลย</h2>
-		</section>
-		<div class="grid max-h-[48rem] grid-cols-2 gap-4 overflow-y-auto sm:grid-cols-2 lg:grid-cols-5">
-			<!-- Limit to 4 rows -->
+<!-- Modern Product Showcase -->
+<section class="py-16 bg-gray-50">
+	<div class="container mx-auto px-6">
+		<div class="text-center mb-12">
+			<h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+				ชุดเช่าคุณภาพสูง
+			</h2>
+			<p class="text-xl text-gray-600 max-w-2xl mx-auto">
+				เลือกจากคอลเลกชันชุดคอสเพลย์และวิกผมคุณภาพพรีเมียมจากร้านค้าที่ได้รับการรับรอง
+			</p>
+		</div>
+
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-h-none">
 			{#if filteredItems().length > 0}
 				{#each filteredItems() as item}
-					<div class="card bg-base-100 shadow-xl border border-gray-200">
-						<figure class="p-2">
+					<div class="product-card card-hover group animate-scale-in">
+						<div class="relative overflow-hidden">
 							{#if item.Image}
-							<img
-								src={getOptimizedImageUrl(item.id, item.Image)}
-								alt="{item.Name} Thumbnail"
-								class="w-full h-full object-cover aspect-square cursor-pointer"
-								loading="lazy"
-								on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
-							/>
+								<img
+									src={getOptimizedImageUrl(item.id, item.Image)}
+									alt="{item.Name}"
+									class="product-image cursor-pointer"
+									loading="lazy"
+									on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
+								/>
 							{:else}
-							<img
-								src="/images/Example/Macosplay.png?w=400&format=webp"
-								alt="{item.Name} Thumbnail"
-								class="w-full h-full object-cover aspect-square cursor-pointer"
-								loading="lazy"
-							/>
+								<img
+									src="/images/Example/Macosplay.png?w=400&format=webp"
+									alt="{item.Name}"
+									class="product-image cursor-pointer"
+									loading="lazy"
+								/>
 							{/if}
-						</figure>
-						<div class="card-body p-2 flex flex-col justify-between">
-							<div>
-								<p class="text-xs font-bold">{limitText(item.Name, 33)}</p>
-								<p class="text-xs text-gray-500">{limitText(item.expand?.userStore?.Name || '', 20)}</p>
-								<div class="flex flex-wrap gap-1 mt-1">
-									<div class="badge text-xs bg-gray-200">{item.Size}</div>
-									
-									<div class="badge text-xs bg-blue-200">{item.Status}</div>
+							
+							<!-- Status overlay -->
+							<div class="absolute top-4 left-4">
+								<span class="badge-modern {item.Status === 'พร้อมให้เช่า' ? 'badge-available' : item.Status === 'กำลังถูกเช่า' ? 'badge-rented' : 'badge-unavailable'}">
+									{item.Status}
+								</span>
+							</div>
+
+							<!-- Size badge -->
+							<div class="absolute top-4 right-4">
+								<span class="badge-modern badge-size">
+									{item.Size}
+								</span>
+							</div>
+						</div>
+
+						<div class="p-6">
+							<h3 class="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
+								{item.Name}
+							</h3>
+							
+							<p class="text-sm text-gray-500 mb-3">
+								{limitText(item.expand?.userStore?.Name || '', 25)}
+							</p>
+
+							<div class="flex items-center justify-between mb-4">
+								<div class="text-2xl font-bold text-gray-900">
+									{#if item.price == 0}
+										<div class="flex flex-col">
+											<span class="text-lg">฿{item.price_pri.toLocaleString()}</span>
+											<span class="text-sm text-gray-500">/ ฿{item.price_test.toLocaleString()}</span>
+										</div>
+									{:else}
+										฿{item.price.toLocaleString()}
+									{/if}
 								</div>
 							</div>
-							<div class="flex justify-between items-center mt-2">
-								<p class="text-lg font-bold">
-									{item.price == 0 ? `฿${item.price_pri.toLocaleString()} / ${item.price_test.toLocaleString()}` : `฿${item.price.toLocaleString()}`}
 
-								</p>
-								<button class="btn btn-neutral btn-active" on:click={() => openDetailModal(item)}>
-									ดูเพิ่มเติม
-								</button>
-							</div>
+							<button 
+								class="w-full btn-primary-modern group-hover:shadow-xl"
+								on:click={() => openDetailModal(item)}
+							>
+								ดูรายละเอียด
+								<svg class="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+								</svg>
+							</button>
 						</div>
 					</div>
 				{/each}
 			{:else}
-				<div class="card w-full bg-base-100 shadow-xl sm:w-96">
-					<div class="card-body">
-						<h2 class="card-title">ไม่เจอร้านค้า</h2>
-						<p>ไม่พบข้อมูลชุดเช่าในขณะนี้</p>
+				<div class="col-span-full">
+					<div class="text-center py-16">
+						<div class="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+							<svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+							</svg>
+						</div>
+						<h3 class="text-2xl font-semibold text-gray-900 mb-2">ไม่พบสินค้า</h3>
+						<p class="text-gray-600 mb-6">ลองเปลี่ยนเงื่อนไขการค้นหาหรือรีเซ็ตตัวกรอง</p>
+						<button class="btn-secondary-modern" on:click={resetFilters}>
+							รีเซ็ตตัวกรอง
+						</button>
 					</div>
 				</div>
 			{/if}
@@ -267,109 +354,182 @@
 	</div>
 </section>
 
-<div class="join">
-	<button
-		class="btn join-item"
-		on:click={() => changePage(data.itemList.currentPage - 1)}
-		disabled={data.itemList.currentPage === 1}>«</button
-	>
-	<span class="btn join-item">Page {data.itemList.currentPage} of {data.itemList.totalPages}</span>
-	<button
-		class="btn join-item"
-		on:click={() => changePage(data.itemList.currentPage + 1)}
-		disabled={data.itemList.currentPage === data.itemList.totalPages}>»</button
-	>
-</div>
-
-<!-- Full Image Modal -->
-{#if fullImage}
-	<div class="modal modal-open">
-		<div class="modal-box">
-			<div class="modal-action mb-3">
-				<button class="btn" on:click={() => (fullImage = null)}>X ปิด</button>
+<!-- Modern Pagination -->
+<section class="py-12 bg-white">
+	<div class="container mx-auto px-6">
+		<div class="flex items-center justify-center space-x-4">
+			<button
+				class="btn-secondary-modern disabled:opacity-50 disabled:cursor-not-allowed"
+				on:click={() => changePage(data.itemList.currentPage - 1)}
+				disabled={data.itemList.currentPage === 1}
+			>
+				<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+				</svg>
+				ก่อนหน้า
+			</button>
+			
+			<div class="flex items-center space-x-2">
+				<span class="px-4 py-2 bg-gray-100 rounded-lg font-medium text-gray-700">
+					หน้า {data.itemList.currentPage} จาก {data.itemList.totalPages}
+				</span>
 			</div>
+			
+			<button
+				class="btn-secondary-modern disabled:opacity-50 disabled:cursor-not-allowed"
+				on:click={() => changePage(data.itemList.currentPage + 1)}
+				disabled={data.itemList.currentPage === data.itemList.totalPages}
+			>
+				ถัดไป
+				<svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+				</svg>
+			</button>
+		</div>
+	</div>
+</section>
+
+<!-- Modern Full Image Modal -->
+{#if fullImage}
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
+		<div class="relative max-w-4xl max-h-[90vh] mx-4">
+			<button 
+				class="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors duration-200"
+				on:click={() => (fullImage = null)}
+			>
+				<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+				</svg>
+			</button>
 			<img 
-				src={`${fullImage}?w=800&format=webp&quality=85`} 
+				src={`${fullImage}?w=1200&format=webp&quality=90`} 
 				alt="Full image preview" 
-				class="h-auto w-full object-cover" 
+				class="w-full h-auto max-h-[90vh] object-contain rounded-2xl shadow-large animate-scale-in" 
 			/>
 		</div>
 	</div>
 {/if}
 
-<!-- Detail Modal -->
+<!-- Modern Detail Modal -->
 {#if detailItem}
-	<div class="modal modal-open">
-		<div class="modal-box">
-			<h3 class="font-bold text-lg">รายละเอียดสินค้า</h3>
-			<p style="white-space: pre-wrap;">{detailItem.Desc}</p>
-			<div class="modal-action">
-				<button class="btn" on:click={() => detailItem = null}>ปิด</button>
-				<a href={`/store/${detailItem.expand?.userStore?.slug}`} target="_blank">
-				<button class="btn btn-outline btn-neutral">ไปที่ร้านค้า</button>
-			</a>
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+		<div class="bg-white rounded-3xl shadow-large max-w-2xl mx-4 max-h-[90vh] overflow-hidden animate-scale-in">
+			<!-- Modal Header -->
+			<div class="flex items-center justify-between p-6 border-b border-gray-100">
+				<h3 class="text-2xl font-bold text-gray-900">รายละเอียดสินค้า</h3>
+				<button 
+					class="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+					on:click={() => detailItem = null}
+				>
+					<svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Modal Content -->
+			<div class="p-6 overflow-y-auto max-h-[60vh]">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<!-- Product Image -->
+					<div class="relative">
+						{#if detailItem.Image}
+							<img
+								src={`https://file.macosplay.com/mxj3660ce5olheb/${detailItem.id}/${detailItem.Image}?w=600&format=webp&quality=85`}
+								alt="{detailItem.Name}"
+								class="w-full aspect-square object-cover rounded-2xl shadow-medium"
+							/>
+						{:else}
+							<img
+								src="/images/Example/Macosplay.png?w=600&format=webp"
+								alt="{detailItem.Name}"
+								class="w-full aspect-square object-cover rounded-2xl shadow-medium"
+							/>
+						{/if}
+					</div>
+
+					<!-- Product Details -->
+					<div class="space-y-4">
+						<div>
+							<h4 class="text-xl font-bold text-gray-900 mb-2">{detailItem.Name}</h4>
+							<p class="text-gray-600">{detailItem.expand?.userStore?.Name || ''}</p>
+						</div>
+
+						<div class="flex flex-wrap gap-2">
+							<span class="badge-modern badge-size">ขนาด {detailItem.Size}</span>
+							<span class="badge-modern {detailItem.Status === 'พร้อมให้เช่า' ? 'badge-available' : detailItem.Status === 'กำลังถูกเช่า' ? 'badge-rented' : 'badge-unavailable'}">
+								{detailItem.Status}
+							</span>
+						</div>
+
+						<div class="bg-gray-50 rounded-xl p-4">
+							<h5 class="font-semibold text-gray-900 mb-2">รายละเอียด</h5>
+							<p class="text-gray-700 whitespace-pre-wrap leading-relaxed">{detailItem.Desc || 'ไม่มีรายละเอียดเพิ่มเติม'}</p>
+						</div>
+
+						<div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4">
+							<h5 class="font-semibold text-gray-900 mb-2">ราคาเช่า</h5>
+							<div class="text-3xl font-bold text-gray-900">
+								{#if detailItem.price == 0}
+									<div class="space-y-1">
+										<div class="text-lg text-gray-600">ไพรเวท: ฿{detailItem.price_pri.toLocaleString()}</div>
+										<div class="text-lg text-gray-600">ทดสอบ: ฿{detailItem.price_test.toLocaleString()}</div>
+									</div>
+								{:else}
+									฿{detailItem.price.toLocaleString()}
+								{/if}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal Footer -->
+			<div class="p-6 border-t border-gray-100 bg-gray-50">
+				<div class="flex gap-3 justify-end">
+					<button class="btn-secondary-modern" on:click={() => detailItem = null}>
+						ปิด
+					</button>
+					<a href={`/store/${detailItem.expand?.userStore?.slug}`} target="_blank">
+						<button class="btn-primary-modern">
+							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+							</svg>
+							ไปที่ร้านค้า
+						</button>
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>
-
 {/if}
 
 
 <style>
-	.join {
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
-    }
-	
-	/* Glassmorphism enhancements for /shop */
-	#filter .container {
-		background: rgba(255, 255, 255, 0.08);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		border: 1px solid rgba(255, 255, 255, 0.18);
-		border-radius: 16px;
-	}
-	#features .card {
-		background: rgba(255, 255, 255, 0.08);
-		border: 1px solid rgba(255, 255, 255, 0.18);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-	}
-	#features .card:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-		border-color: rgba(255, 255, 255, 0.35);
-	}
-	#features .card figure {
+	/* Additional custom styles for shop page */
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
 		overflow: hidden;
-		border-radius: 0.75rem;
 	}
-	#features .card figure img {
-		transition: transform .3s ease;
+
+	/* Enhanced animations */
+	@keyframes float {
+		0%, 100% { transform: translateY(0px); }
+		50% { transform: translateY(-10px); }
 	}
-	#features .card:hover figure img {
-		transform: scale(1.02);
+
+	.animate-float {
+		animation: float 6s ease-in-out infinite;
 	}
-	#features .badge {
-		font-size: 10px;
-		background: rgba(255, 255, 255, 0.2);
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
-		padding: 2px 8px;
-	}
-	.modal .modal-box {
-		background: rgba(255, 255, 255, 0.08);
-		border: 1px solid rgba(255, 255, 255, 0.18);
-		backdrop-filter: blur(16px);
-		-webkit-backdrop-filter: blur(16px);
-	}
-	#filter .btn.btn-outline {
-		background: rgba(255, 255, 255, 0.08);
-		border-color: rgba(255, 255, 255, 0.2);
-	}
-	
-	
+
+	/* Staggered animation delays for product cards */
+	.product-card:nth-child(1) { animation-delay: 0.1s; }
+	.product-card:nth-child(2) { animation-delay: 0.2s; }
+	.product-card:nth-child(3) { animation-delay: 0.3s; }
+	.product-card:nth-child(4) { animation-delay: 0.4s; }
+	.product-card:nth-child(5) { animation-delay: 0.5s; }
+	.product-card:nth-child(6) { animation-delay: 0.6s; }
+	.product-card:nth-child(7) { animation-delay: 0.7s; }
+	.product-card:nth-child(8) { animation-delay: 0.8s; }
 </style>

@@ -168,95 +168,106 @@
 </dialog>
 
 
+<!-- Modern Navigation -->
 <div class="max-w-[120rem] mx-auto">
-	<div class="navbar bg-base-100 bg-opacity-90 backdrop-blur-sm sticky top-0 z-10">
-		<div class="navbar-start">
-			<div class="dropdown">
-				<div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-					</svg>
+	<nav class="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-50 shadow-soft">
+		<div class="container mx-auto px-6">
+			<div class="flex items-center justify-between h-16">
+				<!-- Logo -->
+				<div class="flex items-center">
+					<a href="/" class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+						MaCosplay
+					</a>
 				</div>
-				<ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-					<li><a>บทความ</a></li>
-					<li>
-						<details>
-							<summary>เรียนรู้เพิ่มเติม</summary>
-							<ul class="p-2">
-								<li><a>Submenu 1</a></li>
-								<li><a>Submenu 2</a></li>
-							</ul>
-						</details>
-					</li>
-					<li><a href="/pricing">อัพเกรด</a></li>
-					<li><a href="/upscaler">AI Upscale</a></li>
-				</ul>
+
+				<!-- Desktop Navigation -->
+				<div class="hidden lg:flex items-center space-x-8">
+					<a href="/shop" class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
+						ค้นหาชุดเช่า
+					</a>
+					<a href="/pricing" class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
+						อัพเกรด
+					</a>
+					<a href="/upscaler" class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
+						AI Upscale
+					</a>
+					
+					<!-- Theme Toggle -->
+					<label class="flex cursor-pointer items-center gap-2">
+						<svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<circle cx="12" cy="12" r="5" />
+							<path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
+						</svg>
+						<input type="checkbox" value="dark" class="toggle toggle-sm" on:change={toggleTheme} />
+						<svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+						</svg>
+					</label>
+				</div>
+
+				<!-- User Menu -->
+				<div class="flex items-center space-x-4">
+					{#if data.user}
+						<div class="relative group">
+							<button class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-xl px-4 py-2 transition-colors duration-200">
+								<div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+									{data.user.name?.charAt(0) || 'U'}
+								</div>
+								<span class="hidden md:block font-medium text-gray-700">{data.user.name}</span>
+								<svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+								</svg>
+							</button>
+							
+							<!-- Dropdown Menu -->
+							<div class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-large border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+								<div class="p-2">
+									<a href="#" on:click|preventDefault={() => document.getElementById('profile_modal').showModal()} 
+									   class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl transition-colors duration-200">
+										<svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+										</svg>
+										โปรไฟล์
+									</a>
+									<a href="/manage-access" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl transition-colors duration-200">
+										<svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+										</svg>
+										จัดการสิทธิ์
+									</a>
+									<hr class="my-2 border-gray-100">
+									<form action="/logout" method="POST" class="w-full">
+										<button class="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors duration-200">
+											<svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+											</svg>
+											ออกจากระบบ
+										</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					{:else}
+						<div class="flex items-center space-x-3">
+							<a href="/login" class="btn-secondary-modern">
+								เข้าสู่ระบบ
+							</a>
+							<a href="/register" class="btn-primary-modern">
+								สมัครสมาชิก
+							</a>
+						</div>
+					{/if}
+
+					<!-- Mobile Menu Button -->
+					<button class="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
+						<svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+						</svg>
+					</button>
+				</div>
 			</div>
-			<h1 class="btn btn-ghost text-xl"><a href="/">MaCosplay</a></h1>
 		</div>
-		<div class="navbar-center hidden lg:flex">
-			<ul class="menu menu-horizontal px-1">
-				<li><a>บทความ</a></li>
-				<li>
-					<details>
-						<summary>เรียนรู้เพิ่มเติม</summary>
-						<ul class="p-2">
-							<li><a>Submenu 1</a></li>
-							<li><a>Submenu 2</a></li>
-						</ul>
-					</details>
-				</li>
-				<li><a href="/pricing">อัพเกรด</a></li>
-				<li><a href="/upscaler">AI Upscale</a></li>
-			</ul>
-		</div>
-		<div class="navbar-end">
-			{#if data.user}
-			<div class="dropdown dropdown-end">
-				<button tabindex="0" class="btn btn-ghost flex items-center">
-					ตั้งค่า
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-					</svg>
-				</button>
-				<ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-					<li><a href="#" on:click|preventDefault={() => document.getElementById('profile_modal').showModal()}>โปรไฟล์</a></li>
-					<li><a href="/manage-access">จัดการสิทธิการเข้าถึง</a></li>
-					<li class="block lg:hidden">
-						<label class="flex cursor-pointer gap-2">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<circle cx="12" cy="12" r="5" />
-								<path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
-							</svg>
-							<input type="checkbox" value="dark" class="toggle theme-controller" on:change={toggleTheme} />
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-							</svg>
-						</label>
-					</li>
-					<li>
-						<form action="/logout" method="POST">
-							<button class="btn w-full text-left">Logout</button>
-						</form>
-					</li>
-				</ul>
-			</div>
-			{:else}
-				<a href="/login" class="btn">Login</a>
-			{/if}
-			<!-- Hide the switch on larger screens -->
-			<label class="hidden lg:flex cursor-pointer gap-2">
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<circle cx="12" cy="12" r="5" />
-					<path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
-				</svg>
-				<input type="checkbox" value="dark" class="toggle theme-controller" on:change={toggleTheme} />
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-				</svg>
-			</label>
-		</div>
-	  </div>
+	</nav>
 	  {@render children()}
 </div>
 
