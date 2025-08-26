@@ -217,7 +217,8 @@
 								class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-8 text-center hover:border-purple-500 dark:hover:border-purple-400 transition-colors cursor-pointer"
 								class:border-purple-500={isDragOver}
 								class:bg-purple-50={isDragOver}
-								class:dark:bg-purple-900/20={isDragOver}
+								class:dark:bg-purple-900={isDragOver}
+								class:dark:bg-opacity-20={isDragOver}
 								on:dragover={handleDragOver}
 								on:dragleave={handleDragLeave}
 								on:drop={handleDrop}
