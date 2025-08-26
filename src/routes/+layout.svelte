@@ -185,6 +185,9 @@
 					<a href="/shop" class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
 						ค้นหาชุดเช่า
 					</a>
+					<a href="/gallery" class="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200">
+						🎭 Gallery
+					</a>
 					<a href="/pricing" class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
 						อัพเกรด
 					</a>
