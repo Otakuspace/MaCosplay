@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { CreateFeatureRequestData } from '../../../types/brainstorm';
+	import { t, getNestedTranslation } from '../../../lib/i18n';
 
 	const dispatch = createEventDispatcher();
 
@@ -38,15 +39,15 @@
 		errors = {};
 		
 		if (!formData.title.trim()) {
-			errors.title = 'Title is required';
+			errors.title = t('titleRequired');
 		}
 		
 		if (!formData.description.trim()) {
-			errors.description = 'Description is required';
+			errors.description = t('descriptionRequired');
 		}
 		
 		if (!formData.author.trim()) {
-			errors.author = 'Author name is required';
+			errors.author = t('authorRequired');
 		}
 
 		return Object.keys(errors).length === 0;
@@ -76,12 +77,12 @@
 	<!-- Title -->
 	<div class="form-control">
 		<label class="label" for="title">
-			<span class="label-text font-semibold">Title *</span>
+			<span class="label-text font-semibold">{t('title')} {t('required')}</span>
 		</label>
 		<input 
 			id="title"
 			type="text" 
-			placeholder="Brief, descriptive title for your feature request"
+			placeholder={t('titlePlaceholder')}
 			class="input input-bordered w-full {errors.title ? 'input-error' : ''}"
 			bind:value={formData.title}
 			maxlength="100"
@@ -96,12 +97,12 @@
 	<!-- Description -->
 	<div class="form-control">
 		<label class="label" for="description">
-			<span class="label-text font-semibold">Description *</span>
+			<span class="label-text font-semibold">{t('description')} {t('required')}</span>
 		</label>
 		<textarea 
 			id="description"
 			class="textarea textarea-bordered h-24 {errors.description ? 'textarea-error' : ''}"
-			placeholder="Provide detailed information about your feature request..."
+			placeholder={t('descriptionPlaceholder')}
 			bind:value={formData.description}
 			maxlength="1000"
 		></textarea>
@@ -111,7 +112,7 @@
 			</label>
 		{/if}
 		<label class="label">
-			<span class="label-text-alt">{formData.description.length}/1000 characters</span>
+			<span class="label-text-alt">{formData.description.length}/1000 {t('charactersCount')}</span>
 		</label>
 	</div>
 
@@ -120,35 +121,35 @@
 		<!-- Category -->
 		<div class="form-control">
 			<label class="label" for="category">
-				<span class="label-text font-semibold">Category</span>
+				<span class="label-text font-semibold">{t('category')}</span>
 			</label>
 			<select 
 				id="category"
 				class="select select-bordered w-full"
 				bind:value={formData.category}
 			>
-				<option value="ui">🎨 UI/Design</option>
-				<option value="feature">✨ New Feature</option>
-				<option value="improvement">📈 Improvement</option>
-				<option value="bug">🐛 Bug Fix</option>
-				<option value="other">💡 Other</option>
+				<option value="ui">{getNestedTranslation('categoryIcons', 'ui')} {t('ui')}</option>
+				<option value="feature">{getNestedTranslation('categoryIcons', 'feature')} {t('feature')}</option>
+				<option value="improvement">{getNestedTranslation('categoryIcons', 'improvement')} {t('improvement')}</option>
+				<option value="bug">{getNestedTranslation('categoryIcons', 'bug')} {t('bug')}</option>
+				<option value="other">{getNestedTranslation('categoryIcons', 'other')} {t('other')}</option>
 			</select>
 		</div>
 
 		<!-- Priority -->
 		<div class="form-control">
 			<label class="label" for="priority">
-				<span class="label-text font-semibold">Priority</span>
+				<span class="label-text font-semibold">{t('priority')}</span>
 			</label>
 			<select 
 				id="priority"
 				class="select select-bordered w-full"
 				bind:value={formData.priority}
 			>
-				<option value="low">🟢 Low</option>
-				<option value="medium">🟡 Medium</option>
-				<option value="high">🟠 High</option>
-				<option value="critical">🔴 Critical</option>
+				<option value="low">{getNestedTranslation('priorityIcons', 'low')} {t('low')}</option>
+				<option value="medium">{getNestedTranslation('priorityIcons', 'medium')} {t('medium')}</option>
+				<option value="high">{getNestedTranslation('priorityIcons', 'high')} {t('high')}</option>
+				<option value="critical">{getNestedTranslation('priorityIcons', 'critical')} {t('critical')}</option>
 			</select>
 		</div>
 	</div>
@@ -156,12 +157,12 @@
 	<!-- Author -->
 	<div class="form-control">
 		<label class="label" for="author">
-			<span class="label-text font-semibold">Your Name *</span>
+			<span class="label-text font-semibold">{t('author')} {t('required')}</span>
 		</label>
 		<input 
 			id="author"
 			type="text" 
-			placeholder="Enter your name or username"
+			placeholder={t('authorPlaceholder')}
 			class="input input-bordered w-full {errors.author ? 'input-error' : ''}"
 			bind:value={formData.author}
 			maxlength="50"
@@ -176,13 +177,13 @@
 	<!-- Tags -->
 	<div class="form-control">
 		<label class="label" for="tag-input">
-			<span class="label-text font-semibold">Tags</span>
+			<span class="label-text font-semibold">{t('tags')}</span>
 		</label>
 		<div class="flex gap-2">
 			<input 
 				id="tag-input"
 				type="text" 
-				placeholder="Add tags (press Enter)"
+				placeholder={t('tagsPlaceholder')}
 				class="input input-bordered flex-1"
 				bind:value={tagInput}
 				onkeydown={handleTagKeydown}
@@ -194,7 +195,7 @@
 				onclick={addTag}
 				disabled={!tagInput.trim()}
 			>
-				Add
+				{t('add')}
 			</button>
 		</div>
 		{#if formData.tags.length > 0}
@@ -214,17 +215,17 @@
 			</div>
 		{/if}
 		<label class="label">
-			<span class="label-text-alt">Tags help categorize and filter feature requests</span>
+			<span class="label-text-alt">{t('tagsHelp')}</span>
 		</label>
 	</div>
 
 	<!-- Action Buttons -->
 	<div class="modal-action">
 		<button type="button" class="btn btn-ghost" onclick={handleCancel}>
-			Cancel
+			{t('cancel')}
 		</button>
 		<button type="submit" class="btn btn-primary">
-			Submit Feature Request
+			{t('submitFeatureRequest')}
 		</button>
 	</div>
 </form>

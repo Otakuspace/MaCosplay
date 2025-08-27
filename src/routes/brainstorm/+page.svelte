@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { FeatureRequest } from '../../types/brainstorm';
+	import type { FeatureRequest, ViewMode } from '../../types/brainstorm';
+	import { t } from '../../lib/i18n';
 	import FeatureCard from './components/FeatureCard.svelte';
 	import FeatureForm from './components/FeatureForm.svelte';
+	import GraphFlowchart from './components/GraphFlowchart.svelte';
 
 	let features: FeatureRequest[] = $state([]);
 	let showForm = $state(false);
 	let loading = $state(true);
 	let error = $state('');
+	let viewMode: ViewMode = $state('card');
 
 	onMount(async () => {
 		await loadFeatures();
@@ -20,10 +23,10 @@
 			if (response.ok) {
 				features = await response.json();
 			} else {
-				error = 'Failed to load features';
+				error = t('failedToLoad');
 			}
 		} catch (err) {
-			error = 'Error loading features';
+			error = t('errorLoading');
 			console.error('Error loading features:', err);
 		} finally {
 			loading = false;
@@ -45,10 +48,10 @@
 				features = [...features, newFeature];
 				showForm = false;
 			} else {
-				error = 'Failed to add feature request';
+				error = t('failedToAdd');
 			}
 		} catch (err) {
-			error = 'Error adding feature request';
+			error = t('errorAdding');
 			console.error('Error adding feature:', err);
 		}
 	}
@@ -68,10 +71,10 @@
 				const updatedFeature = await response.json();
 				features = features.map(f => f.id === id ? updatedFeature : f);
 			} else {
-				error = 'Failed to update feature request';
+				error = t('failedToUpdate');
 			}
 		} catch (err) {
-			error = 'Error updating feature request';
+			error = t('errorUpdating');
 			console.error('Error updating feature:', err);
 		}
 	}
@@ -86,10 +89,10 @@
 			if (response.ok) {
 				features = features.filter(f => f.id !== id);
 			} else {
-				error = 'Failed to delete feature request';
+				error = t('failedToDelete');
 			}
 		} catch (err) {
-			error = 'Error deleting feature request';
+			error = t('errorDeleting');
 			console.error('Error deleting feature:', err);
 		}
 	}
@@ -104,8 +107,8 @@
 </script>
 
 <svelte:head>
-	<title>Brainstorm Board - MacOSPlay</title>
-	<meta name="description" content="Feature request brainstorm board for MacOSPlay" />
+	<title>{t('pageTitle')}</title>
+	<meta name="description" content={t('pageDescription')} />
 </svelte:head>
 
 <div class="min-h-screen bg-base-100 p-6">
@@ -114,9 +117,9 @@
 		<div class="mb-8">
 			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
 				<div>
-					<h1 class="text-4xl font-bold text-primary mb-2">🧠 Brainstorm Board</h1>
+					<h1 class="text-4xl font-bold text-primary mb-2">{t('brainstormBoard')}</h1>
 					<p class="text-base-content/70 text-lg">
-						Share your ideas and vote on features for MacOSPlay
+						{t('subtitle')}
 					</p>
 				</div>
 				<button 
@@ -126,7 +129,7 @@
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
 					</svg>
-					Add Feature Request
+					{t('addFeatureRequest')}
 				</button>
 			</div>
 		</div>
@@ -146,7 +149,7 @@
 		{#if showForm}
 			<div class="modal modal-open">
 				<div class="modal-box max-w-2xl">
-					<h3 class="font-bold text-lg mb-4">Add New Feature Request</h3>
+					<h3 class="font-bold text-lg mb-4">{t('addNewFeatureRequest')}</h3>
 					<FeatureForm 
 						on:submit={handleAddFeature}
 						on:cancel={() => showForm = false}
@@ -156,44 +159,69 @@
 			</div>
 		{/if}
 
-		<!-- Filters -->
+		<!-- View Toggle and Filters -->
 		<div class="mb-6">
+			<!-- View Mode Toggle -->
+			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+				<div class="btn-group">
+					<button 
+						class="btn btn-sm {viewMode === 'card' ? 'btn-primary' : 'btn-ghost'}"
+						onclick={() => viewMode = 'card'}
+					>
+						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+						</svg>
+						{t('cardView')}
+					</button>
+					<button 
+						class="btn btn-sm {viewMode === 'graph' ? 'btn-primary' : 'btn-ghost'}"
+						onclick={() => viewMode = 'graph'}
+					>
+						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+						</svg>
+						{t('graphView')}
+					</button>
+				</div>
+			</div>
+			
+			<!-- Status Filters -->
 			<div class="flex flex-wrap gap-2">
 				<button 
 					class="btn btn-sm {selectedFilter === 'all' ? 'btn-primary' : 'btn-ghost'}"
 					onclick={() => selectedFilter = 'all'}
 				>
-					All ({features.length})
+					{t('all')} ({features.length})
 				</button>
 				<button 
 					class="btn btn-sm {selectedFilter === 'requested' ? 'btn-primary' : 'btn-ghost'}"
 					onclick={() => selectedFilter = 'requested'}
 				>
-					Requested ({features.filter(f => f.status === 'requested').length})
+					{t('requested')} ({features.filter(f => f.status === 'requested').length})
 				</button>
 				<button 
 					class="btn btn-sm {selectedFilter === 'in-review' ? 'btn-primary' : 'btn-ghost'}"
 					onclick={() => selectedFilter = 'in-review'}
 				>
-					In Review ({features.filter(f => f.status === 'in-review').length})
+					{t('inReview')} ({features.filter(f => f.status === 'in-review').length})
 				</button>
 				<button 
 					class="btn btn-sm {selectedFilter === 'approved' ? 'btn-primary' : 'btn-ghost'}"
 					onclick={() => selectedFilter = 'approved'}
 				>
-					Approved ({features.filter(f => f.status === 'approved').length})
+					{t('approved')} ({features.filter(f => f.status === 'approved').length})
 				</button>
 				<button 
 					class="btn btn-sm {selectedFilter === 'in-progress' ? 'btn-primary' : 'btn-ghost'}"
 					onclick={() => selectedFilter = 'in-progress'}
 				>
-					In Progress ({features.filter(f => f.status === 'in-progress').length})
+					{t('inProgress')} ({features.filter(f => f.status === 'in-progress').length})
 				</button>
 				<button 
 					class="btn btn-sm {selectedFilter === 'completed' ? 'btn-primary' : 'btn-ghost'}"
 					onclick={() => selectedFilter = 'completed'}
 				>
-					Completed ({features.filter(f => f.status === 'completed').length})
+					{t('completed')} ({features.filter(f => f.status === 'completed').length})
 				</button>
 			</div>
 		</div>
@@ -202,33 +230,42 @@
 		{#if loading}
 			<div class="flex justify-center items-center py-12">
 				<span class="loading loading-spinner loading-lg"></span>
+				<p class="mt-4 text-base-content/70">{t('loading')}</p>
 			</div>
 		{:else if filteredFeatures.length === 0}
 			<!-- Empty State -->
 			<div class="text-center py-12">
 				<div class="text-6xl mb-4">💡</div>
-				<h3 class="text-2xl font-semibold mb-2">No feature requests yet</h3>
+				<h3 class="text-2xl font-semibold mb-2">{t('noFeatureRequests')}</h3>
 				<p class="text-base-content/70 mb-6">
-					Be the first to share your ideas for MacOSPlay!
+					{t('beFirst')}
 				</p>
 				<button 
 					class="btn btn-primary"
 					onclick={() => showForm = true}
 				>
-					Add First Feature Request
+					{t('addFirstFeatureRequest')}
 				</button>
 			</div>
 		{:else}
-			<!-- Whiteboard Grid -->
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-				{#each filteredFeatures as feature (feature.id)}
-					<FeatureCard 
-						{feature}
-						on:update={handleUpdateFeature}
-						on:delete={handleDeleteFeature}
-					/>
-				{/each}
-			</div>
+			<!-- Content Views -->
+			{#if viewMode === 'card'}
+				<!-- Card Grid View -->
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+					{#each filteredFeatures as feature (feature.id)}
+						<FeatureCard 
+							{feature}
+							on:update={handleUpdateFeature}
+							on:delete={handleDeleteFeature}
+						/>
+					{/each}
+				</div>
+			{:else if viewMode === 'graph'}
+				<!-- Graph Flowchart View -->
+				<div class="h-[800px] w-full">
+					<GraphFlowchart features={filteredFeatures} />
+				</div>
+			{/if}
 		{/if}
 	</div>
 </div>
