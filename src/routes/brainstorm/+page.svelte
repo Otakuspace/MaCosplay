@@ -100,7 +100,7 @@
 	}
 
 	let selectedFilter = $state('all');
-	$: filteredFeatures = filterByStatus(selectedFilter);
+	let filteredFeatures = $derived(filterByStatus(selectedFilter));
 </script>
 
 <svelte:head>

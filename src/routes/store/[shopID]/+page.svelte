@@ -742,10 +742,10 @@
 
                 <!-- Status -->
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="status-select">
                         <span class="label-text">สถานะ</span>
                     </label>
-                    <select name="status" bind:value={editingItem.Status} class="select select-bordered w-full" required>
+                    <select id="status-select" name="status" bind:value={editingItem.Status} class="select select-bordered w-full" required>
                         <option value="">เลือกสถานะ</option>
                         <option value="พร้อมให้เช่า">พร้อมให้เช่า</option>
                         <option value="กำลังถูกเช่า">กำลังถูกเช่า</option>
@@ -755,10 +755,11 @@
 
                 <!-- Image -->
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="image-upload">
                         <span class="label-text">รูปภาพ</span>
                     </label>
                     <input
+                        id="image-upload"
                         type="file"
                         name="image"
                         accept="image/*"
@@ -811,6 +812,7 @@
 				<button 
 					class="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
 					on:click={() => detailItem = null}
+					aria-label="ปิดรายละเอียดสินค้า"
 				>
 					<svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -940,30 +942,7 @@
     .file-input {
         margin-top: 1rem;
     }
-    .search-filter-container {
-        margin-bottom: 1rem;
-    }
-    .btn-facebook {
-        background-color: #3b5998;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
 
-    .btn-facebook:hover {
-        background-color: #2d4373;
-    }
-
-    .btn-facebook:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(59, 89, 152, 0.5);
-    }
 
     .w-6 {
         width: 24px;
@@ -973,37 +952,7 @@
     .mr-2 {
         margin-right: 8px;
     }
-/* Glassmorphism enhancements */
-	#features .card {
-		background: rgba(255, 255, 255, 0.08);
-		border: 1px solid rgba(255, 255, 255, 0.18);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-		transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-	}
-	#features .card:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-		border-color: rgba(255, 255, 255, 0.35);
-	}
-	#features .card figure {
-		overflow: hidden;
-		border-radius: 0.75rem;
-	}
-	#features .card figure img {
-		transition: transform .3s ease;
-	}
-	#features .card:hover figure img {
-		transform: scale(1.02);
-	}
-	#features .badge {
-		font-size: 10px;
-		background: rgba(255, 255, 255, 0.2);
-		border: 1px solid rgba(255, 255, 255, 0.3);
-		backdrop-filter: blur(8px);
-		-webkit-backdrop-filter: blur(8px);
-		padding: 2px 8px;
-	}
+
 	.modal .modal-box {
 		background: rgba(255, 255, 255, 0.08);
 		border: 1px solid rgba(255, 255, 255, 0.18);
