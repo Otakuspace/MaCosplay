@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { FeatureRequest } from '../../../types/brainstorm';
-	import { t, getNestedTranslation } from '../../../lib/i18n';
+	import { t, getNestedTranslation, formatThaiDate, formatThaiRelativeTime } from '../../../lib/i18n';
 
 	interface Props {
 		feature: FeatureRequest;
@@ -130,7 +130,7 @@
 				<span class="text-xs opacity-60">{t('by')} {feature.author}</span>
 			</div>
 			<span class="text-xs opacity-60">
-				{new Date(feature.createdAt).toLocaleDateString()}
+				{formatThaiRelativeTime(feature.createdAt)}
 			</span>
 		</div>
 
@@ -139,8 +139,8 @@
 			<div class="mt-4 pt-4 border-t border-base-300">
 				<div class="space-y-2 text-sm">
 					<div><strong>ID:</strong> {feature.id}</div>
-					<div><strong>{t('createdAt')}:</strong> {new Date(feature.createdAt).toLocaleString('th-TH')}</div>
-					<div><strong>{t('updatedAt')}:</strong> {new Date(feature.updatedAt).toLocaleString('th-TH')}</div>
+					<div><strong>{t('createdAt')}:</strong> {formatThaiDate(feature.createdAt)}</div>
+					<div><strong>{t('updatedAt')}:</strong> {formatThaiDate(feature.updatedAt)}</div>
 					{#if feature.tags.length > 0}
 						<div>
 							<strong>{t('allTags')}:</strong>
