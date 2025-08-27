@@ -47,5 +47,9 @@ export const SIDEBAR = [
       title: "Customer Support",
       href: "/contact",
     },
+    {
+      title: "Brainstorm Board",
+      href: "/brainstorm",
+    },
   ];
   

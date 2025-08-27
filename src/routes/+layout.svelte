@@ -225,6 +225,9 @@
 					<a href="/gallery" class="text-primary hover:text-purple-500 font-medium transition-colors duration-200">
 						🎭 Gallery
 					</a>
+					<a href="/brainstorm" class="text-primary hover:text-green-500 font-medium transition-colors duration-200">
+						🧠 Brainstorm
+					</a>
 					<a href="/pricing" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200">
 						อัพเกรด
 					</a>
