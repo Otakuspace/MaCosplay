@@ -78,15 +78,15 @@
 					</span>
 				</div>
 			</div>
-			<div class="dropdown dropdown-end">
-				<label tabindex="0" class="btn btn-ghost btn-xs">⋮</label>
-				<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-					<li><button onclick={() => showDetails = !showDetails}>
-						{showDetails ? 'Hide' : 'Show'} Details
-					</button></li>
-					<li><button onclick={handleDelete} class="text-error">Delete</button></li>
-				</ul>
-			</div>
+					<div class="dropdown dropdown-end">
+			<button class="btn btn-ghost btn-xs" aria-label="Feature options menu">⋮</button>
+			<ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+				<li><button onclick={() => showDetails = !showDetails}>
+					{showDetails ? 'Hide' : 'Show'} Details
+				</button></li>
+				<li><button onclick={handleDelete} class="text-error">Delete</button></li>
+			</ul>
+		</div>
 		</div>
 
 		<!-- Title -->

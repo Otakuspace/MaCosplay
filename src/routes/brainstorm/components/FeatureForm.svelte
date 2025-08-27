@@ -72,7 +72,7 @@
 	}
 </script>
 
-<form onsubmit|preventDefault={handleSubmit} class="space-y-4">
+<form onsubmit={(e) => { e.preventDefault(); handleSubmit(e); }} class="space-y-4">
 	<!-- Title -->
 	<div class="form-control">
 		<label class="label" for="title">
