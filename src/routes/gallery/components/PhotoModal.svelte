@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import FrameEditor from './FrameEditor.svelte';
+	import PhotoEditor from './PhotoEditor.svelte';
 
 	interface CosplayPhoto {
 		id: string;
@@ -23,6 +24,7 @@
 	let imageError = false;
 	let showDeleteConfirm = false;
 	let showFrameEditor = false;
+	let showPhotoEditor = false;
 
 	function handleClose() {
 		dispatch('close');
@@ -101,6 +103,32 @@
 
 	function closeFrameEditor() {
 		showFrameEditor = false;
+	}
+
+	function openPhotoEditor() {
+		showPhotoEditor = true;
+	}
+
+	function closePhotoEditor() {
+		showPhotoEditor = false;
+	}
+
+	function handleEditedImageSaved(event: CustomEvent) {
+		const { dataURL, title, settings } = event.detail;
+		
+		// Create a new photo with the edited image
+		const editedPhoto = {
+			...photo,
+			id: Date.now().toString(),
+			title: title || `${photo.title} (Edited)`,
+			imageUrl: dataURL,
+			thumbnailUrl: dataURL,
+			tags: [...photo.tags, 'edited'].filter(tag => tag),
+			uploadedAt: new Date()
+		};
+
+		dispatch('photoUploaded', editedPhoto);
+		showPhotoEditor = false;
 	}
 
 	function handleFramedImageSaved(event: CustomEvent) {
@@ -192,6 +220,15 @@
 				>
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+					</svg>
+				</button>
+				<button 
+					on:click={openPhotoEditor}
+					class="p-3 bg-black/20 backdrop-blur-sm rounded-full text-white hover:bg-black/40 transition-all duration-300 hover:scale-110"
+					title="Edit photo"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
 					</svg>
 				</button>
 				<button 
@@ -344,8 +381,17 @@
 						</button>
 					</div>
 					
-					<!-- Frame Action -->
-					<div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+					<!-- Photo Editing Actions -->
+					<div class="pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3">
+						<button 
+							on:click={openPhotoEditor}
+							class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
+						>
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+							</svg>
+							<span>Pro Photo Editor</span>
+						</button>
 						<button 
 							on:click={openFrameEditor}
 							class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 font-medium"
@@ -421,6 +467,15 @@
 		</div>
 	</div>
 {/if}
+
+<!-- Photo Editor -->
+<PhotoEditor 
+	bind:isOpen={showPhotoEditor}
+	imageUrl={photo.imageUrl}
+	photoTitle={photo.title}
+	on:close={closePhotoEditor}
+	on:imageSaved={handleEditedImageSaved}
+/>
 
 <!-- Frame Editor -->
 <FrameEditor 
