@@ -152,6 +152,85 @@
 		})();
 	}
 
+	function exportGalleryData() {
+		photos.subscribe(photoList => {
+			const galleryData = {
+				version: '1.0',
+				exportDate: new Date().toISOString(),
+				photos: photoList,
+				totalPhotos: photoList.length
+			};
+			
+			const dataStr = JSON.stringify(galleryData, null, 2);
+			const dataBlob = new Blob([dataStr], { type: 'application/json' });
+			
+			const link = document.createElement('a');
+			link.href = URL.createObjectURL(dataBlob);
+			link.download = `cosplay-gallery-backup-${new Date().toISOString().split('T')[0]}.json`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		})();
+	}
+
+	function importGalleryData() {
+		const input = document.createElement('input');
+		input.type = 'file';
+		input.accept = '.json';
+		
+		input.onchange = (e) => {
+			const file = (e.target as HTMLInputElement).files?.[0];
+			if (!file) return;
+			
+			const reader = new FileReader();
+			reader.onload = (event) => {
+				try {
+					const data = JSON.parse(event.target?.result as string);
+					if (data.photos && Array.isArray(data.photos)) {
+						const confirmImport = confirm(
+							`This will import ${data.photos.length} photos. Current photos will be merged with imported ones. Continue?`
+						);
+						
+						if (confirmImport) {
+							photos.update(currentPhotos => {
+								const mergedPhotos = [...currentPhotos, ...data.photos];
+								localStorage.setItem('cosplay-photos', JSON.stringify(mergedPhotos));
+								return mergedPhotos;
+							});
+							alert(`Successfully imported ${data.photos.length} photos!`);
+						}
+					} else {
+						alert('Invalid gallery backup file format.');
+					}
+				} catch (error) {
+					console.error('Import error:', error);
+					alert('Failed to import gallery data. Please check the file format.');
+				}
+			};
+			reader.readAsText(file);
+		};
+		
+		input.click();
+	}
+
+	function clearAllData() {
+		const confirm = window.confirm(
+			'Are you sure you want to clear all photos? This action cannot be undone.\n\nConsider exporting your gallery first as a backup.'
+		);
+		
+		if (confirm) {
+			const doubleConfirm = window.confirm(
+				'This will permanently delete all your photos and data. Are you absolutely sure?'
+			);
+			
+			if (doubleConfirm) {
+				localStorage.removeItem('cosplay-photos');
+				photos.set([]);
+				alert('All gallery data has been cleared.');
+			}
+		}
+	}
+
 	// Reactive filtered photos
 	$: filteredPhotos = $photos.filter(photo => {
 		const matchesSearch = searchTerm === '' || 
@@ -184,8 +263,8 @@
 </script>
 
 <svelte:head>
-	<title>Cosplay Gallery - Beautiful Cosplay Photography</title>
-	<meta name="description" content="Discover and share amazing cosplay photography. Create your own gallery, browse stunning cosplay photos, and download your favorites." />
+	<title>Private Cosplay Gallery - Local Photo Manager with Custom Frames</title>
+	<meta name="description" content="Your personal, private cosplay photo gallery with custom frames and effects. All data stays local on your device for complete privacy." />
 </svelte:head>
 
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900">
@@ -195,11 +274,17 @@
 		<div class="relative container mx-auto px-4 py-16">
 			<div class="text-center">
 				<h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent">
-					Cosplay Gallery
+					Private Cosplay Gallery
 				</h1>
 				<p class="text-xl mb-8 max-w-2xl mx-auto text-purple-100">
-					Discover amazing cosplay photography, create your own gallery, and share your passion with the community
+					Your personal, private cosplay photo gallery with custom frames and effects. All data stays local on your device.
 				</p>
+				<div class="flex items-center justify-center gap-2 mb-6">
+					<svg class="w-5 h-5 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+					</svg>
+					<span class="text-green-300 font-medium">100% Private & Local</span>
+				</div>
 				<div class="flex flex-col sm:flex-row gap-4 justify-center">
 					<button 
 						on:click={openUploadModal}
@@ -218,6 +303,37 @@
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
 						</svg>
 						Download All
+					</button>
+				</div>
+
+				<!-- Privacy & Data Management -->
+				<div class="flex flex-wrap gap-3 justify-center mt-6 pt-6 border-t border-white/20">
+					<button 
+						on:click={exportGalleryData}
+						class="btn bg-white/10 border border-white/30 text-white hover:bg-white/20 px-6 py-2 rounded-full font-medium text-sm transition-all duration-300"
+					>
+						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+						</svg>
+						Export Backup
+					</button>
+					<button 
+						on:click={importGalleryData}
+						class="btn bg-white/10 border border-white/30 text-white hover:bg-white/20 px-6 py-2 rounded-full font-medium text-sm transition-all duration-300"
+					>
+						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+						</svg>
+						Import Backup
+					</button>
+					<button 
+						on:click={clearAllData}
+						class="btn bg-red-500/20 border border-red-400/30 text-red-100 hover:bg-red-500/30 px-6 py-2 rounded-full font-medium text-sm transition-all duration-300"
+					>
+						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+						</svg>
+						Clear All Data
 					</button>
 				</div>
 			</div>
@@ -321,6 +437,7 @@
 		on:close={closePhotoModal}
 		on:deletePhoto={handleDeletePhoto}
 		on:editPhoto={handleEditPhoto}
+		on:photoUploaded={handlePhotoUploaded}
 	/>
 {/if}
 
