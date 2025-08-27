@@ -31,8 +31,8 @@
 	// Module context
 	export let data;
 	export let highlightedPlanId: string = '';
-	export let callToAction: string;
-	export let currentPlanId: string = '';
+	export const callToAction: string = '';
+	export const currentPlanId: string = '';
 	export let center = true;
 
 	let packages = JSON.parse(data?.packages).sort((a, b) => {
