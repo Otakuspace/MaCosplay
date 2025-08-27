@@ -111,7 +111,7 @@
 	<meta name="description" content={t('pageDescription')} />
 </svelte:head>
 
-<div class="min-h-screen bg-base-100 p-6">
+<div class="min-h-screen bg-base-100 p-6 brainstorm-page">
 	<div class="max-w-7xl mx-auto">
 		<!-- Header -->
 		<div class="mb-8">

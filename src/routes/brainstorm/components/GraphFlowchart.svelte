@@ -186,13 +186,21 @@
 			.style('font-size', '12px')
 			.text((d: GraphNode) => getNestedTranslation('categoryIcons', d.category));
 
-		// Add labels
+		// Add labels with better Thai text handling
 		node.append('text')
 			.attr('text-anchor', 'middle')
 			.attr('dy', (d: GraphNode) => getNodeSize(d) + 15)
 			.style('font-size', '10px')
 			.style('fill', '#374151')
-			.text((d: GraphNode) => d.title.length > 20 ? d.title.substring(0, 20) + '...' : d.title);
+			.style('font-family', 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"')
+			.text((d: GraphNode) => {
+				// Better Thai text truncation
+				const maxLength = 15;
+				if (d.title.length > maxLength) {
+					return d.title.substring(0, maxLength) + '...';
+				}
+				return d.title;
+			});
 
 		// Add priority indicators
 		node.append('circle')
@@ -219,11 +227,24 @@
 			.style('fill', '#6B7280')
 			.text((d: GraphNode) => `👍 ${d.votes}`);
 
-		// Add tooltips
+		// Add tooltips with better Thai formatting
 		node.append('title')
 			.text((d: GraphNode) => {
 				const feature = features.find(f => f.id === d.id);
-				return `${d.title}\n${t('category')}: ${t(d.category as any)}\n${t('priority')}: ${t(d.priority as any)}\n${t('status')}: ${t(d.status as any)}\n${t('votes')}: ${d.votes}${feature?.description ? '\n\n' + feature.description : ''}`;
+				const tooltip = [
+					d.title,
+					`${t('category')}: ${t(d.category as any)}`,
+					`${t('priority')}: ${t(d.priority as any)}`,
+					`${t('status')}: ${t(d.status as any)}`,
+					`${t('votes')}: ${d.votes} คะแนน`
+				];
+				
+				if (feature?.description) {
+					tooltip.push('');
+					tooltip.push(feature.description);
+				}
+				
+				return tooltip.join('\n');
 			});
 
 		// Update positions on simulation tick
