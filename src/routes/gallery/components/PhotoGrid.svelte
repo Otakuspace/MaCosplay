@@ -61,14 +61,7 @@
 <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 2xl:columns-5 gap-6 space-y-6">
 	{#each photos as photo (photo.id)}
 		<div 
-			class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-105 cursor-pointer overflow-hidden break-inside-avoid mb-6 border-2 hover-lift"
-			class:border-white/20={!batchMode && !selectedPhotos.has(photo.id)}
-			class:dark:border-gray-700/50={!batchMode && !selectedPhotos.has(photo.id)}
-			class:border-purple-500={batchMode && selectedPhotos.has(photo.id)}
-			class:bg-purple-50={batchMode && selectedPhotos.has(photo.id)}
-			class:dark:bg-purple-900/30={batchMode && selectedPhotos.has(photo.id)}
-			class:border-gray-300={batchMode && !selectedPhotos.has(photo.id)}
-			class:dark:border-gray-600={batchMode && !selectedPhotos.has(photo.id)}
+			class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 hover:scale-105 cursor-pointer overflow-hidden break-inside-avoid mb-6 border-2 hover-lift {!batchMode && !selectedPhotos.has(photo.id) ? 'border-white/20 dark:border-gray-700/50' : ''} {batchMode && selectedPhotos.has(photo.id) ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30' : ''} {batchMode && !selectedPhotos.has(photo.id) ? 'border-gray-300 dark:border-gray-600' : ''}"
 			on:click={() => handlePhotoClick(photo)}
 			role="button"
 			tabindex="0"
@@ -131,7 +124,7 @@
 							<!-- Edit Button -->
 							<button
 								class="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white transition-all duration-300 hover:bg-purple-500/70 hover:scale-110"
-								on:click={(e) => { e.stopPropagation(); handlePhotoClick(photo); }}"
+								on:click={(e) => { e.stopPropagation(); handlePhotoClick(photo); }}
 								title="Edit photo"
 							>
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
