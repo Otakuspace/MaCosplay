@@ -459,13 +459,18 @@
                 {#each filteredItems() as item}
                     <div class="product-card card-hover group animate-scale-in">
                         <div class="relative overflow-hidden">
-                            <img 
-                                src={`https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}?w=400&format=avif&quality=70`} 
-                                alt="{item.Name}" 
-                                class="product-image cursor-pointer" 
-                                loading="lazy"
+                            <button
+                                class="block w-full"
                                 on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
-                            />
+                                aria-label="View full size image of {item.Name}"
+                            >
+                                <img 
+                                    src={`https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}?w=400&format=avif&quality=70`} 
+                                    alt="{item.Name}" 
+                                    class="product-image" 
+                                    loading="lazy"
+                                />
+                            </button>
                             
                             <!-- Status overlay -->
                             <div class="absolute top-4 left-4">
@@ -551,11 +556,12 @@
                 <input type="hidden" name="id" bind:value={editingItem.id} />
                 <!-- Public Switch -->
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="isPublic">
                         <span class="label-text">เปิดให้ผู้อื่นมองเห็นสินค้า</span>
                     </label>
                     <input
                         type="checkbox"
+                        id="isPublic"
                         name="isPublic"
                         class="toggle"
                         bind:checked={editingItem.public}
@@ -564,18 +570,19 @@
                 </div>
                 <!-- Name -->
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="name">
                         <span class="label-text">ชื่อสินค้า</span>
                     </label>
-                    <input type="text" name="name" bind:value={editingItem.Name} class="input input-bordered" required />
+                    <input type="text" id="name" name="name" bind:value={editingItem.Name} class="input input-bordered" required />
                 </div>
 
                 <!-- Details -->
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="details">
                         <span class="label-text">รายละเอียดสินค้า</span>
                     </label>
                     <textarea 
+                        id="details"
                         name="details" 
                         bind:value={editingItem.Desc} 
                         class="textarea textarea-bordered" 
@@ -585,10 +592,10 @@
 
                 <!-- Size -->
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="size">
                         <span class="label-text">ขนาดเสื้อผ้า</span>
                     </label>
-                    <select name="size" bind:value={editingItem.Size} class="select select-bordered w-full" required>
+                    <select id="size" name="size" bind:value={editingItem.Size} class="select select-bordered w-full" required>
                         <option value="">เลือกขนาด</option>
                         <option value="S">S</option>
                         <option value="M">M</option>
@@ -600,10 +607,10 @@
 
                 <!-- Province -->
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="province">
                         <span class="label-text">จังหวัด</span>
                     </label>
-                    <select name="province" bind:value={editingItem.Province} class="select select-bordered w-full" required>
+                    <select id="province" name="province" bind:value={editingItem.Province} class="select select-bordered w-full" required>
                         <option value="">เลือกจังหวัด</option>
 							<option value="กระบี่">กระบี่</option>
 							<option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
@@ -686,9 +693,8 @@
 
                 <!-- Pricing Option Selection -->
                 <div class="form-control mb-4">
-                    <label class="label">
-                        <span class="label-text">เลือกตัวเลือกการตั้งราคา</span>
-                    </label>
+                    <fieldset>
+                        <legend class="label-text">เลือกตัวเลือกการตั้งราคา</legend>
                     <div class="flex items-center space-x-4">
                         <label class="flex items-center">
                             <input
@@ -710,33 +716,33 @@
                             />
                             <span class="ml-2">ใช้ราคาไพร และ เทส</span>
                         </label>
-                    </div>
+                    </fieldset>
                 </div>
 
                 <!-- Price -->
                 {#if pricingOption === 'price_only'}
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="price">
                         <span class="label-text">ราคา</span>
                     </label>
-                    <input type="number" name="price" bind:value={editingItem.price} class="input input-bordered" required />
+                    <input type="number" id="price" name="price" bind:value={editingItem.price} class="input input-bordered" required />
                 </div>
                 {/if}
 
                 <!-- Price Pri and Price Test -->
                 {#if pricingOption === 'price_pri_test'}
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="price_pri">
                         <span class="label-text">ราคาไพร</span>
                     </label>
-                    <input type="number" name="price_pri" bind:value={editingItem.price_pri} class="input input-bordered" required />
+                    <input type="number" id="price_pri" name="price_pri" bind:value={editingItem.price_pri} class="input input-bordered" required />
                 </div>
 
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="price_test">
                         <span class="label-text">ราคาเทส</span>
                     </label>
-                    <input type="number" name="price_test" bind:value={editingItem.price_test} class="input input-bordered" required />
+                    <input type="number" id="price_test" name="price_test" bind:value={editingItem.price_test} class="input input-bordered" required />
                 </div>
                 {/if}
 

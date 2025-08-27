@@ -269,13 +269,18 @@
 					<div class="product-card card-hover group animate-scale-in">
 						<div class="relative overflow-hidden">
 							{#if item.Image}
-								<img
-									src={getOptimizedImageUrl(item.id, item.Image)}
-									alt="{item.Name}"
-									class="product-image cursor-pointer"
-									loading="lazy"
+								<button
+									class="block w-full"
 									on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
-								/>
+									aria-label="View full size image of {item.Name}"
+								>
+									<img
+										src={getOptimizedImageUrl(item.id, item.Image)}
+										alt="{item.Name}"
+										class="product-image"
+										loading="lazy"
+									/>
+								</button>
 							{:else}
 								<img
 									src="/images/Example/Macosplay.png?w=400&format=webp"
@@ -396,6 +401,7 @@
 			<button 
 				class="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors duration-200"
 				on:click={() => (fullImage = null)}
+				aria-label="Close full image view"
 			>
 				<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -403,7 +409,7 @@
 			</button>
 			<img 
 				src={`${fullImage}?w=1200&format=webp&quality=90`} 
-				alt="Full image preview" 
+				alt="Full size product image" 
 				class="w-full h-auto max-h-[90vh] object-contain rounded-2xl shadow-large animate-scale-in" 
 			/>
 		</div>
@@ -420,6 +426,7 @@
 				<button 
 					class="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
 					on:click={() => detailItem = null}
+					aria-label="Close product details"
 				>
 					<svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -519,9 +526,7 @@
 		50% { transform: translateY(-10px); }
 	}
 
-	.animate-float {
-		animation: float 6s ease-in-out infinite;
-	}
+
 
 	/* Staggered animation delays for product cards */
 	.product-card:nth-child(1) { animation-delay: 0.1s; }
