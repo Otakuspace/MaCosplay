@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { FeatureRequest } from '../../../types/brainstorm';
+	import { t, getNestedTranslation } from '../../../lib/i18n';
 
 	interface Props {
 		feature: FeatureRequest;
@@ -33,13 +34,7 @@
 	}
 
 	function getCategoryIcon(category: string) {
-		switch (category) {
-			case 'ui': return '🎨';
-			case 'feature': return '✨';
-			case 'improvement': return '📈';
-			case 'bug': return '🐛';
-			default: return '💡';
-		}
+		return getNestedTranslation('categoryIcons', category);
 	}
 
 	function handleVote() {
@@ -57,7 +52,7 @@
 	}
 
 	function handleDelete() {
-		if (confirm('Are you sure you want to delete this feature request?')) {
+		if (confirm(t('deleteConfirmation'))) {
 			dispatch('delete', { id: feature.id });
 		}
 	}
@@ -72,9 +67,9 @@
 			<div class="flex items-center gap-2">
 				<span class="text-2xl">{getCategoryIcon(feature.category)}</span>
 				<div class="flex flex-col">
-					<span class="text-xs opacity-60">{feature.category.toUpperCase()}</span>
+					<span class="text-xs opacity-60">{t(feature.category as any).toUpperCase()}</span>
 					<span class="badge {getPriorityColor(feature.priority)} badge-xs">
-						{feature.priority}
+						{t(feature.priority as any)}
 					</span>
 				</div>
 			</div>
@@ -82,9 +77,9 @@
 			<button class="btn btn-ghost btn-xs" aria-label="Feature options menu">⋮</button>
 			<ul class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
 				<li><button onclick={() => showDetails = !showDetails}>
-					{showDetails ? 'Hide' : 'Show'} Details
+					{showDetails ? t('hideDetails') : t('showDetails')}
 				</button></li>
-				<li><button onclick={handleDelete} class="text-error">Delete</button></li>
+				<li><button onclick={handleDelete} class="text-error">{t('delete')}</button></li>
 			</ul>
 		</div>
 		</div>
@@ -102,12 +97,12 @@
 				value={feature.status}
 				onchange={(e) => handleStatusChange(e.currentTarget.value)}
 			>
-				<option value="requested">Requested</option>
-				<option value="in-review">In Review</option>
-				<option value="approved">Approved</option>
-				<option value="in-progress">In Progress</option>
-				<option value="completed">Completed</option>
-				<option value="rejected">Rejected</option>
+				<option value="requested">{t('requested')}</option>
+				<option value="in-review">{t('inReview')}</option>
+				<option value="approved">{t('approved')}</option>
+				<option value="in-progress">{t('inProgress')}</option>
+				<option value="completed">{t('completed')}</option>
+				<option value="rejected">{t('rejected')}</option>
 			</select>
 		</div>
 
@@ -132,7 +127,7 @@
 				>
 					👍 {feature.votes}
 				</button>
-				<span class="text-xs opacity-60">by {feature.author}</span>
+				<span class="text-xs opacity-60">{t('by')} {feature.author}</span>
 			</div>
 			<span class="text-xs opacity-60">
 				{new Date(feature.createdAt).toLocaleDateString()}
@@ -144,11 +139,11 @@
 			<div class="mt-4 pt-4 border-t border-base-300">
 				<div class="space-y-2 text-sm">
 					<div><strong>ID:</strong> {feature.id}</div>
-					<div><strong>Created:</strong> {new Date(feature.createdAt).toLocaleString()}</div>
-					<div><strong>Updated:</strong> {new Date(feature.updatedAt).toLocaleString()}</div>
+					<div><strong>{t('createdAt')}:</strong> {new Date(feature.createdAt).toLocaleString('th-TH')}</div>
+					<div><strong>{t('updatedAt')}:</strong> {new Date(feature.updatedAt).toLocaleString('th-TH')}</div>
 					{#if feature.tags.length > 0}
 						<div>
-							<strong>All Tags:</strong>
+							<strong>{t('allTags')}:</strong>
 							<div class="flex flex-wrap gap-1 mt-1">
 								{#each feature.tags as tag}
 									<span class="badge badge-outline badge-xs">{tag}</span>
