@@ -6,6 +6,9 @@
 
 	let { children, data } = $props();
 
+	let currentTheme = 'light';
+	let themeToggle: HTMLInputElement;
+
 	// Function to save theme preference
 	function saveThemePreference(theme: string) {
 		if (typeof window !== 'undefined') {
@@ -13,25 +16,59 @@
 		}
 	}
 
-	// Function to load theme preference
-	function loadThemePreference() {
+	// Function to get current theme
+	function getCurrentTheme(): string {
 		if (typeof window !== 'undefined') {
-			const savedTheme = localStorage.getItem('theme');
-			if (savedTheme) {
-				document.documentElement.setAttribute('data-theme', savedTheme);
+			return document.documentElement.getAttribute('data-theme') || 'light';
+		}
+		return 'light';
+	}
+
+	// Function to apply theme
+	function applyTheme(theme: string) {
+		if (typeof window !== 'undefined') {
+			document.documentElement.setAttribute('data-theme', theme);
+			currentTheme = theme;
+			
+			// Update toggle state without triggering event
+			if (themeToggle) {
+				themeToggle.checked = theme === 'dark';
 			}
 		}
 	}
 
-	// Call loadThemePreference on component mount
-	if (typeof window !== 'undefined') {
-		loadThemePreference();
-	}
+	// Initialize theme on mount
+	onMount(() => {
+		// Get the theme that was already set by the script in app.html
+		currentTheme = getCurrentTheme();
+		
+		// Update toggle state
+		if (themeToggle) {
+			themeToggle.checked = currentTheme === 'dark';
+		}
+
+		// Listen for system theme changes
+		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+		function handleSystemThemeChange(e: MediaQueryListEvent) {
+			// Only update if user hasn't set a preference
+			const savedTheme = localStorage.getItem('theme');
+			if (!savedTheme) {
+				const newTheme = e.matches ? 'dark' : 'light';
+				applyTheme(newTheme);
+			}
+		}
+		
+		mediaQuery.addEventListener('change', handleSystemThemeChange);
+		
+		return () => {
+			mediaQuery.removeEventListener('change', handleSystemThemeChange);
+		};
+	});
 
 	function toggleTheme(event: Event) {
 		const isChecked = (event.target as HTMLInputElement).checked;
 		const theme = isChecked ? 'dark' : 'light';
-		document.documentElement.setAttribute('data-theme', theme);
+		applyTheme(theme);
 		saveThemePreference(theme);
 	}
 
@@ -170,7 +207,7 @@
 
 <!-- Modern Navigation -->
 <div class="max-w-[120rem] mx-auto">
-	<nav class="bg-white/10 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 shadow-soft">
+	<nav class="bg-glass border-b border-primary sticky top-0 z-50 shadow-soft">
 		<div class="container mx-auto px-6">
 			<div class="flex items-center justify-between h-16">
 				<!-- Logo -->
@@ -182,27 +219,32 @@
 
 				<!-- Desktop Navigation -->
 				<div class="hidden lg:flex items-center space-x-8">
-					<a href="/shop" class="text-white/90 hover:text-blue-300 font-medium transition-colors duration-200">
+					<a href="/shop" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200">
 						ค้นหาชุดเช่า
 					</a>
-					<a href="/gallery" class="text-white/90 hover:text-purple-300 font-medium transition-colors duration-200">
+					<a href="/gallery" class="text-primary hover:text-purple-500 font-medium transition-colors duration-200">
 						🎭 Gallery
 					</a>
-					<a href="/pricing" class="text-white/90 hover:text-blue-300 font-medium transition-colors duration-200">
+					<a href="/pricing" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200">
 						อัพเกรด
 					</a>
-					<a href="/upscaler" class="text-white/90 hover:text-blue-300 font-medium transition-colors duration-200">
+					<a href="/upscaler" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200">
 						AI Upscale
 					</a>
 					
 					<!-- Theme Toggle -->
 					<label class="flex cursor-pointer items-center gap-2">
-						<svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-5 h-5 text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<circle cx="12" cy="12" r="5" />
 							<path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
 						</svg>
-						<input type="checkbox" value="dark" class="toggle toggle-sm" on:change={toggleTheme} />
-						<svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<input 
+							bind:this={themeToggle}
+							type="checkbox" 
+							class="toggle toggle-sm bg-primary border-primary" 
+							on:change={toggleTheme} 
+						/>
+						<svg class="w-5 h-5 text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
 						</svg>
 					</label>
@@ -212,35 +254,35 @@
 				<div class="flex items-center space-x-4">
 					{#if data.user}
 						<div class="relative group">
-							<button class="flex items-center space-x-2 bg-white/10 hover:bg-white/20 rounded-xl px-4 py-2 transition-colors duration-200">
+							<button class="flex items-center space-x-2 bg-secondary hover:bg-tertiary rounded-xl px-4 py-2 transition-colors duration-200">
 								<div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
 									{data.user.name?.charAt(0) || 'U'}
 								</div>
-								<span class="hidden md:block font-medium text-white">{data.user.name}</span>
-								<svg class="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<span class="hidden md:block font-medium text-primary">{data.user.name}</span>
+								<svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
 								</svg>
 							</button>
 							
 							<!-- Dropdown Menu -->
-							<div class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-large border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
+							<div class="absolute right-0 mt-2 w-56 bg-primary rounded-2xl shadow-large border border-primary opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-2">
 								<div class="p-2">
 									<a href="#" on:click|preventDefault={() => document.getElementById('profile_modal').showModal()} 
-									   class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl transition-colors duration-200">
-										<svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									   class="flex items-center px-4 py-3 text-primary hover:bg-secondary rounded-xl transition-colors duration-200">
+										<svg class="w-5 h-5 mr-3 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
 										</svg>
 										โปรไฟล์
 									</a>
-									<a href="/manage-access" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl transition-colors duration-200">
-										<svg class="w-5 h-5 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<a href="/manage-access" class="flex items-center px-4 py-3 text-primary hover:bg-secondary rounded-xl transition-colors duration-200">
+										<svg class="w-5 h-5 mr-3 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
 										</svg>
 										จัดการสิทธิ์
 									</a>
-									<hr class="my-2 border-gray-100">
+									<hr class="my-2 border-primary">
 									<form action="/logout" method="POST" class="w-full">
-										<button class="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors duration-200">
+										<button class="flex items-center w-full px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors duration-200">
 											<svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
 											</svg>
@@ -262,8 +304,8 @@
 					{/if}
 
 					<!-- Mobile Menu Button -->
-					<button class="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors duration-200">
-						<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<button class="lg:hidden p-2 hover:bg-secondary rounded-lg transition-colors duration-200">
+						<svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
 						</svg>
 					</button>
@@ -281,15 +323,15 @@
     class="drawer-overlay"
   ></label>
 
-  <div class="menu bg-base-200 min-h-full w-80 p-0">
+  <div class="menu bg-secondary min-h-full w-80 p-0">
     <div class="mx-7 mt-10">
-      <ul class="menu bg-base-200 gap-4">
+      <ul class="menu bg-secondary gap-4">
         {#each SIDEBAR as data, index}
           <li>
             {#if !data.shop}
               <a href={data.href} class="block">
                 {#if data.title}
-                  <span class="text-lg font-semibold">
+                  <span class="text-lg font-semibold text-primary">
                     {data.title}
                   </span>
                 {/if}
@@ -298,7 +340,7 @@
 
             {#if data.shop}
               <details open>
-                <summary class="font-semibold text-lg text-base-content cursor-pointer">
+                <summary class="font-semibold text-lg text-primary cursor-pointer">
                   Shop
                 </summary>
                 <ul>
@@ -306,7 +348,7 @@
                     <li>
                       <a
                         href={item.href}
-                        class="text-sm font-semibold text-base-content block py-3"
+                        class="text-sm font-semibold text-primary hover:text-secondary block py-3 transition-colors duration-200"
                       >
                         {item.title}
                       </a>

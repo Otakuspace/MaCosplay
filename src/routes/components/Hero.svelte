@@ -31,7 +31,6 @@
 		autoplay-delay="4000"
 		autoplay-disable-on-interaction="true"
 		class="relative lg:rounded-3xl bg-black overflow-hidden"
-		data-theme="light"
 		on:swiperprogress={onProgress}
 		on:swiperslidechange={onSlideChange}
 	>
