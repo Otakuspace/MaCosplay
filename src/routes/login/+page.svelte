@@ -1,6 +1,6 @@
 <script>
 	import { createEventDispatcher } from 'svelte';
-	export let form;
+	export const form = null;
 	const dispatch = createEventDispatcher();
 	let loading = false;
 	let errorMessage = '';

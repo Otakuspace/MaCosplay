@@ -43,7 +43,7 @@
 					width="800"
 					height="400"
 				/>
-				<div class="absolute inset-0 bg-base-content/30" />
+				<div class="absolute inset-0 bg-base-content/30"></div>
 				<div
 					class="absolute inset-0 left-5 md:left-10 lg:left-20 flex flex-col justify-center mt-10 md:mt-0"
 				>

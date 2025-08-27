@@ -70,9 +70,14 @@
 	function handleCancel() {
 		dispatch('cancel');
 	}
+
+	function handleFormSubmit(event) {
+		event.preventDefault();
+		handleSubmit();
+	}
 </script>
 
-<form onsubmit|preventDefault={handleSubmit} class="space-y-4">
+<form onsubmit={handleFormSubmit} class="space-y-4">
 	<!-- Title -->
 	<div class="form-control">
 		<label class="label" for="title">
