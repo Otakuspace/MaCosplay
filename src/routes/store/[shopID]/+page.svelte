@@ -716,27 +716,27 @@
                 <!-- Price -->
                 {#if pricingOption === 'price_only'}
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="price-input">
                         <span class="label-text">ราคา</span>
                     </label>
-                    <input type="number" name="price" bind:value={editingItem.price} class="input input-bordered" required />
+                    <input id="price-input" type="number" name="price" bind:value={editingItem.price} class="input input-bordered" required />
                 </div>
                 {/if}
 
                 <!-- Price Pri and Price Test -->
                 {#if pricingOption === 'price_pri_test'}
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="price-pri-input">
                         <span class="label-text">ราคาไพร</span>
                     </label>
-                    <input type="number" name="price_pri" bind:value={editingItem.price_pri} class="input input-bordered" required />
+                    <input id="price-pri-input" type="number" name="price_pri" bind:value={editingItem.price_pri} class="input input-bordered" required />
                 </div>
 
                 <div class="form-control mb-4">
-                    <label class="label">
+                    <label class="label" for="price-test-input">
                         <span class="label-text">ราคาเทส</span>
                     </label>
-                    <input type="number" name="price_test" bind:value={editingItem.price_test} class="input input-bordered" required />
+                    <input id="price-test-input" type="number" name="price_test" bind:value={editingItem.price_test} class="input input-bordered" required />
                 </div>
                 {/if}
 
