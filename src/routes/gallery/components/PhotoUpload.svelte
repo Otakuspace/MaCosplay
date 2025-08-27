@@ -121,10 +121,9 @@
 			let imageUrl, thumbnailUrl;
 			
 			if (selectedFile) {
-				// In a real app, you would upload to a server here
-				// For now, we'll create a local URL
-				imageUrl = URL.createObjectURL(selectedFile);
-				thumbnailUrl = imageUrl; // Using same URL for demo
+				// Convert to base64 for local storage (private gallery)
+				imageUrl = await convertToBase64(selectedFile);
+				thumbnailUrl = await createThumbnail(selectedFile);
 			} else if (isEditing && photo) {
 				// Keep existing image URLs when editing without changing image
 				imageUrl = photo.imageUrl;
@@ -162,6 +161,52 @@
 
 	function addSuggestion(suggestion: string) {
 		series = suggestion;
+	}
+
+	// Convert file to base64 for local storage
+	function convertToBase64(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = () => resolve(reader.result as string);
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	}
+
+	// Create thumbnail for better performance
+	function createThumbnail(file: File): Promise<string> {
+		return new Promise((resolve, reject) => {
+			const canvas = document.createElement('canvas');
+			const ctx = canvas.getContext('2d');
+			const img = new Image();
+			
+			img.onload = () => {
+				// Calculate thumbnail dimensions (max 300px width/height)
+				const maxSize = 300;
+				let { width, height } = img;
+				
+				if (width > height) {
+					if (width > maxSize) {
+						height = (height * maxSize) / width;
+						width = maxSize;
+					}
+				} else {
+					if (height > maxSize) {
+						width = (width * maxSize) / height;
+						height = maxSize;
+					}
+				}
+				
+				canvas.width = width;
+				canvas.height = height;
+				
+				ctx?.drawImage(img, 0, 0, width, height);
+				resolve(canvas.toDataURL('image/jpeg', 0.8));
+			};
+			
+			img.onerror = reject;
+			img.src = URL.createObjectURL(file);
+		});
 	}
 
 	// Handle escape key
