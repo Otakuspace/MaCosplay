@@ -170,7 +170,7 @@
 
 <!-- Modern Navigation -->
 <div class="max-w-[120rem] mx-auto">
-	<nav class="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-50 shadow-soft">
+	<nav class="bg-white/10 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50 shadow-soft">
 		<div class="container mx-auto px-6">
 			<div class="flex items-center justify-between h-16">
 				<!-- Logo -->
@@ -182,27 +182,27 @@
 
 				<!-- Desktop Navigation -->
 				<div class="hidden lg:flex items-center space-x-8">
-					<a href="/shop" class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
+					<a href="/shop" class="text-white/90 hover:text-blue-300 font-medium transition-colors duration-200">
 						ค้นหาชุดเช่า
 					</a>
-					<a href="/gallery" class="text-gray-700 hover:text-purple-600 font-medium transition-colors duration-200">
+					<a href="/gallery" class="text-white/90 hover:text-purple-300 font-medium transition-colors duration-200">
 						🎭 Gallery
 					</a>
-					<a href="/pricing" class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
+					<a href="/pricing" class="text-white/90 hover:text-blue-300 font-medium transition-colors duration-200">
 						อัพเกรด
 					</a>
-					<a href="/upscaler" class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200">
+					<a href="/upscaler" class="text-white/90 hover:text-blue-300 font-medium transition-colors duration-200">
 						AI Upscale
 					</a>
 					
 					<!-- Theme Toggle -->
 					<label class="flex cursor-pointer items-center gap-2">
-						<svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<circle cx="12" cy="12" r="5" />
 							<path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
 						</svg>
 						<input type="checkbox" value="dark" class="toggle toggle-sm" on:change={toggleTheme} />
-						<svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
 						</svg>
 					</label>
@@ -212,12 +212,12 @@
 				<div class="flex items-center space-x-4">
 					{#if data.user}
 						<div class="relative group">
-							<button class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-xl px-4 py-2 transition-colors duration-200">
+							<button class="flex items-center space-x-2 bg-white/10 hover:bg-white/20 rounded-xl px-4 py-2 transition-colors duration-200">
 								<div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
 									{data.user.name?.charAt(0) || 'U'}
 								</div>
-								<span class="hidden md:block font-medium text-gray-700">{data.user.name}</span>
-								<svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<span class="hidden md:block font-medium text-white">{data.user.name}</span>
+								<svg class="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
 								</svg>
 							</button>
@@ -262,8 +262,8 @@
 					{/if}
 
 					<!-- Mobile Menu Button -->
-					<button class="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-						<svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<button class="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors duration-200">
+						<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
 						</svg>
 					</button>

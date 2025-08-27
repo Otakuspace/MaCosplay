@@ -9,19 +9,47 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b1e5c 25%, #581c87 50%, #7c2d92 75%, #9333ea 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
 body {
   font-family: 'Inter', 'Prompt', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  background-color: #fafafa;
-  color: #1a1a1a;
+  background: transparent;
+  min-height: 100vh;
+  color: #f8fafc;
+}
+
+/* Ensure the gradient covers the entire viewport */
+#app, [data-sveltekit-preload-data] {
+  min-height: 100vh;
+}
+
+/* Additional utility classes for dark theme */
+.text-light {
+  color: #f8fafc;
+}
+
+.bg-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.border-light {
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Custom components */
 .glass-effect {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .gradient-primary {
@@ -50,7 +78,7 @@ body {
 }
 
 .btn-secondary-modern {
-  @apply bg-white text-gray-700 hover:text-gray-900 font-medium px-6 py-3 rounded-xl transition-all duration-300 border border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md;
+  @apply bg-white/10 text-white hover:bg-white/20 font-medium px-6 py-3 rounded-xl transition-all duration-300 border border-white/20 hover:border-white/30 shadow-sm hover:shadow-md backdrop-blur-sm;
 }
 
 .input-modern {
