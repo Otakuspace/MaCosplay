@@ -4,7 +4,7 @@
 
 <div>
   <!-- Mobile Carousel -->
-  <div class="mt-6 sm:mt-8 md:mt-10 gap-3 sm:gap-4 flex carousel xl:hidden overflow-x-auto pb-4">
+  <div class="mt-6 sm:mt-8 md:mt-10 gap-3 sm:gap-4 flex carousel xl:hidden overflow-x-auto pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
     {#each categories.filter(category => category.featured) as category, index (index)}
       <div class="relative carousel-item flex-shrink-0">
         <figure class="w-64 sm:w-72 md:w-80">
@@ -45,7 +45,7 @@
   </div>
 
   <!-- Desktop Grid -->
-  <div class="mt-10 hidden xl:grid xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+  <div class="mt-10 hidden xl:grid xl:grid-cols-3 2xl:grid-cols-4 gap-5 max-w-[120rem] mx-auto">
     {#each categories.filter(category => category.featured) as category, index (index)}
       <div class="relative">
         <figure>

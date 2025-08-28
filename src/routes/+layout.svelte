@@ -220,7 +220,7 @@
 <!-- Modern Navigation -->
 <div class="max-w-[120rem] mx-auto">
 	<nav class="bg-glass border-b border-primary sticky top-0 z-50 shadow-soft">
-		<div class="container mx-auto px-4 sm:px-6">
+		<div class="mx-auto px-4 sm:px-6 lg:px-8">
 			<div class="flex items-center justify-between h-16">
 				<!-- Logo -->
 				<div class="flex items-center">
@@ -230,7 +230,7 @@
 				</div>
 
 				<!-- Desktop Navigation -->
-				<div class="hidden lg:flex items-center space-x-8">
+				<div class="hidden lg:flex items-center gap-6 xl:gap-8">
 					<a href="/shop" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200">
 						ค้นหาชุดเช่า
 					</a>
@@ -270,7 +270,7 @@
 					{#if isMobileMenuOpen}
 						<div class="fixed inset-0 top-16 bg-black/50 z-40" on:click={closeMobileMenu}>
 							<div class="bg-primary border-b border-primary shadow-lg">
-								<div class="container mx-auto px-4 py-6">
+								<div class="mx-auto px-4 sm:px-6 lg:px-8 py-6">
 									<div class="flex flex-col space-y-6">
 										<a href="/shop" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-3 text-lg" on:click={closeMobileMenu}>
 											ค้นหาชุดเช่า
