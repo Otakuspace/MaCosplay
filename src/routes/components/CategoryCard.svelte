@@ -4,27 +4,27 @@
 
 <div>
   <!-- Mobile Carousel -->
-  <div class="mt-6 sm:mt-8 md:mt-10 gap-3 sm:gap-4 flex carousel xl:hidden overflow-x-auto pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+  <div class="mt-4 sm:mt-8 md:mt-10 gap-3 sm:gap-4 flex carousel xl:hidden overflow-x-auto pb-3 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
     {#each categories.filter(category => category.featured) as category, index (index)}
       <div class="relative carousel-item flex-shrink-0">
-        <figure class="w-64 sm:w-72 md:w-80">
+        <figure class="w-60 sm:w-72 md:w-80">
           <img
             src={category.image}
             alt={category.name}
             width="300"
             height="200"
-            class="w-full h-40 sm:h-44 md:h-48 object-cover rounded-2xl sm:rounded-3xl"
+            class="w-full h-36 sm:h-44 md:h-48 object-cover rounded-2xl sm:rounded-3xl"
             loading="lazy"
           />
         </figure>
-        <div class="absolute w-full bottom-6 sm:bottom-8 md:bottom-10 text-base-100 flex flex-col items-center justify-center px-4">
+        <div class="absolute w-full bottom-5 sm:bottom-8 md:bottom-10 text-base-100 flex flex-col items-center justify-center px-4">
           <a
             href={`/shop`}
             aria-label={`Go to ${category.name}`}
             class="w-full"
           >
             <button
-              class="btn btn-sm sm:btn-md rounded-full flex items-center justify-center w-full max-w-48 text-sm sm:text-base"
+              class="btn btn-xs sm:btn-md rounded-full flex items-center justify-center w-full max-w-48 text-sm sm:text-base"
               aria-label={category.name}
             >
               {category.name}

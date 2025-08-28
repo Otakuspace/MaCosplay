@@ -190,6 +190,17 @@ body {
   border-color: var(--border-secondary);
 }
 
+/* Responsive adjustments for custom buttons on small screens */
+@media (max-width: 640px) {
+  .btn-primary-modern,
+  .btn-secondary-modern {
+    padding: 0.5rem 0.875rem; /* Reduce padding for mobile */
+    font-size: 0.875rem;      /* text-sm */
+    line-height: 1.25rem;
+    border-radius: 0.75rem;
+  }
+}
+
 .input-modern {
   background-color: var(--bg-primary);
   border: 1px solid var(--border-primary);
