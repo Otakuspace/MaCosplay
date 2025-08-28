@@ -5,6 +5,9 @@
 	import { SIDEBAR } from './data/sidebar'; // Adjust the import path as necessary
 
 	let { children, data } = $props();
+	
+	// Mobile menu state
+	let isMobileMenuOpen = false;
 
 	let currentTheme = 'light';
 	let themeToggle: HTMLInputElement;
@@ -70,6 +73,15 @@
 		const theme = isChecked ? 'dark' : 'light';
 		applyTheme(theme);
 		saveThemePreference(theme);
+	}
+	
+	// Mobile menu functions
+	function toggleMobileMenu() {
+		isMobileMenuOpen = !isMobileMenuOpen;
+	}
+	
+	function closeMobileMenu() {
+		isMobileMenuOpen = false;
 	}
 
 	let profileName = '';
@@ -253,6 +265,53 @@
 					</label>
 				</div>
 
+				<!-- Mobile Navigation -->
+				<div class="lg:hidden">
+					{#if isMobileMenuOpen}
+						<div class="absolute top-16 left-0 right-0 bg-primary border-b border-primary shadow-lg z-40">
+							<div class="container mx-auto px-6 py-4">
+								<div class="flex flex-col space-y-4">
+									<a href="/shop" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
+										ค้นหาชุดเช่า
+									</a>
+									<a href="/gallery" class="text-primary hover:text-purple-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
+										🎭 Gallery
+									</a>
+									<a href="/brainstorm" class="text-primary hover:text-green-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
+										🧠 Brainstorm
+									</a>
+									<a href="/pricing" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
+										อัพเกรด
+									</a>
+									<a href="/upscaler" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
+										AI Upscale
+									</a>
+									
+									<!-- Mobile Theme Toggle -->
+									<div class="flex items-center justify-between py-2 border-t border-primary/20 mt-2 pt-4">
+										<span class="text-primary font-medium">ธีม</span>
+										<label class="flex cursor-pointer items-center gap-2">
+											<svg class="w-5 h-5 text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<circle cx="12" cy="12" r="5" />
+												<path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
+											</svg>
+											<input 
+												type="checkbox" 
+												class="toggle toggle-sm bg-primary border-primary" 
+												checked={currentTheme === 'dark'}
+												on:change={toggleTheme} 
+											/>
+											<svg class="w-5 h-5 text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+											</svg>
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					{/if}
+				</div>
+
 				<!-- User Menu -->
 				<div class="flex items-center space-x-4">
 					{#if data.user}
@@ -307,10 +366,16 @@
 					{/if}
 
 					<!-- Mobile Menu Button -->
-					<button class="lg:hidden p-2 hover:bg-secondary rounded-lg transition-colors duration-200">
-						<svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-						</svg>
+					<button class="lg:hidden p-2 hover:bg-secondary rounded-lg transition-colors duration-200" on:click={toggleMobileMenu}>
+						{#if isMobileMenuOpen}
+							<svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+							</svg>
+						{:else}
+							<svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+							</svg>
+						{/if}
 					</button>
 				</div>
 			</div>
