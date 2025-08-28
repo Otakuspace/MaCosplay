@@ -4,8 +4,8 @@
 
 
 
-<div class="py-10 lg:px-14 px-5">
-    <h2 class="text-2xl lg:text-4xl font-bold text-white">หาชุดเช่าตามหมวดหมู่</h2>
+<div class="py-6 sm:py-8 md:py-10 px-4 sm:px-6 md:px-8 lg:px-14">
+    <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">หาชุดเช่าตามหมวดหมู่</h2>
     <CategoryCard />
 </div>
 

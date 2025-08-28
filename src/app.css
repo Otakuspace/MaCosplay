@@ -500,3 +500,93 @@ svg text {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  /* Improve touch targets for mobile */
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
+  
+  /* Better text readability on mobile */
+  body {
+    font-size: 16px; /* Prevent zoom on iOS */
+    line-height: 1.5;
+  }
+  
+  /* Improve Thai text rendering on mobile */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+  
+  /* Better spacing for mobile navigation */
+  .mobile-nav-item {
+    padding: 1rem;
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+  
+  /* Carousel improvements */
+  .carousel {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .carousel-item {
+    scroll-snap-align: start;
+  }
+  
+  /* Better modal handling on mobile */
+  .modal-box {
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
+  }
+  
+  /* Improve form inputs on mobile */
+  input, textarea, select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 0.75rem;
+  }
+  
+  /* Better button spacing on mobile */
+  .btn + .btn {
+    margin-left: 0.5rem;
+  }
+  
+  /* Improve card layouts on mobile */
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  /* Better hero text scaling */
+  .hero h1 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    line-height: 1.1;
+  }
+  
+  .hero p {
+    font-size: clamp(0.875rem, 3vw, 1.125rem);
+    line-height: 1.4;
+  }
+}
+
+/* Tablet-specific improvements */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .btn {
+    min-height: 48px;
+    padding: 0.875rem 1.25rem;
+  }
+  
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+  }
+  
+  .hero p {
+    font-size: clamp(1rem, 3.5vw, 1.25rem);
+  }
+}

@@ -220,7 +220,7 @@
 <!-- Modern Navigation -->
 <div class="max-w-[120rem] mx-auto">
 	<nav class="bg-glass border-b border-primary sticky top-0 z-50 shadow-soft">
-		<div class="container mx-auto px-6">
+		<div class="container mx-auto px-4 sm:px-6">
 			<div class="flex items-center justify-between h-16">
 				<!-- Logo -->
 				<div class="flex items-center">
@@ -268,43 +268,45 @@
 				<!-- Mobile Navigation -->
 				<div class="lg:hidden">
 					{#if isMobileMenuOpen}
-						<div class="absolute top-16 left-0 right-0 bg-primary border-b border-primary shadow-lg z-40">
-							<div class="container mx-auto px-6 py-4">
-								<div class="flex flex-col space-y-4">
-									<a href="/shop" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
-										ค้นหาชุดเช่า
-									</a>
-									<a href="/gallery" class="text-primary hover:text-purple-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
-										🎭 Gallery
-									</a>
-									<a href="/brainstorm" class="text-primary hover:text-green-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
-										🧠 Brainstorm
-									</a>
-									<a href="/pricing" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
-										อัพเกรด
-									</a>
-									<a href="/upscaler" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-2" on:click={closeMobileMenu}>
-										AI Upscale
-									</a>
-									
-									<!-- Mobile Theme Toggle -->
-									<div class="flex items-center justify-between py-2 border-t border-primary/20 mt-2 pt-4">
-										<span class="text-primary font-medium">ธีม</span>
-										<label class="flex cursor-pointer items-center gap-2">
-											<svg class="w-5 h-5 text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<circle cx="12" cy="12" r="5" />
-												<path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
-											</svg>
-											<input 
-												type="checkbox" 
-												class="toggle toggle-sm bg-primary border-primary" 
-												checked={currentTheme === 'dark'}
-												on:change={toggleTheme} 
-											/>
-											<svg class="w-5 h-5 text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-											</svg>
-										</label>
+						<div class="fixed inset-0 top-16 bg-black/50 z-40" on:click={closeMobileMenu}>
+							<div class="bg-primary border-b border-primary shadow-lg">
+								<div class="container mx-auto px-4 py-6">
+									<div class="flex flex-col space-y-6">
+										<a href="/shop" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-3 text-lg" on:click={closeMobileMenu}>
+											ค้นหาชุดเช่า
+										</a>
+										<a href="/gallery" class="text-primary hover:text-purple-500 font-medium transition-colors duration-200 py-3 text-lg" on:click={closeMobileMenu}>
+											🎭 Gallery
+										</a>
+										<a href="/brainstorm" class="text-primary hover:text-green-500 font-medium transition-colors duration-200 py-3 text-lg" on:click={closeMobileMenu}>
+											🧠 Brainstorm
+										</a>
+										<a href="/pricing" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-3 text-lg" on:click={closeMobileMenu}>
+											อัพเกรด
+										</a>
+										<a href="/upscaler" class="text-primary hover:text-blue-500 font-medium transition-colors duration-200 py-3 text-lg" on:click={closeMobileMenu}>
+											AI Upscale
+										</a>
+										
+										<!-- Mobile Theme Toggle -->
+										<div class="flex items-center justify-between py-3 border-t border-primary/20 mt-4 pt-6">
+											<span class="text-primary font-medium text-lg">ธีม</span>
+											<label class="flex cursor-pointer items-center gap-3">
+												<svg class="w-6 h-6 text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<circle cx="12" cy="12" r="5" />
+													<path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
+												</svg>
+												<input 
+													type="checkbox" 
+													class="toggle toggle-md bg-primary border-primary" 
+													checked={currentTheme === 'dark'}
+													on:change={toggleTheme} 
+												/>
+												<svg class="w-6 h-6 text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+												</svg>
+											</label>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -313,14 +315,14 @@
 				</div>
 
 				<!-- User Menu -->
-				<div class="flex items-center space-x-4">
+				<div class="flex items-center space-x-2 sm:space-x-4">
 					{#if data.user}
 						<div class="relative group">
-							<button class="flex items-center space-x-2 bg-secondary hover:bg-tertiary rounded-xl px-4 py-2 transition-colors duration-200">
+							<button class="flex items-center space-x-2 bg-secondary hover:bg-tertiary rounded-xl px-3 sm:px-4 py-2 transition-colors duration-200">
 								<div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
 									{data.user.name?.charAt(0) || 'U'}
 								</div>
-								<span class="hidden md:block font-medium text-primary">{data.user.name}</span>
+								<span class="hidden sm:block font-medium text-primary">{data.user.name}</span>
 								<svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
 								</svg>
@@ -355,11 +357,11 @@
 							</div>
 						</div>
 					{:else}
-						<div class="flex items-center space-x-3">
-							<a href="/login" class="btn-secondary-modern">
+						<div class="flex items-center space-x-2 sm:space-x-3">
+							<a href="/login" class="btn-secondary-modern text-sm sm:text-base px-3 sm:px-4">
 								เข้าสู่ระบบ
 							</a>
-							<a href="/register" class="btn-primary-modern">
+							<a href="/register" class="btn-primary-modern text-sm sm:text-base px-3 sm:px-4">
 								สมัครสมาชิก
 							</a>
 						</div>
