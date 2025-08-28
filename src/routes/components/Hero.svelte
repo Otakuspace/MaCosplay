@@ -20,7 +20,7 @@
 	};
 </script>
 
-<div class="py-2 sm:py-3 lg:py-5 max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="py-1 sm:py-3 lg:py-5 max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
 	<swiper-container
 		slides-per-view="1"
 		navigation-prev-el=".swiper-button-prev-hero"
@@ -45,25 +45,25 @@
 				/>
 				<div class="absolute inset-0 bg-base-content/30" />
 				<div class="absolute inset-0 flex items-center">
-					<div class="w-full max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
+					<div class="w-full max-w-[120rem] mx-auto px-3 sm:px-6 lg:px-8">
 						<div class="flex flex-col mt-8 sm:mt-10 md:mt-0">
 						<!-- <div class="badge badge-sm font-black italic mb-4 rounded-full">
 							GET UPTO 50% OFF SHOP NOW
 						</div> -->
 						<h1
-							class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[4rem] font-extrabold text-base-100 max-w-xs sm:max-w-sm md:max-w-xl lg:max-w-2xl leading-tight"
+							class="text-xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[4rem] font-extrabold text-base-100 max-w-xs sm:max-w-sm md:max-w-xl lg:max-w-2xl leading-tight"
 						>
 							{data.title}
 						</h1>
 						<p
-							class="text-base-100/80 mt-3 sm:mt-4 md:mt-5 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl text-xs sm:text-sm md:text-base lg:text-lg"
+							class="text-base-100/80 mt-2 sm:mt-4 md:mt-5 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl text-xs sm:text-sm md:text-base lg:text-lg"
 						>
 							{data.desc}
 						</p>
 					</div>
 					<div class="flex flex-col sm:flex-row md:flex-row mt-4 sm:mt-6 md:mt-8 lg:mt-10 gap-3 sm:gap-4">
 						<a
-							class="w-full sm:w-32 md:w-40 lg:w-52 btn btn-sm sm:btn-md rounded-full flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
+							class="w-auto sm:w-32 md:w-40 lg:w-52 btn btn-sm sm:btn-md rounded-full flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base px-4 sm:px-5 md:px-6"
 							href="/upscaler"
 						>
 							AI Upscale
@@ -79,7 +79,7 @@
 							</svg>
 						</a>
 						<a
-							class="w-full sm:w-32 md:w-40 lg:w-52 btn btn-sm sm:btn-md rounded-full flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
+							class="w-auto sm:w-32 md:w-40 lg:w-52 btn btn-sm sm:btn-md rounded-full flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base px-4 sm:px-5 md:px-6"
 							href="/manage-store"
 						>
 							เปิดร้านค้า
@@ -95,7 +95,7 @@
 							</svg>
 						</a>
 						<a
-							class="w-full sm:w-32 md:w-40 lg:w-52 btn btn-sm sm:btn-md rounded-full flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base"
+							class="w-auto sm:w-32 md:w-40 lg:w-52 btn btn-sm sm:btn-md rounded-full flex items-center justify-center gap-2 text-xs sm:text-sm md:text-base px-4 sm:px-5 md:px-6"
 							href="/shop"
 						>
 							หาชุดเช่า
