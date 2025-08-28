@@ -20,7 +20,7 @@
 	};
 </script>
 
-<div class="py-2 px-2 sm:py-3 sm:px-4 lg:py-5 lg:px-14">
+<div class="py-2 sm:py-3 lg:py-5 max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
 	<swiper-container
 		slides-per-view="1"
 		navigation-prev-el=".swiper-button-prev-hero"
@@ -44,10 +44,9 @@
 					height="400"
 				/>
 				<div class="absolute inset-0 bg-base-content/30" />
-				<div
-					class="absolute inset-0 left-4 sm:left-6 md:left-10 lg:left-20 flex flex-col justify-center mt-8 sm:mt-10 md:mt-0"
-				>
-					<div class="flex flex-col">
+				<div class="absolute inset-0 flex items-center">
+					<div class="w-full max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
+						<div class="flex flex-col mt-8 sm:mt-10 md:mt-0">
 						<!-- <div class="badge badge-sm font-black italic mb-4 rounded-full">
 							GET UPTO 50% OFF SHOP NOW
 						</div> -->
@@ -111,6 +110,7 @@
 								<path d="M7 7h8.586L5.293 17.293l1.414 1.414L17 8.414V17h2V5H7v2z" />
 							</svg>
 						</a>
+						</div>
 					</div>
 				</div>
 			</swiper-slide>

@@ -46,12 +46,12 @@
 	});
 </script>
 
-<div class="flex flex-col lg:flex-row gap-10 {center ? 'place-content-center' : ''} flex-wrap">
+<div class="flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-10 {center ? 'place-content-center' : ''} flex-wrap max-w-[120rem] mx-auto px-4 sm:px-6 lg:px-8">
 	{#each packages as plan}
 		<div
 			class="flex-none card card-bordered {plan.name === highlightedPlanId
 				? 'border-primary'
-				: 'border-gray-200'} shadow-xl flex-1 flex-grow min-w-[260px] max-w-[310px] p-6"
+				: 'border-gray-200'} shadow-xl flex-1 min-w-[260px] sm:min-w-[280px] md:min-w-[300px] max-w-[320px] p-5 sm:p-6"
 		>
 			<div class="flex flex-col h-full">
 				<div class="text-xl font-bold">{plan.name}</div>
