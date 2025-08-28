@@ -126,12 +126,12 @@
 </section>
 
 <!-- Enhanced Filter Section -->
-<section class="bg-white shadow-soft border-b border-gray-100 sticky top-0 z-40">
-	<div class="container mx-auto px-6 py-6">
-		<div class="flex flex-wrap gap-4 items-center justify-between">
-			<div class="flex flex-wrap gap-4 flex-1">
-				<div class="relative">
-					<select class="select-modern min-w-[200px]" bind:value={selectedProvince}>
+<section class="bg-white shadow-soft border-b border-gray-100 sticky top-16 z-40">
+	<div class="container mx-auto px-4 md:px-6 py-4 md:py-6">
+		<div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+			<div class="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 flex-1 w-full md:w-auto">
+				<div class="relative w-full sm:w-auto">
+					<select class="select-modern w-full sm:min-w-[180px] md:min-w-[200px]" bind:value={selectedProvince}>
 						<option value="">เลือกจังหวัด</option>
 						<option value="กระบี่">กระบี่</option>
 							<option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
@@ -212,8 +212,8 @@
 					</select>
 				</div>
 
-				<div class="relative">
-					<select class="select-modern min-w-[150px]" bind:value={selectedSize}>
+				<div class="relative w-full sm:w-auto">
+					<select class="select-modern w-full sm:min-w-[120px] md:min-w-[150px]" bind:value={selectedSize}>
 						<option value="">เลือกขนาด</option>
 						<option value="S">S</option>
 						<option value="M">M</option>
@@ -223,8 +223,8 @@
 					</select>
 				</div>
 
-				<div class="relative">
-					<select class="select-modern min-w-[180px]" bind:value={selectedStatus}>
+				<div class="relative w-full sm:w-auto">
+					<select class="select-modern w-full sm:min-w-[150px] md:min-w-[180px]" bind:value={selectedStatus}>
 						<option value="">เลือกสถานะ</option>
 						<option value="พร้อมให้เช่า">พร้อมให้เช่า</option>
 						<option value="กำลังถูกเช่า">กำลังถูกเช่า</option>
@@ -233,7 +233,7 @@
 				</div>
 			</div>
 
-			<div class="flex gap-3">
+			<div class="flex flex-col sm:flex-row gap-2 md:gap-3 w-full md:w-auto">
 				<button class="btn-secondary-modern" on:click={resetFilters}>
 					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -252,18 +252,18 @@
 </section>
 
 <!-- Modern Product Showcase -->
-<section class="py-16 bg-gray-50">
-	<div class="container mx-auto px-6">
-		<div class="text-center mb-12">
-			<h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+<section class="py-8 md:py-16 bg-gray-50">
+	<div class="container mx-auto px-4 md:px-6">
+		<div class="text-center mb-8 md:mb-12">
+			<h2 class="text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
 				ชุดเช่าคุณภาพสูง
 			</h2>
-			<p class="text-xl text-gray-600 max-w-2xl mx-auto">
+			<p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
 				เลือกจากคอลเลกชันชุดคอสเพลย์และวิกผมคุณภาพพรีเมียมจากร้านค้าที่ได้รับการรับรอง
 			</p>
 		</div>
 
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-h-none">
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 max-h-none">
 			{#if filteredItems().length > 0}
 				{#each filteredItems() as item}
 					<div class="product-card card-hover group animate-scale-in">
@@ -305,21 +305,21 @@
 							</div>
 						</div>
 
-						<div class="p-6">
-							<h3 class="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
+						<div class="p-4 md:p-6">
+							<h3 class="font-semibold text-base md:text-lg text-gray-900 mb-2 line-clamp-2">
 								{item.Name}
 							</h3>
 							
-							<p class="text-sm text-gray-500 mb-3">
+							<p class="text-xs md:text-sm text-gray-500 mb-3">
 								{limitText(item.expand?.userStore?.Name || '', 25)}
 							</p>
 
 							<div class="flex items-center justify-between mb-4">
-								<div class="text-2xl font-bold text-gray-900">
+								<div class="text-xl md:text-2xl font-bold text-gray-900">
 									{#if item.price == 0}
 										<div class="flex flex-col">
-											<span class="text-lg">฿{item.price_pri.toLocaleString()}</span>
-											<span class="text-sm text-gray-500">/ ฿{item.price_test.toLocaleString()}</span>
+											<span class="text-base md:text-lg">฿{item.price_pri.toLocaleString()}</span>
+											<span class="text-xs md:text-sm text-gray-500">/ ฿{item.price_test.toLocaleString()}</span>
 										</div>
 									{:else}
 										฿{item.price.toLocaleString()}
@@ -328,11 +328,11 @@
 							</div>
 
 							<button 
-								class="w-full btn-primary-modern group-hover:shadow-xl"
+								class="w-full btn-primary-modern group-hover:shadow-xl text-sm md:text-base"
 								on:click={() => openDetailModal(item)}
 							>
 								ดูรายละเอียด
-								<svg class="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<svg class="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
 								</svg>
 							</button>

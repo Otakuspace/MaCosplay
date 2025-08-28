@@ -347,14 +347,14 @@
 </svelte:head>
 
 <!-- Hero Section -->
-<section class="hero-gradient min-h-[70vh] flex items-center justify-center relative overflow-hidden">
+<section class="hero-gradient min-h-[50vh] md:min-h-[70vh] flex items-center justify-center relative overflow-hidden">
 	<div class="absolute inset-0 bg-black opacity-20"></div>
 	<!-- Floating elements for visual interest -->
 	<div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
 	<div class="absolute bottom-20 right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
 	<div class="absolute top-1/2 left-1/4 w-16 h-16 bg-white/15 rounded-full blur-lg animate-pulse delay-500"></div>
 	
-	<div class="container mx-auto px-6 relative z-10 text-center text-white">
+	<div class="container mx-auto px-4 md:px-6 relative z-10 text-center text-white">
 		<div class="mb-6">
 			<div class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-full mb-4 animate-pulse">
 				<svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -362,10 +362,10 @@
 				</svg>
 			</div>
 		</div>
-		<h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
+		<h1 class="text-3xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6 animate-fade-in">
 			🎭 Cosplay Gallery
 		</h1>
-		<p class="text-xl md:text-2xl mb-8 opacity-90 animate-slide-up max-w-3xl mx-auto">
+		<p class="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 opacity-90 animate-slide-up max-w-3xl mx-auto px-4">
 			Your personal cosplay photo gallery with professional editing tools and AI-powered enhancements
 		</p>
 		<div class="flex items-center justify-center gap-2 mb-6">
@@ -400,43 +400,43 @@
 
 <!-- Feature Highlights Section -->
 <section class="bg-white shadow-soft border-b border-gray-100">
-	<div class="container mx-auto px-6 py-8">
-		<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-			<div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 text-center hover:shadow-medium transition-all duration-300 card-hover">
-				<div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3">
-					<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	<div class="container mx-auto px-4 md:px-6 py-6 md:py-8">
+		<div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto">
+			<div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-4 md:p-6 text-center hover:shadow-medium transition-all duration-300 card-hover">
+				<div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3">
+					<svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
 					</svg>
 				</div>
-				<h3 class="font-semibold text-gray-800 mb-1">Smart Upload</h3>
-				<p class="text-sm text-gray-600">AI-powered tagging</p>
+				<h3 class="font-semibold text-sm md:text-base text-gray-800 mb-1">Smart Upload</h3>
+				<p class="text-xs md:text-sm text-gray-600">AI-powered tagging</p>
 			</div>
-			<div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 text-center hover:shadow-medium transition-all duration-300 card-hover">
-				<div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-					<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-4 md:p-6 text-center hover:shadow-medium transition-all duration-300 card-hover">
+				<div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3">
+					<svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
 					</svg>
 				</div>
-				<h3 class="font-semibold text-gray-800 mb-1">Pro Editing</h3>
-				<p class="text-sm text-gray-600">Advanced filters & effects</p>
+				<h3 class="font-semibold text-sm md:text-base text-gray-800 mb-1">Pro Editing</h3>
+				<p class="text-xs md:text-sm text-gray-600">Advanced filters & effects</p>
 			</div>
-			<div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6 text-center hover:shadow-medium transition-all duration-300 card-hover">
-				<div class="w-12 h-12 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
-					<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-4 md:p-6 text-center hover:shadow-medium transition-all duration-300 card-hover">
+				<div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-pink-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3">
+					<svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
 					</svg>
 				</div>
-				<h3 class="font-semibold text-gray-800 mb-1">Custom Frames</h3>
-				<p class="text-sm text-gray-600">Cosplay-themed borders</p>
+				<h3 class="font-semibold text-sm md:text-base text-gray-800 mb-1">Custom Frames</h3>
+				<p class="text-xs md:text-sm text-gray-600">Cosplay-themed borders</p>
 			</div>
-			<div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 text-center hover:shadow-medium transition-all duration-300 card-hover">
-				<div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
-					<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-4 md:p-6 text-center hover:shadow-medium transition-all duration-300 card-hover">
+				<div class="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-2 md:mb-3">
+					<svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
 					</svg>
 				</div>
-				<h3 class="font-semibold text-gray-800 mb-1">100% Private</h3>
-				<p class="text-sm text-gray-600">Local storage only</p>
+				<h3 class="font-semibold text-sm md:text-base text-gray-800 mb-1">100% Private</h3>
+				<p class="text-xs md:text-sm text-gray-600">Local storage only</p>
 			</div>
 		</div>
 		
@@ -475,21 +475,21 @@
 
 <!-- Search and Filter Section -->
 <section class="bg-white shadow-soft border-b border-gray-100 sticky top-16 z-40">
-	<div class="container mx-auto px-6 py-8">
-		<div class="mb-6">
-			<h2 class="text-2xl font-bold text-gray-900 mb-2 flex items-center">
-				<svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	<div class="container mx-auto px-4 md:px-6 py-6 md:py-8">
+		<div class="mb-4 md:mb-6">
+			<h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2 flex items-center">
+				<svg class="w-5 h-5 md:w-6 md:h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
 				</svg>
 				Discover Your Collection
 			</h2>
-			<p class="text-gray-600">Find the perfect cosplay photo with advanced search and filtering</p>
+			<p class="text-sm md:text-base text-gray-600">Find the perfect cosplay photo with advanced search and filtering</p>
 		</div>
 			
-		<div class="flex flex-wrap gap-4 items-center justify-between">
-			<div class="flex flex-wrap gap-4 flex-1">
+		<div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+			<div class="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 flex-1 w-full">
 				<!-- Search Input -->
-				<div class="relative flex-1 min-w-[300px]">
+				<div class="relative flex-1 w-full sm:min-w-[250px] md:min-w-[300px]">
 					<svg class="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
 					</svg>
