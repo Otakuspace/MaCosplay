@@ -3,39 +3,119 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	export let data: { itemList: { items: any[]; totalPages: number; currentPage: number } };
+	
 	let selectedProvince = '';
+	let selectedCity = '';
 	let selectedSize = '';
-	let selectedStatus = '';
-	let fullImage = null;
+	let selectedGender = '';
 	let searchQuery = '';
 	let items = data.itemList.items;
-	let detailItem = null;
+	let detailItem: any = null;
+	let selectedSeries = 'Genshin Impact';
+	let setBundle = false;
+	let comingSoon = false;
+	let weekdayRental = false;
+	let sendOutsideIsland = false;
+	let isDarkTheme = false;
+	let sidebarOpen = false;
 
 	const pb = new PocketBase('https://macosplay.saas.in.th');
+
+	// Series/categories data matching the image
+	const series = [
+		'Genshin Impact',
+		'Honkai: Star Rail',
+		'Hololive',
+		'Jujutsu Kaisen',
+		'Demon Slayer - Kimetsu no Yaiba',
+		'Zenless Zone Zero',
+		'Wuthering Waves',
+		'Chainsaw Man',
+		'Spy x Family',
+		'Mobile Legends: Bang Bang'
+	];
+
+	// Provinces data
+	const provinces = [
+		'กรุงเทพมหานคร', 'กระบี่', 'กาญจนบุรี', 'กาฬสินธุ์', 'กำแพงเพชร',
+		'ขอนแก่น', 'จันทบุรี', 'ฉะเชิงเทรา', 'ชลบุรี', 'ชัยนาท',
+		'ชัยภูมิ', 'ชุมพร', 'เชียงราย', 'เชียงใหม่', 'ตรัง',
+		'ตราด', 'ตาก', 'นครนายก', 'นครปฐม', 'นครพนม',
+		'นครราชสีมา', 'นครศรีธรรมราช', 'นครสวรรค์', 'นนทบุรี', 'นราธิวาส',
+		'น่าน', 'บึงกาฬ', 'บุรีรัมย์', 'ปทุมธานี', 'ประจวบคีรีขันธ์',
+		'ปราจีนบุรี', 'ปัตตานี', 'พระนครศรีอยุธยา', 'พังงา', 'พัทลุง',
+		'พิจิตร', 'พิษณุโลก', 'เพชรบุรี', 'เพชรบูรณ์', 'แพร่',
+		'ภูเก็ต', 'มหาสารคาม', 'มุกดาหาร', 'แม่ฮ่องสอน', 'ยโสธร',
+		'ยะลา', 'ร้อยเอ็ด', 'ระนอง', 'ระยอง', 'ราชบุรี',
+		'ลพบุรี', 'ลำปาง', 'ลำพูน', 'เลย', 'ศรีสะเกษ',
+		'สกลนคร', 'สงขลา', 'สตูล', 'สมุทรปราการ', 'สมุทรสงคราม',
+		'สมุทรสาคร', 'สระแก้ว', 'สระบุรี', 'สิงห์บุรี', 'สุโขทัย',
+		'สุพรรณบุรี', 'สุราษฎร์ธานี', 'สุรินทร์', 'หนองคาย', 'หนองบัวลำภู',
+		'อ่างทอง', 'อำนาจเจริญ', 'อุดรธานี', 'อุตรดิตถ์', 'อุทัยธานี', 'อุบลราชธานี'
+	];
+
+	const cities = ['เลือกเมือง', 'กรุงเทพมหานคร', 'เชียงใหม่', 'ภูเก็ต', 'พัทยา', 'หาดใหญ่', 'นครราชสีมา', 'ขอนแก่น', 'อุบลราชธานี', 'สุราษฎร์ธานี']; // Popular cities
+	const sizes = ['เลือกขนาด', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+	const genders = ['เลือกเพศ', 'ชาย', 'หญิง', 'ไม่ระบุ'];
 
 	onMount(() => {
 		const params = new URLSearchParams(window.location.search);
 		searchQuery = params.get('search') || '';
-		selectedStatus = params.get('status') || '';
 		selectedProvince = params.get('province') || '';
+		selectedCity = params.get('city') || '';
 		selectedSize = params.get('size') || '';
+		selectedGender = params.get('gender') || '';
+		selectedSeries = params.get('series') || 'Genshin Impact';
+		
+		// Check current theme
+		checkTheme();
+		
+		// Liszten for theme changes
+		const observer = new MutationObserver(checkTheme);
+		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+		
+		return () => observer.disconnect();
 	});
+
+	function checkTheme() {
+		const currentTheme = document.documentElement.getAttribute('data-theme');
+		isDarkTheme = currentTheme === 'dark';
+	}
+
+	function toggleTheme() {
+		const newTheme = isDarkTheme ? 'light' : 'dark';
+		document.documentElement.setAttribute('data-theme', newTheme);
+		localStorage.setItem('theme', newTheme);
+		isDarkTheme = newTheme === 'dark';
+	}
+
+	function toggleSidebar() {
+		sidebarOpen = !sidebarOpen;
+	}
 
 	function handleSearch() {
 		const params = new URLSearchParams(window.location.search);
 		params.set('search', searchQuery);
-		params.set('status', selectedStatus);
 		params.set('province', selectedProvince);
+		params.set('city', selectedCity);
 		params.set('size', selectedSize);
+		params.set('gender', selectedGender);
+		params.set('series', selectedSeries);
 		params.set('page', '1');
 		window.location.search = params.toString();
 	}
 
 	function resetFilters() {
 		selectedProvince = '';
+		selectedCity = '';
 		selectedSize = '';
-		selectedStatus = '';
+		selectedGender = '';
 		searchQuery = '';
+		selectedSeries = 'Genshin Impact';
+		setBundle = false;
+		comingSoon = false;
+		weekdayRental = false;
+		sendOutsideIsland = false;
 		handleSearch();
 	}
 
@@ -49,34 +129,36 @@
 		return items.filter((item) => {
 			const matchesProvince = !selectedProvince || item.Province === selectedProvince;
 			const matchesSize = !selectedSize || item.Size === selectedSize;
-			const matchesStatus = !selectedStatus || item.Status === selectedStatus;
 			const matchesSearch =
 				!searchQuery || item.Name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				item.expand?.userStore?.Name.toLowerCase().includes(searchQuery.toLowerCase());
-			return matchesProvince && matchesSize && matchesStatus && matchesSearch;
+			return matchesProvince && matchesSize && matchesSearch;
 		});
 	};
-
-	console.log(data?.itemList);
 
 	// Helper function to limit text length
 	const limitText = (text: string, maxLength: number) => {
 		return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
 	};
 
-	function openDetailModal(item) {
+	function openDetailModal(item: any) {
 		detailItem = item;
 	}
 
-	function navigateToStore(item) {
-        const storeSlug = item.expand.userStore.slug;
-        goto(`/store/${storeSlug}`);
-    }
+	function navigateToStore(item: any) {
+		const storeSlug = item.expand.userStore.slug;
+		goto(`/store/${storeSlug}`);
+	}
+
+	function navigateToOutfitDetail(item: any) {
+		const storeSlug = item.expand.userStore.slug;
+		goto(`/store/${storeSlug}/${item.id}`);
+	}
 
 	// Debounce function to limit the rate of handleSearch calls
-	function debounce(func, wait) {
-		let timeout;
-		return function(...args) {
+	function debounce(func: any, wait: number) {
+		let timeout: any;
+		return function(...args: any[]) {
 			clearTimeout(timeout);
 			timeout = setTimeout(() => func.apply(this, args), wait);
 		};
@@ -91,365 +173,334 @@
 	}
 </script>
 
-<!-- Hero Section -->
-<section class="hero-gradient min-h-[60vh] flex items-center justify-center relative overflow-hidden">
-	<div class="absolute inset-0 bg-black opacity-20"></div>
-	<div class="container mx-auto px-6 relative z-10 text-center text-white">
-		<h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-			ค้นหาชุดเช่า
-		</h1>
-		<p class="text-xl md:text-2xl mb-8 opacity-90 animate-slide-up">
-			เช่าชุดคอสเพลย์คุณภาพสูงจากร้านค้าชั้นนำทั่วประเทศ
-		</p>
-		<div class="max-w-2xl mx-auto mb-8">
-			<div class="relative">
-				<input 
-					type="text" 
-					class="w-full px-6 py-4 rounded-2xl text-gray-800 text-lg placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-white/30 shadow-large"
-					placeholder="ค้นหาชุดที่คุณต้องการ..."
-					bind:value={searchQuery}
-				/>
-				<button 
-					class="absolute right-2 top-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
-					on:click={debouncedHandleSearch}
-				>
-					ค้นหา
-				</button>
-			</div>
+<div class="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+	<!-- Mobile Header with Theme Toggle -->
+	<div class="lg:hidden bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
+		<div class="flex items-center justify-between">
+			<button
+				on:click={toggleSidebar}
+				class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+			>
+				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+				</svg>
+			</button>
+			
+			<h1 class="text-xl font-bold text-gray-900 dark:text-white">ค้นหาชุดเช่า</h1>
+			
+			<button
+				on:click={toggleTheme}
+				class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+			>
+				{#if isDarkTheme}
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+					</svg>
+				{:else}
+					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+					</svg>
+				{/if}
+			</button>
 		</div>
 	</div>
-	
-	<!-- Floating elements for visual interest -->
-	<div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-	<div class="absolute bottom-20 right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse delay-1000"></div>
-	<div class="absolute top-1/2 left-1/4 w-16 h-16 bg-white/15 rounded-full blur-lg animate-pulse delay-500"></div>
-</section>
 
-<!-- Enhanced Filter Section -->
-<section class="bg-white shadow-soft border-b border-gray-100 sticky top-16 z-40">
-	<div class="container mx-auto px-4 md:px-6 py-4 md:py-6">
-		<div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-			<div class="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 flex-1 w-full md:w-auto">
-				<div class="relative w-full sm:w-auto">
-					<select class="select-modern w-full sm:min-w-[180px] md:min-w-[200px]" bind:value={selectedProvince}>
-						<option value="">เลือกจังหวัด</option>
-						<option value="กระบี่">กระบี่</option>
-							<option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
-							<option value="กาญจนบุรี">กาญจนบุรี</option>
-							<option value="กาฬสินธุ์">กาฬสินธุ์</option>
-							<option value="กำแพงเพชร">กำแพงเพชร</option>
-							<option value="ขอนแก่น">ขอนแก่น</option>
-							<option value="จันทบุรี">จันทบุรี</option>
-							<option value="ฉะเชิงเทรา">ฉะเชิงเทรา</option>
-							<option value="ชลบุรี">ชลบุรี</option>
-							<option value="ชัยนาท">ชัยนาท</option>
-							<option value="ชัยภูมิ">ชัยภูมิ</option>
-							<option value="ชุมพร">ชุมพร</option>
-							<option value="เชียงราย">เชียงราย</option>
-							<option value="เชียงใหม่">เชียงใหม่</option>
-							<option value="ตรัง">ตรัง</option>
-							<option value="ตราด">ตราด</option>
-							<option value="ตาก">ตาก</option>
-							<option value="นครนายก">นครนายก</option>
-							<option value="นครปฐม">นครปฐม</option>
-							<option value="นครพนม">นครพนม</option>
-							<option value="นครราชสีมา">นครราชสีมา</option>
-							<option value="นครศรีธรรมราช">นครศรีธรรมราช</option>
-							<option value="นครสวรรค์">นครสวรรค์</option>
-							<option value="นนทบุรี">นนทบุรี</option>
-							<option value="นราธิวาส">นราธิวาส</option>
-							<option value="น่าน">น่าน</option>
-							<option value="บึงกาฬ">บึงกาฬ</option>
-							<option value="บุรีรัมย์">บุรีรัมย์</option>
-							<option value="ปทุมธานี">ปทุมธานี</option>
-							<option value="ประจวบคีรีขันธ์">ประจวบคีรีขันธ์</option>
-							<option value="ปราจีนบุรี">ปราจีนบุรี</option>
-							<option value="ปัตตานี">ปัตตานี</option>
-							<option value="พระนครศรีอยุธยา">พระนครศรีอยุธยา</option>
-							<option value="พังงา">พังงา</option>
-							<option value="พัทลุง">พัทลุง</option>
-							<option value="พิจิตร">พิจิตร</option>
-							<option value="พิษณุโลก">พิษณุโลก</option>
-							<option value="เพชรบุรี">เพชรบุรี</option>
-							<option value="เพชรบูรณ์">เพชรบูรณ์</option>
-							<option value="แพร่">แพร่</option>
-							<option value="ภูเก็ต">ภูเก็ต</option>
-							<option value="มหาสารคาม">มหาสารคาม</option>
-							<option value="มุกดาหาร">มุกดาหาร</option>
-							<option value="แม่ฮ่องสอน">แม่ฮ่องสอน</option>
-							<option value="ยโสธร">ยโสธร</option>
-							<option value="ยะลา">ยะลา</option>
-							<option value="ร้อยเอ็ด">ร้อยเอ็ด</option>
-							<option value="ระนอง">ระนอง</option>
-							<option value="ระยอง">ระยอง</option>
-							<option value="ราชบุรี">ราชบุรี</option>
-							<option value="ลพบุรี">ลพบุรี</option>
-							<option value="ลำปาง">ลำปาง</option>
-							<option value="ลำพูน">ลำพูน</option>
-							<option value="เลย">เลย</option>
-							<option value="ศรีสะเกษ">ศรีสะเกษ</option>
-							<option value="สกลนคร">สกลนคร</option>
-							<option value="สงขลา">สงขลา</option>
-							<option value="สตูล">สตูล</option>
-							<option value="สมุทรปราการ">สมุทรปราการ</option>
-							<option value="สมุทรสงคราม">สมุทรสงคราม</option>
-							<option value="สมุทรสาคร">สมุทรสาคร</option>
-							<option value="สระแก้ว">สระแก้ว</option>
-							<option value="สระบุรี">สระบุรี</option>
-							<option value="สิงห์บุรี">สิงห์บุรี</option>
-							<option value="สุโขทัย">สุโขทัย</option>
-							<option value="สุพรรณบุรี">สุพรรณบุรี</option>
-							<option value="สุราษฎร์ธานี">สุราษฎร์ธานี</option>
-							<option value="สุรินทร์">สุรินทร์</option>
-							<option value="หนองคาย">หนองคาย</option>
-							<option value="หนองบัวลำภู">หนองบัวลำภู</option>
-							<option value="อ่างทอง">อ่างทอง</option>
-							<option value="อำนาจเจริญ">อำนาจเจริญ</option>
-							<option value="อุดรธานี">อุดรธานี</option>
-							<option value="อุตรดิตถ์">อุตรดิตถ์</option>
-							<option value="อุทัยธานี">อุทัยธานี</option>
-							<option value="อุบลราชธานี">อุบลราชธานี</option>
-					</select>
+	<!-- Main Layout Container -->
+	<div class="flex">
+		<!-- Left Sidebar -->
+		<aside class="fixed lg:static inset-y-0 left-0 z-40 w-80 bg-white dark:bg-gray-800 min-h-screen p-6 border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-300 ease-in-out {sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}">
+			<!-- Desktop Header -->
+			<div class="hidden lg:block mb-8">
+				<div class="flex items-center justify-between mb-4">
+					<h1 class="text-2xl font-bold text-gray-900 dark:text-white">ค้นหาชุดเช่า</h1>
+					<button
+						on:click={toggleTheme}
+						class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+					>
+						{#if isDarkTheme}
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+							</svg>
+						{:else}
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+							</svg>
+						{/if}
+					</button>
 				</div>
-
-				<div class="relative w-full sm:w-auto">
-					<select class="select-modern w-full sm:min-w-[120px] md:min-w-[150px]" bind:value={selectedSize}>
-						<option value="">เลือกขนาด</option>
-						<option value="S">S</option>
-						<option value="M">M</option>
-						<option value="L">L</option>
-						<option value="XL">XL</option>
-						<option value="XXL">XXL</option>
-					</select>
-				</div>
-
-				<div class="relative w-full sm:w-auto">
-					<select class="select-modern w-full sm:min-w-[150px] md:min-w-[180px]" bind:value={selectedStatus}>
-						<option value="">เลือกสถานะ</option>
-						<option value="พร้อมให้เช่า">พร้อมให้เช่า</option>
-						<option value="กำลังถูกเช่า">กำลังถูกเช่า</option>
-						<option value="ยังไม่พร้อม">ยังไม่พร้อม</option>
-					</select>
-				</div>
+				
 			</div>
 
-			<div class="flex flex-col sm:flex-row gap-2 md:gap-3 w-full md:w-auto">
-				<button class="btn-secondary-modern" on:click={resetFilters}>
-					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-					</svg>
-					รีเซ็ต
-				</button>
-				<button class="btn-primary-modern" on:click={debouncedHandleSearch}>
-					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-					</svg>
-					ค้นหา
-				</button>
+			<!-- Series Section -->
+			<div class="mb-8">
+				<h2 class="text-blue-600 dark:text-blue-400 font-bold text-lg mb-4">ซีรีส์</h2>
+				<div class="space-y-2">
+					{#each series as seriesItem}
+						<button
+							class="w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 {selectedSeries === seriesItem ? 'bg-blue-600 dark:bg-blue-500 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'}"
+							on:click={() => { selectedSeries = seriesItem; handleSearch(); sidebarOpen = false; }}
+						>
+							{seriesItem}
+						</button>
+					{/each}
+				</div>
 			</div>
-		</div>
-	</div>
-</section>
+		</aside>
 
-<!-- Modern Product Showcase -->
-<section class="py-8 md:py-16 bg-gray-50">
-	<div class="container mx-auto px-4 md:px-6">
-		<div class="text-center mb-8 md:mb-12">
-			<h2 class="text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-				ชุดเช่าคุณภาพสูง
-			</h2>
-			<p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-				เลือกจากคอลเลกชันชุดคอสเพลย์และวิกผมคุณภาพพรีเมียมจากร้านค้าที่ได้รับการรับรอง
-			</p>
-		</div>
+		<!-- Mobile Sidebar Overlay -->
+		{#if sidebarOpen}
+			<div class="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden" on:click={toggleSidebar}></div>
+		{/if}
 
-		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 max-h-none">
-			{#if filteredItems().length > 0}
-				{#each filteredItems() as item}
-					<div class="product-card card-hover group animate-scale-in">
-						<div class="relative overflow-hidden">
-							{#if item.Image}
-								<button
-									class="block w-full"
-									on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
-									aria-label="View full size image of {item.Name}"
-								>
-									<img
-										src={getOptimizedImageUrl(item.id, item.Image)}
-										alt="{item.Name}"
-										class="product-image"
-										loading="lazy"
-									/>
-								</button>
-							{:else}
-								<img
-									src="/images/Example/Macosplay.png?w=400&format=webp"
-									alt="{item.Name}"
-									class="product-image cursor-pointer"
-									loading="lazy"
-								/>
-							{/if}
-							
-							<!-- Status overlay -->
-							<div class="absolute top-4 left-4">
-								<span class="badge-modern {item.Status === 'พร้อมให้เช่า' ? 'badge-available' : item.Status === 'กำลังถูกเช่า' ? 'badge-rented' : 'badge-unavailable'}">
-									{item.Status}
-								</span>
-							</div>
-
-							<!-- Size badge -->
-							<div class="absolute top-4 right-4">
-								<span class="badge-modern badge-size">
-									{item.Size}
-								</span>
-							</div>
-						</div>
-
-						<div class="p-4 md:p-6">
-							<h3 class="font-semibold text-base md:text-lg text-gray-900 mb-2 line-clamp-2">
-								{item.Name}
-							</h3>
-							
-							<p class="text-xs md:text-sm text-gray-500 mb-3">
-								{limitText(item.expand?.userStore?.Name || '', 25)}
-							</p>
-
-							<div class="flex items-center justify-between mb-4">
-								<div class="text-xl md:text-2xl font-bold text-gray-900">
-									{#if item.price == 0}
-										<div class="flex flex-col">
-											<span class="text-base md:text-lg">฿{item.price_pri.toLocaleString()}</span>
-											<span class="text-xs md:text-sm text-gray-500">/ ฿{item.price_test.toLocaleString()}</span>
-										</div>
-									{:else}
-										฿{item.price.toLocaleString()}
-									{/if}
-								</div>
-							</div>
-
-							<button 
-								class="w-full btn-primary-modern group-hover:shadow-xl text-sm md:text-base"
-								on:click={() => openDetailModal(item)}
-							>
-								ดูรายละเอียด
-								<svg class="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-								</svg>
-							</button>
-						</div>
-					</div>
-				{/each}
-			{:else}
-				<div class="col-span-full">
-					<div class="text-center py-16">
-						<div class="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-							<svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<!-- Main Content Area -->
+		<main class="flex-1 bg-white dark:bg-gray-900">
+			<!-- Top Search and Filter Bar -->
+			<div class="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 lg:p-6">
+				<!-- Search Input -->
+				<div class="mb-6">
+					<div class="relative">
+						<input
+							type="text"
+							bind:value={searchQuery}
+							placeholder="ค้นหาตัวละคร อนิเมะ หรือเกม"
+							class="w-full px-4 py-3 pr-12 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						/>
+						<button class="absolute right-2 top-2 p-2 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-md transition-colors duration-200">
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
 							</svg>
-						</div>
-						<h3 class="text-2xl font-semibold text-gray-900 mb-2">ไม่พบสินค้า</h3>
-						<p class="text-gray-600 mb-6">ลองเปลี่ยนเงื่อนไขการค้นหาหรือรีเซ็ตตัวกรอง</p>
-						<button class="btn-secondary-modern" on:click={resetFilters}>
-							รีเซ็ตตัวกรอง
 						</button>
 					</div>
 				</div>
-			{/if}
-		</div>
-	</div>
-</section>
 
-<!-- Modern Pagination -->
-<section class="py-12 bg-white">
-	<div class="container mx-auto px-6">
-		<div class="flex items-center justify-center space-x-4">
-			<button
-				class="btn-secondary-modern disabled:opacity-50 disabled:cursor-not-allowed"
-				on:click={() => changePage(data.itemList.currentPage - 1)}
-				disabled={data.itemList.currentPage === 1}
-			>
-				<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-				</svg>
-				ก่อนหน้า
-			</button>
-			
-			<div class="flex items-center space-x-2">
-				<span class="px-4 py-2 bg-gray-100 rounded-lg font-medium text-gray-700">
-					หน้า {data.itemList.currentPage} จาก {data.itemList.totalPages}
-				</span>
+				<!-- Filter Dropdowns -->
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+					<div class="relative">
+						<select bind:value={selectedProvince} class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
+							<option value="">เลือกจังหวัด</option>
+							{#each provinces as province}
+								<option value={province}>{province}</option>
+							{/each}
+						</select>
+						<svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+						</svg>
+					</div>
+
+					<div class="relative">
+						<select bind:value={selectedCity} class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
+							<option value="">เลือกเมือง</option>
+							{#each cities.slice(1) as city}
+								<option value={city}>{city}</option>
+							{/each}
+						</select>
+						<svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+						</svg>
+					</div>
+
+					<div class="relative">
+						<select bind:value={selectedSize} class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
+							<option value="">เลือกขนาด</option>
+							{#each sizes.slice(1) as size}
+								<option value={size}>{size}</option>
+							{/each}
+						</select>
+						<svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+						</svg>
+					</div>
+
+					<div class="relative">
+						<select bind:value={selectedGender} class="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none pr-10">
+							<option value="">เลือกเพศ</option>
+							{#each genders.slice(1) as gender}
+								<option value={gender}>{gender}</option>
+							{/each}
+						</select>
+						<svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+						</svg>
+					</div>
+				</div>
+
+				<!-- Toggle Switches -->
+				<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6">
+					<label class="flex items-center space-x-3 cursor-pointer">
+						<input type="checkbox" bind:checked={setBundle} class="w-4 h-4 text-blue-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
+						<span class="text-gray-700 dark:text-gray-300 text-sm">เซ็ตชุด</span>
+					</label>
+
+					<label class="flex items-center space-x-3 cursor-pointer">
+						<input type="checkbox" bind:checked={comingSoon} class="w-4 h-4 text-blue-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
+						<span class="text-gray-700 dark:text-gray-300 text-sm">เร็วๆ นี้</span>
+					</label>
+
+					<label class="flex items-center space-x-3 cursor-pointer">
+						<input type="checkbox" bind:checked={weekdayRental} class="w-4 h-4 text-blue-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
+						<span class="text-gray-700 dark:text-gray-300 text-sm">เช่าวันธรรมดา</span>
+					</label>
+
+					<label class="flex items-center space-x-3 cursor-pointer">
+						<input type="checkbox" bind:checked={sendOutsideIsland} class="w-4 h-4 text-blue-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 focus:ring-2">
+						<span class="text-gray-700 dark:text-gray-300 text-sm">ส่งนอกเกาะ</span>
+					</label>
+				</div>
 			</div>
-			
-			<button
-				class="btn-secondary-modern disabled:opacity-50 disabled:cursor-not-allowed"
-				on:click={() => changePage(data.itemList.currentPage + 1)}
-				disabled={data.itemList.currentPage === data.itemList.totalPages}
-			>
-				ถัดไป
-				<svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-				</svg>
-			</button>
-		</div>
-	</div>
-</section>
 
-<!-- Modern Full Image Modal -->
-{#if fullImage}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
-		<div class="relative max-w-4xl max-h-[90vh] mx-4">
-			<button 
-				class="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors duration-200"
-				on:click={() => (fullImage = null)}
-				aria-label="Close full image view"
-			>
-				<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-				</svg>
-			</button>
-			<img 
-				src={`${fullImage}?w=1200&format=webp&quality=90`} 
-				alt="Full size product image" 
-				class="w-full h-auto max-h-[90vh] object-contain rounded-2xl shadow-large animate-scale-in" 
-			/>
-		</div>
-	</div>
-{/if}
+			<!-- Product Grid Section -->
+			<div class="p-4 lg:p-6">
+				<!-- Results Count -->
+				<div class="mb-6">
+					<p class="text-gray-600 dark:text-gray-400">พบ {filteredItems().length} รายการ</p>
+				</div>
 
-<!-- Modern Detail Modal -->
+				<!-- Product Grid -->
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
+					{#if filteredItems().length > 0}
+						{#each filteredItems() as item}
+							<div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-gray-200 dark:border-gray-700" on:click={() => navigateToOutfitDetail(item)}>
+								<!-- Product Image -->
+								<div class="relative">
+									{#if item.Image}
+										<img
+											src={getOptimizedImageUrl(item.id, item.Image)}
+											alt="{item.Name}"
+											class="w-full h-48 sm:h-64 object-cover"
+											loading="lazy"
+										/>
+									{:else}
+										<img
+											src="/images/Example/Macosplay.png?w=400&format=webp"
+											alt="{item.Name}"
+											class="w-full h-48 sm:h-64 object-cover"
+											loading="lazy"
+										/>
+									{/if}
+									
+									<!-- Rating Badge -->
+									<div class="absolute top-2 left-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-semibold">
+										⭐ 3.5
+									</div>
+								</div>
+
+								<!-- Product Info -->
+								<div class="p-3 sm:p-4">
+									<!-- Seller Info -->
+									<div class="flex items-center space-x-2 mb-3">
+										<div class="w-6 h-6 sm:w-8 sm:h-8 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+										<div>
+											<p class="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">{limitText(item.expand?.userStore?.Name || '', 20)}</p>
+											<p class="text-xs text-gray-500 dark:text-gray-400">@{item.expand?.userStore?.Name?.toLowerCase().replace(/\s+/g, '') || 'store'}</p>
+										</div>
+									</div>
+
+									<!-- Product Title -->
+									<h3 class="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 text-sm sm:text-base">
+										{item.Name}
+									</h3>
+
+									<!-- Price -->
+									<div class="text-base sm:text-lg font-bold text-green-600 dark:text-green-400 mb-3">
+										{#if item.price == 0}
+											฿{item.price_pri?.toLocaleString() || '0'}
+										{:else}
+											฿{item.price?.toLocaleString() || '0'}
+										{/if}
+										<span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">/ 3 วัน</span>
+									</div>
+
+									<!-- Tags -->
+									<div class="flex flex-wrap gap-2 mb-3">
+										<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">{item.Size || 'M'}</span>
+										<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">หญิง</span>
+									</div>
+
+									<!-- Location -->
+									<p class="text-xs text-gray-500 dark:text-gray-400">{item.Province || 'ไม่ระบุตำแหน่ง'}</p>
+								</div>
+							</div>
+						{/each}
+					{:else}
+						<div class="col-span-full">
+							<div class="text-center py-12 lg:py-16">
+								<div class="w-20 h-20 lg:w-24 lg:h-24 mx-auto mb-4 lg:mb-6 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+									<svg class="w-10 h-10 lg:w-12 lg:h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+									</svg>
+								</div>
+								<h3 class="text-xl lg:text-2xl font-semibold text-gray-900 dark:text-white mb-2">ไม่พบสินค้า</h3>
+								<p class="text-gray-600 dark:text-gray-400 mb-4 lg:mb-6 text-sm lg:text-base">ลองเปลี่ยนเงื่อนไขการค้นหาหรือรีเซ็ตตัวกรอง</p>
+								<button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 lg:px-6 py-2 lg:py-3 rounded-lg transition-colors duration-200 text-sm lg:text-base" on:click={resetFilters}>
+									รีเซ็ตตัวกรอง
+								</button>
+							</div>
+						</div>
+					{/if}
+				</div>
+
+				<!-- Pagination -->
+				{#if data.itemList.totalPages > 1}
+					<div class="mt-8 lg:mt-12 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+						<button
+							class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm lg:text-base"
+							on:click={() => changePage(data.itemList.currentPage - 1)}
+							disabled={data.itemList.currentPage === 1}
+						>
+							ก่อนหน้า
+						</button>
+						
+						<span class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-lg font-medium text-gray-700 dark:text-gray-300 text-sm lg:text-base">
+							หน้า {data.itemList.currentPage} จาก {data.itemList.totalPages}
+						</span>
+						
+						<button
+							class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm lg:text-base"
+							on:click={() => changePage(data.itemList.currentPage + 1)}
+							disabled={data.itemList.currentPage === data.itemList.totalPages}
+						>
+							ถัดไป
+						</button>
+					</div>
+				{/if}
+			</div>
+		</main>
+	</div>
+</div>
+
+<!-- Detail Modal -->
 {#if detailItem}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-		<div class="bg-white rounded-3xl shadow-large max-w-2xl mx-4 max-h-[90vh] overflow-hidden animate-scale-in">
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+		<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl mx-4 max-h-[90vh] overflow-hidden border border-gray-200 dark:border-gray-700">
 			<!-- Modal Header -->
-			<div class="flex items-center justify-between p-6 border-b border-gray-100">
-				<h3 class="text-2xl font-bold text-gray-900">รายละเอียดสินค้า</h3>
+			<div class="flex items-center justify-between p-4 lg:p-6 border-b border-gray-200 dark:border-gray-700">
+				<h3 class="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">รายละเอียดสินค้า</h3>
 				<button 
-					class="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+					class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200"
 					on:click={() => detailItem = null}
-					aria-label="Close product details"
 				>
-					<svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="w-5 h-5 lg:w-6 lg:h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 					</svg>
 				</button>
 			</div>
 
 			<!-- Modal Content -->
-			<div class="p-6 overflow-y-auto max-h-[60vh]">
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<div class="p-4 lg:p-6 overflow-y-auto max-h-[60vh]">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
 					<!-- Product Image -->
 					<div class="relative">
 						{#if detailItem.Image}
 							<img
 								src={`https://file.macosplay.com/mxj3660ce5olheb/${detailItem.id}/${detailItem.Image}?w=600&format=webp&quality=85`}
 								alt="{detailItem.Name}"
-								class="w-full aspect-square object-cover rounded-2xl shadow-medium"
+								class="w-full aspect-square object-cover rounded-xl"
 							/>
 						{:else}
 							<img
 								src="/images/Example/Macosplay.png?w=600&format=webp"
 								alt="{detailItem.Name}"
-								class="w-full aspect-square object-cover rounded-2xl shadow-medium"
+								class="w-full aspect-square object-cover rounded-xl"
 							/>
 						{/if}
 					</div>
@@ -457,32 +508,30 @@
 					<!-- Product Details -->
 					<div class="space-y-4">
 						<div>
-							<h4 class="text-xl font-bold text-gray-900 mb-2">{detailItem.Name}</h4>
-							<p class="text-gray-600">{detailItem.expand?.userStore?.Name || ''}</p>
+							<h4 class="text-lg lg:text-xl font-bold text-gray-900 dark:text-white mb-2">{detailItem.Name}</h4>
+							<p class="text-gray-600 dark:text-gray-400">{detailItem.expand?.userStore?.Name || ''}</p>
 						</div>
 
 						<div class="flex flex-wrap gap-2">
-							<span class="badge-modern badge-size">ขนาด {detailItem.Size}</span>
-							<span class="badge-modern {detailItem.Status === 'พร้อมให้เช่า' ? 'badge-available' : detailItem.Status === 'กำลังถูกเช่า' ? 'badge-rented' : 'badge-unavailable'}">
-								{detailItem.Status}
-							</span>
+							<span class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-sm">ขนาด {detailItem.Size}</span>
+							<span class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-sm">{detailItem.Status}</span>
 						</div>
 
-						<div class="bg-gray-50 rounded-xl p-4">
-							<h5 class="font-semibold text-gray-900 mb-2">รายละเอียด</h5>
-							<p class="text-gray-700 whitespace-pre-wrap leading-relaxed">{detailItem.Desc || 'ไม่มีรายละเอียดเพิ่มเติม'}</p>
+						<div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4">
+							<h5 class="font-semibold text-gray-900 dark:text-white mb-2">รายละเอียด</h5>
+							<p class="text-gray-600 dark:text-gray-400">{detailItem.Desc || 'ไม่มีรายละเอียดเพิ่มเติม'}</p>
 						</div>
 
-						<div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4">
-							<h5 class="font-semibold text-gray-900 mb-2">ราคาเช่า</h5>
-							<div class="text-3xl font-bold text-gray-900">
+						<div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
+							<h5 class="font-semibold text-gray-900 dark:text-white mb-2">ราคาเช่า</h5>
+							<div class="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
 								{#if detailItem.price == 0}
 									<div class="space-y-1">
-										<div class="text-lg text-gray-600">ไพรเวท: ฿{detailItem.price_pri.toLocaleString()}</div>
-										<div class="text-lg text-gray-600">ทดสอบ: ฿{detailItem.price_test.toLocaleString()}</div>
+										<div class="text-base lg:text-lg text-gray-600 dark:text-gray-400">ไพรเวท: ฿{detailItem.price_pri?.toLocaleString() || '0'}</div>
+										<div class="text-base lg:text-lg text-gray-600 dark:text-gray-400">ทดสอบ: ฿{detailItem.price_test?.toLocaleString() || '0'}</div>
 									</div>
 								{:else}
-									฿{detailItem.price.toLocaleString()}
+									฿{detailItem.price?.toLocaleString() || '0'}
 								{/if}
 							</div>
 						</div>
@@ -491,16 +540,13 @@
 			</div>
 
 			<!-- Modal Footer -->
-			<div class="p-6 border-t border-gray-100 bg-gray-50">
-				<div class="flex gap-3 justify-end">
-					<button class="btn-secondary-modern" on:click={() => detailItem = null}>
+			<div class="p-4 lg:p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
+				<div class="flex flex-col sm:flex-row gap-3 justify-end">
+					<button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 lg:px-6 py-2 lg:py-3 rounded-lg transition-colors duration-200 text-sm lg:text-base" on:click={() => detailItem = null}>
 						ปิด
 					</button>
 					<a href={`/store/${detailItem.expand?.userStore?.slug}`} target="_blank">
-						<button class="btn-primary-modern">
-							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-							</svg>
+						<button class="bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg transition-colors duration-200 text-sm lg:text-base">
 							ไปที่ร้านค้า
 						</button>
 					</a>
@@ -510,9 +556,7 @@
 	</div>
 {/if}
 
-
 <style>
-	/* Additional custom styles for shop page */
 	.line-clamp-2 {
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -520,21 +564,33 @@
 		overflow: hidden;
 	}
 
-	/* Enhanced animations */
-	@keyframes float {
-		0%, 100% { transform: translateY(0px); }
-		50% { transform: translateY(-10px); }
+	/* Custom scrollbar for the sidebar */
+	aside::-webkit-scrollbar {
+		width: 6px;
 	}
 
+	aside::-webkit-scrollbar-track {
+		background: #f3f4f6;
+	}
 
+	.dark aside::-webkit-scrollbar-track {
+		background: #374151;
+	}
 
-	/* Staggered animation delays for product cards */
-	.product-card:nth-child(1) { animation-delay: 0.1s; }
-	.product-card:nth-child(2) { animation-delay: 0.2s; }
-	.product-card:nth-child(3) { animation-delay: 0.3s; }
-	.product-card:nth-child(4) { animation-delay: 0.4s; }
-	.product-card:nth-child(5) { animation-delay: 0.5s; }
-	.product-card:nth-child(6) { animation-delay: 0.6s; }
-	.product-card:nth-child(7) { animation-delay: 0.7s; }
-	.product-card:nth-child(8) { animation-delay: 0.8s; }
+	aside::-webkit-scrollbar-thumb {
+		background: #d1d5db;
+		border-radius: 3px;
+	}
+
+	.dark aside::-webkit-scrollbar-thumb {
+		background: #6b7280;
+	}
+
+	aside::-webkit-scrollbar-thumb:hover {
+		background: #9ca3af;
+	}
+
+	.dark aside::-webkit-scrollbar-thumb:hover {
+		background: #9ca3af;
+	}
 </style>
