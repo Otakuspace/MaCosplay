@@ -28,6 +28,19 @@
 		loadThemePreference();
 	}
 
+	onMount(() => {
+		// Register service worker for image caching and offline support
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.register('/sw.js')
+				.then((registration) => {
+					console.log('Service Worker registered successfully:', registration);
+				})
+				.catch((error) => {
+					console.error('Service Worker registration failed:', error);
+				});
+		}
+	});
+
 	function toggleTheme(event: Event) {
 		const isChecked = (event.target as HTMLInputElement).checked;
 		const theme = isChecked ? 'dark' : 'light';

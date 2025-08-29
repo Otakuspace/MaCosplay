@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ออฟไลน์ - MaCosplay</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .offline-container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+        .offline-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+        p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .retry-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .retry-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📱</div>
+        <h1>คุณออฟไลน์อยู่</h1>
+        <p>ดูเหมือนว่าการเชื่อมต่ออินเทอร์เน็ตของคุณถูกตัดขาด กรุณาตรวจสอบการเชื่อมต่อและลองใหม่อีกครั้ง</p>
+        <button class="retry-btn" onclick="window.location.reload()">ลองใหม่</button>
+    </div>
+</body>
+</html>
