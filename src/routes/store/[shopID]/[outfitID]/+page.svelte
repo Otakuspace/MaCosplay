@@ -137,8 +137,6 @@
 			itemSpecificImagesLoaded = true;
 
 			if (response.ok && result.availableImages && result.availableImages.length > 0) {
-				console.log(`Found ${result.count} item-specific images for ${itemId}`);
-				
 				// Extract just the paths from the API response
 				const imagePaths = result.availableImages.map((img) => img.path);
 				
@@ -149,11 +147,8 @@
 						...outfit.Images.filter((img: string) => img.startsWith('/images/Example/'))
 					];
 				}
-			} else {
-				console.log(`No item-specific images found for ${itemId}, using fallback images`);
 			}
 		} catch (error) {
-			console.error('Error checking item images:', error);
 			itemSpecificImagesLoaded = true;
 		}
 	}
@@ -316,17 +311,7 @@
 						</div>
 					{/if}
 
-					<!-- Debug Info (for development) -->
-					{#if outfit?.id}
-						<div class="mt-4 p-3 bg-base-300 rounded-lg text-xs">
-							<div class="font-semibold mb-1">Debug Info:</div>
-							<div>Item ID: {outfit.id}</div>
-							<div>Current Image: {productImages[currentImageIndex] || 'None'}</div>
-							<div>Full URL: {productImages.length > 0 ? getImageUrl(productImages[currentImageIndex]) : 'None'}</div>
-							<div>Total Images: {productImages.length}</div>
-							<div>Item-specific images loaded: {itemSpecificImagesLoaded ? 'Yes' : 'No'}</div>
-						</div>
-					{/if}
+
 				</div>
 			</div>
 

@@ -2,8 +2,6 @@ import { error } from '@sveltejs/kit';
 import { createAdminClient } from '$lib/pocketbase';
 
 export const load = async ({ params }) => {
-	console.log(`[${new Date().toISOString()}] Loading outfit: ${params.outfitID} from shop: ${params.shopID}`);
-	
 	const { shopID, outfitID } = params;
 
 	// Server-side validation and sanitization
@@ -50,8 +48,6 @@ export const load = async ({ params }) => {
 				userStore = outfit.expand.userStore;
 			}
 		} catch (fetchError) {
-			console.log('Item not found in database, falling back to mock data');
-			
 			// Fallback to mock data if item not found
 			const getOutfitData = (id: string) => {
 				const baseData = {
@@ -144,6 +140,11 @@ export const load = async ({ params }) => {
 			// Map database fields to expected format
 			outfit.Price = outfit.price || outfit.Price;
 			outfit.Description = outfit.Desc || outfit.Details || outfit.Description;
+			
+			// Map price fields for private/test pricing
+			outfit.isPriTest = outfit.isPriTest || outfit.is_pri_test;
+			outfit.price_pri = outfit.price_pri || outfit.pricePri;
+			outfit.price_test = outfit.price_test || outfit.priceTest;
 		}
 
 		return {
