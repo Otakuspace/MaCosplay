@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import ImageManager from '../../components/ImageManager.svelte';
+	import ImageManager from '../../../components/ImageManager.svelte';
 	import type { StorePageData, ItemData, ShopData, ImageCheckResponse } from '../../../types/images';
 	
 
