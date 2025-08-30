@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
+import { createAdminClient } from '$lib/pocketbase';
 
 export const load = async ({ params }) => {
-	// Cache busting for development - remove in production
 	console.log(`[${new Date().toISOString()}] Loading outfit: ${params.outfitID} from shop: ${params.shopID}`);
 	
 	const { shopID, outfitID } = params;
@@ -32,8 +32,27 @@ export const load = async ({ params }) => {
 		throw error(400, 'Outfit ID length invalid');
 	}
 
-			try {
-			// Generate different mock data based on outfit ID for demonstration
+	try {
+		const adminClient = await createAdminClient();
+		
+		// Fetch the actual outfit item from the database using outfitID
+		let outfit = null;
+		let userStore = null;
+		
+		try {
+			// First try to get the item by ID
+			outfit = await adminClient.collection('itemList').getOne(outfitID, {
+				expand: 'user,userStore'
+			});
+			
+			// Get the store details from the outfit's userStore
+			if (outfit.expand?.userStore) {
+				userStore = outfit.expand.userStore;
+			}
+		} catch (fetchError) {
+			console.log('Item not found in database, falling back to mock data');
+			
+			// Fallback to mock data if item not found
 			const getOutfitData = (id: string) => {
 				const baseData = {
 					id: id,
@@ -54,12 +73,10 @@ export const load = async ({ params }) => {
 						Name: `Anime Cosplay ${id}`,
 						Series: 'Anime Series',
 						Images: [
-							// Item ID-based paths (will be checked dynamically)
 							`${id}/main.jpg`,
 							`${id}/detail1.jpg`,
 							`${id}/detail2.jpg`,
 							`${id}/back.jpg`,
-							// Fallback images
 							'/images/Example/Anime_alya_cos.png',
 							'/images/Example/Anime_main.png'
 						]
@@ -94,12 +111,10 @@ export const load = async ({ params }) => {
 					return {
 						...baseData,
 						Images: [
-							// Generic item ID-based paths
 							`${id}/main.jpg`,
 							`${id}/detail1.jpg`,
 							`${id}/detail2.jpg`,
 							`${id}/back.jpg`,
-							// Fallback to example images
 							'/images/Example/Anime_alya_cos.png',
 							'/images/Example/MakimaCos.png',
 							'/images/Example/VentiCos.png',
@@ -109,20 +124,31 @@ export const load = async ({ params }) => {
 				}
 			};
 
-			const mockOutfit = getOutfitData(outfitID);
+			outfit = getOutfitData(outfitID);
+			
+			userStore = {
+				id: shopID,
+				name: `Cosplay Shop ${shopID}`,
+				description: 'Professional cosplay shop specializing in high-quality costumes and accessories. We create custom designs and offer worldwide shipping.',
+				location: 'Bangkok, Thailand',
+				phone: '+66 2 123 4567',
+				email: 'info@cosplayshop.com'
+			};
+		}
 
-		const mockShop = {
-			id: shopID,
-			name: `Cosplay Shop ${shopID}`,
-			description: 'Professional cosplay shop specializing in high-quality costumes and accessories. We create custom designs and offer worldwide shipping.',
-			location: 'Bangkok, Thailand',
-			phone: '+66 2 123 4567',
-			email: 'info@cosplayshop.com'
-		};
+		// Transform the real outfit data to match the expected format
+		if (outfit && outfit.id && !outfit.Images) {
+			// Convert single Image field to Images array if needed
+			outfit.Images = outfit.Image ? [outfit.Image] : [];
+			
+			// Map database fields to expected format
+			outfit.Price = outfit.price || outfit.Price;
+			outfit.Description = outfit.Desc || outfit.Details || outfit.Description;
+		}
 
 		return {
-			itemList: [mockOutfit],
-			userStore: mockShop
+			itemList: [outfit],
+			userStore: userStore
 		};
 	} catch (err) {
 		console.error('Error in store outfit page:', err);
