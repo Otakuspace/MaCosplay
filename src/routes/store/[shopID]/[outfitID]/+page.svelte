@@ -338,20 +338,42 @@
 					<!-- Price -->
 					<div class="mb-6">
 						<div class="text-2xl font-bold text-primary">
-							฿{outfit?.Price ? outfit.Price.toLocaleString() : '0'}
+							{#if outfit?.isPriTest}
+								<div class="space-y-2">
+									<div class="flex items-center justify-between">
+										<span class="text-lg text-base-content/70">ไพรเวท:</span>
+										<span>฿{outfit.price_pri ? outfit.price_pri.toLocaleString() : '0'}</span>
+									</div>
+									<div class="flex items-center justify-between">
+										<span class="text-lg text-base-content/70">ทดสอบ:</span>
+										<span>฿{outfit.price_test ? outfit.price_test.toLocaleString() : '0'}</span>
+									</div>
+								</div>
+							{:else}
+								฿{outfit?.Price || outfit?.price ? (outfit.Price || outfit.price).toLocaleString() : '0'}
+							{/if}
 						</div>
-						{#if outfit?.OriginalPrice && outfit.OriginalPrice > outfit?.Price}
+						{#if outfit?.OriginalPrice && outfit.OriginalPrice > (outfit?.Price || outfit?.price)}
 							<div class="text-base-content/50 line-through">
 								฿{outfit.OriginalPrice.toLocaleString()}
 							</div>
 						{/if}
 					</div>
 
+					<!-- Status -->
+					{#if outfit?.Status}
+						<div class="mb-6">
+							<div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {outfit.Status === 'พร้อมให้เช่า' ? 'bg-green-100 text-green-800' : outfit.Status === 'กำลังถูกเช่า' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">
+								{outfit.Status}
+							</div>
+						</div>
+					{/if}
+
 					<!-- Description -->
 					<div class="mb-6">
 						<h3 class="text-lg font-semibold text-base-content mb-2">รายละเอียด</h3>
 						<p class="text-base-content/80 leading-relaxed">
-							{outfit?.Description || 'ไม่มีรายละเอียด'}
+							{outfit?.Description || outfit?.Desc || outfit?.Details || 'ไม่มีรายละเอียด'}
 						</p>
 					</div>
 
@@ -363,6 +385,12 @@
 								<div class="flex justify-between">
 									<span class="text-base-content/70">ขนาด:</span>
 									<span class="font-medium">{outfit.Size}</span>
+								</div>
+							{/if}
+							{#if outfit?.Province}
+								<div class="flex justify-between">
+									<span class="text-base-content/70">จังหวัด:</span>
+									<span class="font-medium">{outfit.Province}</span>
 								</div>
 							{/if}
 							{#if outfit?.Gender}
@@ -413,18 +441,28 @@
 					<!-- Shop Info -->
 					<div class="mb-6">
 						<div class="flex items-center mb-4">
-							<div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mr-4">
-								{shop?.name ? shop.name.charAt(0).toUpperCase() : 'S'}
-							</div>
+							{#if shop?.expand?.user?.avatar}
+								<div class="w-16 h-16 rounded-full overflow-hidden mr-4 border-2 border-primary">
+									<img
+										src={`https://file.macosplay.com/_pb_users_auth_/${shop.expand.user.id}/${shop.expand.user.avatar}`}
+										alt="{shop?.Name || shop?.name} Avatar"
+										class="w-full h-full object-cover"
+									/>
+								</div>
+							{:else}
+								<div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mr-4">
+									{(shop?.Name || shop?.name || 'S').charAt(0).toUpperCase()}
+								</div>
+							{/if}
 							<div>
-								<h4 class="text-lg font-semibold text-base-content">{shop?.name || 'Shop Name'}</h4>
-								<p class="text-base-content/70">{shop?.location || 'Location not specified'}</p>
+								<h4 class="text-lg font-semibold text-base-content">{shop?.Name || shop?.name || 'Shop Name'}</h4>
+								<p class="text-base-content/70">{shop?.location || shop?.Province || 'Location not specified'}</p>
 							</div>
 						</div>
 						
-						{#if shop?.description}
+						{#if shop?.description || shop?.Details}
 							<p class="text-base-content/80 leading-relaxed mb-4">
-								{shop.description}
+								{shop.description || shop.Details}
 							</p>
 						{/if}
 					</div>
@@ -449,24 +487,41 @@
 									{shop.email}
 								</div>
 							{/if}
+							{#if shop?.fbPage}
+								<div class="flex items-center text-base-content/80">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+										<path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
+									</svg>
+									เพจร้านค้า
+								</div>
+							{/if}
 						</div>
 					</div>
 
 					<!-- Shop Actions -->
 					<div class="space-y-3">
-						<a href="/store/{$page.params.shopID}" class="btn btn-outline w-full">
+						<a href="/store/{shop?.slug || $page.params.shopID}" class="btn btn-outline w-full">
 							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
 							</svg>
 							ดูร้านค้า
 						</a>
 						
-						<button class="btn btn-outline w-full">
-							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-							</svg>
-							ติดต่อร้านค้า
-						</button>
+						{#if shop?.fbPage}
+							<a href={shop.fbPage} target="_blank" class="btn btn-outline w-full">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+									<path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
+								</svg>
+								เพจร้านค้า
+							</a>
+						{:else}
+							<button class="btn btn-outline w-full">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+								</svg>
+								ติดต่อร้านค้า
+							</button>
+						{/if}
 					</div>
 				</div>
 			</div>
