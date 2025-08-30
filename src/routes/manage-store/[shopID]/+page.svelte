@@ -555,65 +555,75 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                        </svg>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-3xl font-bold text-gray-800">0</div>
-                        <div class="text-sm text-gray-500">ผู้ชมร้านค้า</div>
-                    </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-500">เดือนนี้</span>
-                    <span class="text-sm text-gray-400">0% เปลี่ยนแปลง</span>
-                </div>
-            </div>
 
             <!-- Followers Card -->
-            <div class="bg-white rounded-3xl p-8 shadow-large hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-4 rounded-2xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
+            <div class="group bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border border-gray-100/50 hover:border-purple-200/50 relative overflow-hidden">
+                <!-- Background Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-4xl font-bold bg-gradient-to-r from-gray-800 to-purple-600 bg-clip-text text-transparent mb-1">0</div>
+                            <div class="text-sm text-gray-500 font-medium">ผู้ติดตามร้านค้า</div>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-3xl font-bold text-gray-800">0</div>
-                        <div class="text-sm text-gray-500">ผู้ติดตามร้านค้า</div>
+                    
+                    <div class="space-y-3">
+                        <h3 class="text-xl font-bold text-gray-800 group-hover:text-purple-600 transition-colors duration-300">
+                            ผู้ติดตาม
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            จำนวนผู้ติดตามร้านค้าของคุณ
+                        </p>
+                        <div class="pt-4">
+                            <div class="flex items-center text-green-600">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7"></path>
+                                </svg>
+                                <span class="text-sm font-semibold">0% เพิ่มขึ้น</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-500">เดือนนี้</span>
-                    <span class="text-sm text-green-500 flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 17l9.2-9.2M17 17V7H7"></path>
-                        </svg>
-                        0% เพิ่มขึ้น
-                    </span>
                 </div>
             </div>
 
             <!-- Orders Card -->
-            <div class="bg-white rounded-3xl p-8 shadow-large hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="bg-gradient-to-r from-green-500 to-green-600 p-4 rounded-2xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                        </svg>
+            <div class="group bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border border-gray-100/50 hover:border-green-200/50 relative overflow-hidden">
+                <!-- Background Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-br from-green-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-4xl font-bold bg-gradient-to-r from-gray-800 to-green-600 bg-clip-text text-transparent mb-1">0</div>
+                            <div class="text-sm text-gray-500 font-medium">จำนวนผู้ซื้อสินค้า</div>
+                        </div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-3xl font-bold text-gray-800">0</div>
-                        <div class="text-sm text-gray-500">จำนวนผู้ซื้อสินค้า</div>
+                    
+                    <div class="space-y-3">
+                        <h3 class="text-xl font-bold text-gray-800 group-hover:text-green-600 transition-colors duration-300">
+                            คำสั่งซื้อ
+                        </h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            จำนวนคำสั่งซื้อที่ได้รับ
+                        </p>
+                        <div class="pt-4">
+                            <div class="flex items-center text-gray-400">
+                                <span class="text-sm font-semibold">0 คำสั่งซื้อ</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-500">เดือนนี้</span>
-                    <span class="text-sm text-gray-400">0 คำสั่งซื้อ</span>
                 </div>
             </div>
         </div>

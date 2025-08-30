@@ -565,32 +565,32 @@
 	}
 
 	/* Custom scrollbar for the sidebar */
-	aside::-webkit-scrollbar {
+	:global(aside::-webkit-scrollbar) {
 		width: 6px;
 	}
 
-	aside::-webkit-scrollbar-track {
+	:global(aside::-webkit-scrollbar-track) {
 		background: #f3f4f6;
 	}
 
-	.dark aside::-webkit-scrollbar-track {
+	:global(.dark aside::-webkit-scrollbar-track) {
 		background: #374151;
 	}
 
-	aside::-webkit-scrollbar-thumb {
+	:global(aside::-webkit-scrollbar-thumb) {
 		background: #d1d5db;
 		border-radius: 3px;
 	}
 
-	.dark aside::-webkit-scrollbar-thumb {
+	:global(.dark aside::-webkit-scrollbar-thumb) {
 		background: #6b7280;
 	}
 
-	aside::-webkit-scrollbar-thumb:hover {
+	:global(aside::-webkit-scrollbar-thumb:hover) {
 		background: #9ca3af;
 	}
 
-	.dark aside::-webkit-scrollbar-thumb:hover {
+	:global(.dark aside::-webkit-scrollbar-thumb:hover) {
 		background: #9ca3af;
 	}
 </style>
