@@ -15,8 +15,8 @@
 	let showImageManager = false;
 
 	// Extract outfit and shop data
-	$: outfit: ItemData | null = data?.itemList?.[0] || null;
-	$: shop: ShopData | null = data?.userStore || null;
+	$: outfit = data?.itemList?.[0] || null;
+	$: shop = data?.userStore || null;
 	$: productImages = outfit?.Images ? 
 		(outfit.Images.filter((img: string) => img && img.trim() !== '')) : 
 		(outfit?.Image ? [outfit.Image] : []);
