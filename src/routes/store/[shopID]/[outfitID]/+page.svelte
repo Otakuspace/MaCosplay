@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import ImageManager from '../../../components/ImageManager.svelte';
 	import type { StorePageData, ItemData, ShopData, ImageCheckResponse } from '../../../types/images';
 	
 
@@ -12,7 +11,6 @@
 	let imageLoading = true;
 	let imageError = false;
 	let itemSpecificImagesLoaded = false;
-	let showImageManager = false;
 
 	// Extract outfit and shop data
 	$: outfit = data?.itemList?.[0] || null;
@@ -284,32 +282,7 @@
 						</div>
 					{/if}
 
-					<!-- Image Management Toggle -->
-					<div class="mt-4">
-						<button 
-							class="btn btn-outline btn-sm w-full"
-							on:click={() => showImageManager = !showImageManager}
-						>
-							<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-							</svg>
-							{showImageManager ? 'Hide' : 'Manage'} Images
-						</button>
-					</div>
 
-					<!-- Image Manager -->
-					{#if showImageManager && outfit?.id}
-						<div class="mt-4">
-							<ImageManager 
-								itemId={outfit.id}
-								existingImages={productImages}
-								on:imagesUpdated={() => {
-									// Refresh images when updated
-									checkItemImages();
-								}}
-							/>
-						</div>
-					{/if}
 
 
 				</div>
