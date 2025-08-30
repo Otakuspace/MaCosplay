@@ -640,7 +640,7 @@
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-100 to-transparent rounded-full blur-3xl"></div>
     </div>
     
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative z-10">
         <!-- Enhanced Section Header -->
         <div class="text-center mb-12 sm:mb-16">
             <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl mb-8 shadow-2xl">
@@ -1153,7 +1153,7 @@
         </div>
 
         <!-- Enhanced Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 md:gap-8">
             {#if filteredItems().length > 0}
                 {#each filteredItems() as item}
                     <!-- Ultra Modern Product Card -->
@@ -1221,45 +1221,45 @@
                             </div>
 
                             <!-- Enhanced Card Content -->
-                            <div class="p-8">
+                            <div class="p-4 sm:p-6">
                                 <!-- Product Title -->
-                                <h3 class="text-2xl font-bold text-gray-800 mb-4 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
                                     {item.Name}
                                 </h3>
                                 
                                 <!-- Product Details -->
-                                <p class="text-gray-600 mb-6 line-clamp-3 leading-relaxed">
+                                <p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
                                     {item.Details}
                                 </p>
 
                                 <!-- Enhanced Tags -->
-                                <div class="flex flex-wrap gap-3 mb-6">
-                                    <span class="px-4 py-2 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-2xl text-sm font-semibold flex items-center">
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-xl text-xs font-semibold flex items-center">
                                         🏛️ {item.Province}
                                     </span>
-                                    <span class="px-4 py-2 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 rounded-2xl text-sm font-semibold flex items-center">
-                                        👕 Size {item.Size}
+                                    <span class="px-3 py-1 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 rounded-xl text-xs font-semibold flex items-center">
+                                        👕 {item.Size}
                                     </span>
                                 </div>
 
                                 <!-- Enhanced Price Display -->
-                                <div class="mb-8 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl border border-gray-100">
+                                <div class="mb-4 p-3 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-100">
                                     <div class="text-center">
                                         {#if item.isPriTest}
-                                            <div class="space-y-2">
+                                            <div class="space-y-1">
                                                 <div class="flex items-center justify-between">
-                                                    <span class="text-sm font-medium text-gray-600">ไพร:</span>
-                                                    <span class="text-xl font-bold text-green-600">฿{item.price_pri.toLocaleString()}</span>
+                                                    <span class="text-xs font-medium text-gray-600">ไพร:</span>
+                                                    <span class="text-lg font-bold text-green-600">฿{item.price_pri.toLocaleString()}</span>
                                                 </div>
                                                 <div class="flex items-center justify-between">
-                                                    <span class="text-sm font-medium text-gray-600">เทส:</span>
-                                                    <span class="text-xl font-bold text-blue-600">฿{item.price_test.toLocaleString()}</span>
+                                                    <span class="text-xs font-medium text-gray-600">เทส:</span>
+                                                    <span class="text-lg font-bold text-blue-600">฿{item.price_test.toLocaleString()}</span>
                                                 </div>
                                             </div>
                                         {:else}
                                             <div class="flex items-center justify-center space-x-2">
-                                                <span class="text-sm font-medium text-gray-600">ราคา:</span>
-                                                <span class="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                                                <span class="text-xs font-medium text-gray-600">ราคา:</span>
+                                                <span class="text-xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                                                     ฿{item.price.toLocaleString()}
                                                 </span>
                                             </div>
@@ -1268,23 +1268,23 @@
                                 </div>
 
                                 <!-- Enhanced Action Buttons -->
-                                <div class="space-y-4">
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <button class="group/btn relative px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-sm font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
+                                <div class="space-y-3">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button class="group/btn relative px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-xs font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
                                                 on:click={() => openEditModal(item)}>
                                             <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
                                             <div class="relative flex items-center justify-center">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                 </svg>
                                                 แก้ไข
                                             </div>
                                         </button>
-                                        <button class="group/btn relative px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-2xl hover:from-red-600 hover:to-red-700 transition-all duration-300 text-sm font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
+                                        <button class="group/btn relative px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 text-xs font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
                                                 on:click={() => confirmDeleteItem(item.id)}>
                                             <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
                                             <div class="relative flex items-center justify-center">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                                 </svg>
                                                 ลบ
@@ -1293,17 +1293,14 @@
                                     </div>
                                     
                                     <!-- Enhanced Facebook Share Button -->
-                                    <button class="group/btn relative w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
+                                    <button class="group/btn relative w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 text-xs font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
                                             on:click={() => shareToFacebook(item)}>
                                         <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                        <div class="relative flex items-center justify-center space-x-3">
-                                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <div class="relative flex items-center justify-center space-x-2">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
                                             </svg>
-                                            <span>แชร์ไปยัง Facebook</span>
-                                            <svg class="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                                            </svg>
+                                            <span>แชร์ FB</span>
                                         </div>
                                     </button>
                                 </div>
