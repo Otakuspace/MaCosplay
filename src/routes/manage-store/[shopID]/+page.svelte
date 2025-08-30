@@ -1,5 +1,7 @@
 <script lang="ts">
     import { goto } from '$app/navigation'; // Updated import path
+    import { onMount } from 'svelte';
+    
 	let username = ''; // Variable to hold the username
 	let Name = ''; // Variable to hold the Name
 	let Details = ''; // Variable to hold the Details
@@ -18,6 +20,33 @@
     let itemToDelete = null; // Track the item to be deleted
     let showDeleteConfirm = false; // Control the visibility of the delete confirmation modal
     let tagsString = ''; // String representation of tags for input binding
+    let currentTheme = 'light'; // Theme state
+    
+    // Function to check current theme
+    function getCurrentTheme() {
+        if (typeof window !== 'undefined') {
+            const savedTheme = localStorage.getItem('theme');
+            const documentTheme = document.documentElement.getAttribute('data-theme');
+            return documentTheme || savedTheme || 'light';
+        }
+        return 'light';
+    }
+    
+    onMount(() => {
+        currentTheme = getCurrentTheme();
+        
+        // Listen for theme changes
+        const observer = new MutationObserver(() => {
+            currentTheme = getCurrentTheme();
+        });
+        
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
+        
+        return () => observer.disconnect();
+    });
 
     // Reactive statement to sync tagsString with editingItem.tags
     $: if (editingItem && editingItem.tags) {
@@ -297,17 +326,17 @@
 
 
 <!-- Enhanced Hero Section with Store Banner -->
-<section class="relative min-h-[70vh] bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 overflow-hidden">
+<section class="relative min-h-[70vh] {currentTheme === 'dark' ? 'bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900' : 'bg-gradient-to-br from-slate-100 via-blue-100 to-indigo-200'} overflow-hidden">
 	<!-- Animated Background Elements -->
 	<div class="absolute inset-0">
-		<div class="absolute top-20 left-10 w-32 h-32 bg-blue-400/20 rounded-full blur-3xl animate-pulse"></div>
-		<div class="absolute bottom-20 right-10 w-48 h-48 bg-purple-400/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
-		<div class="absolute top-1/2 left-1/4 w-24 h-24 bg-cyan-400/25 rounded-full blur-2xl animate-pulse delay-500"></div>
-		<div class="absolute bottom-1/3 left-1/2 w-16 h-16 bg-pink-400/20 rounded-full blur-xl animate-pulse delay-700"></div>
+		<div class="absolute top-20 left-10 w-32 h-32 {currentTheme === 'dark' ? 'bg-blue-400/20' : 'bg-blue-300/30'} rounded-full blur-3xl animate-pulse"></div>
+		<div class="absolute bottom-20 right-10 w-48 h-48 {currentTheme === 'dark' ? 'bg-purple-400/15' : 'bg-purple-300/25'} rounded-full blur-3xl animate-pulse delay-1000"></div>
+		<div class="absolute top-1/2 left-1/4 w-24 h-24 {currentTheme === 'dark' ? 'bg-cyan-400/25' : 'bg-cyan-300/35'} rounded-full blur-2xl animate-pulse delay-500"></div>
+		<div class="absolute bottom-1/3 left-1/2 w-16 h-16 {currentTheme === 'dark' ? 'bg-pink-400/20' : 'bg-pink-300/30'} rounded-full blur-xl animate-pulse delay-700"></div>
 	</div>
 	
 	<!-- Overlay -->
-	<div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30"></div>
+	<div class="absolute inset-0 {currentTheme === 'dark' ? 'bg-gradient-to-b from-black/20 via-transparent to-black/30' : 'bg-gradient-to-b from-white/10 via-transparent to-white/20'}"></div>
 	
 	<div class="container mx-auto px-6 py-16 relative z-10">
 		<!-- Store Banner with Enhanced Design -->
@@ -340,7 +369,7 @@
 		<div class="text-center mb-12">
 			<label class="inline-block">
 				<input type="file" class="hidden" on:change={handleBannerUpload} accept="image/*" />
-				<div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-8 py-4 text-white font-semibold hover:bg-white/20 transition-all duration-300 cursor-pointer inline-flex items-center space-x-3 shadow-lg hover:shadow-xl">
+				<div class="{currentTheme === 'dark' ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-black/10 border-black/20 text-gray-800 hover:bg-black/20'} backdrop-blur-md border rounded-2xl px-8 py-4 font-semibold transition-all duration-300 cursor-pointer inline-flex items-center space-x-3 shadow-lg hover:shadow-xl">
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
 					</svg>
@@ -350,12 +379,12 @@
 		</div>
 
 		<!-- Enhanced Store Information -->
-		<div class="text-center text-white mb-16">
-			<div class="bg-white/5 backdrop-blur-sm rounded-3xl p-8 max-w-4xl mx-auto border border-white/10">
-				<h1 class="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-blue-100 to-cyan-100 bg-clip-text text-transparent drop-shadow-2xl">
+		<div class="text-center mb-16">
+			<div class="{currentTheme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'} backdrop-blur-sm rounded-3xl p-8 max-w-4xl mx-auto border">
+				<h1 class="text-5xl md:text-6xl font-bold mb-6 {currentTheme === 'dark' ? 'bg-gradient-to-r from-white via-blue-100 to-cyan-100' : 'bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800'} bg-clip-text text-transparent drop-shadow-2xl">
 					{data?.StoreDetails.Name}
 				</h1>
-				<p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto leading-relaxed font-light">
+				<p class="text-xl md:text-2xl {currentTheme === 'dark' ? 'text-white opacity-90' : 'text-gray-800 opacity-90'} max-w-3xl mx-auto leading-relaxed font-light">
 					{data?.StoreDetails.Details}
 				</p>
 			</div>
@@ -364,30 +393,30 @@
 		<!-- Enhanced Store Links -->
 		<div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
 			<!-- Store URL Card -->
-			<div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300 group">
+			<div class="{currentTheme === 'dark' ? 'bg-white/10 border-white/20 hover:bg-white/15' : 'bg-black/10 border-black/20 hover:bg-black/15'} backdrop-blur-lg rounded-3xl p-8 border transition-all duration-300 group">
 				<div class="flex items-center mb-6">
-					<div class="bg-blue-500/20 p-4 rounded-2xl mr-4 group-hover:bg-blue-500/30 transition-colors duration-300">
-						<svg class="w-8 h-8 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<div class="{currentTheme === 'dark' ? 'bg-blue-500/20 group-hover:bg-blue-500/30' : 'bg-blue-500/30 group-hover:bg-blue-500/40'} p-4 rounded-2xl mr-4 transition-colors duration-300">
+						<svg class="w-8 h-8 {currentTheme === 'dark' ? 'text-blue-200' : 'text-blue-700'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
 						</svg>
 					</div>
-					<h3 class="text-white font-bold text-xl">ลิงค์ร้านค้า</h3>
+					<h3 class="{currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} font-bold text-xl">ลิงค์ร้านค้า</h3>
 				</div>
 				<a href={`https://macosplay.com/store/${data?.StoreDetails.slug}`} 
-				   class="text-blue-200 hover:text-blue-100 transition-colors duration-200 break-all text-lg font-medium hover:underline">
+				   class="{currentTheme === 'dark' ? 'text-blue-200 hover:text-blue-100' : 'text-blue-700 hover:text-blue-800'} transition-colors duration-200 break-all text-lg font-medium hover:underline">
 					{`https://macosplay.com/store/${data?.StoreDetails.slug}`}
 				</a>
 			</div>
 
 			<!-- Facebook Page Card -->
-			<div class="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300 group">
+			<div class="{currentTheme === 'dark' ? 'bg-white/10 border-white/20 hover:bg-white/15' : 'bg-black/10 border-black/20 hover:bg-black/15'} backdrop-blur-lg rounded-3xl p-8 border transition-all duration-300 group">
 				<div class="flex items-center mb-6">
-					<div class="bg-blue-600/20 p-4 rounded-2xl mr-4 group-hover:bg-blue-600/30 transition-colors duration-300">
-						<svg class="w-8 h-8 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
+					<div class="{currentTheme === 'dark' ? 'bg-blue-600/20 group-hover:bg-blue-600/30' : 'bg-blue-600/30 group-hover:bg-blue-600/40'} p-4 rounded-2xl mr-4 transition-colors duration-300">
+						<svg class="w-8 h-8 {currentTheme === 'dark' ? 'text-blue-200' : 'text-blue-700'}" fill="currentColor" viewBox="0 0 24 24">
 							<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
 						</svg>
 					</div>
-					<h3 class="text-white font-bold text-xl">ลิงค์เพจ Facebook</h3>
+					<h3 class="{currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} font-bold text-xl">ลิงค์เพจ Facebook</h3>
 				</div>
 				{#if data?.StoreDetails.fbPage}
 					<a href={data?.StoreDetails.fbPage} 
@@ -633,25 +662,25 @@
 
 
 <!-- Enhanced Product Management Section -->
-<section class="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-white via-gray-50 to-blue-50 relative overflow-hidden">
+<section class="py-12 sm:py-16 lg:py-20 {currentTheme === 'dark' ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900' : 'bg-gradient-to-br from-white via-gray-50 to-blue-50'} relative overflow-hidden">
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-30">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-100 to-transparent rounded-full blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-100 to-transparent rounded-full blur-3xl"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 {currentTheme === 'dark' ? 'bg-gradient-to-br from-blue-800 to-transparent' : 'bg-gradient-to-br from-blue-100 to-transparent'} rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 {currentTheme === 'dark' ? 'bg-gradient-to-tr from-purple-800 to-transparent' : 'bg-gradient-to-tr from-purple-100 to-transparent'} rounded-full blur-3xl"></div>
     </div>
     
     <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative z-10">
         <!-- Enhanced Section Header -->
         <div class="text-center mb-12 sm:mb-16">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl mb-8 shadow-2xl">
+            <div class="inline-flex items-center justify-center w-20 h-20 {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600' : 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500'} rounded-3xl mb-8 shadow-2xl">
                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                 </svg>
             </div>
-            <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold {currentTheme === 'dark' ? 'bg-gradient-to-r from-white via-blue-200 to-purple-200' : 'bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600'} bg-clip-text text-transparent mb-6">
                 จัดการสินค้า
             </h2>
-            <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12 px-4">
+            <p class="text-lg sm:text-xl {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto leading-relaxed mb-12 px-4">
                 เพิ่ม แก้ไข และจัดการสินค้าในร้านของคุณด้วยเครื่องมือที่ทันสมัยและใช้งานง่าย
             </p>
             <button class="group relative bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-4 rounded-3xl font-bold text-base sm:text-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 overflow-hidden" 
@@ -1157,7 +1186,7 @@
             {#if filteredItems().length > 0}
                 {#each filteredItems() as item}
                     <!-- Ultra Modern Product Card -->
-                    <div class="group bg-white/90 backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 border border-gray-100/50 relative">
+                    <div class="group {currentTheme === 'dark' ? 'bg-gray-800/90' : 'bg-white/90'} backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 border {currentTheme === 'dark' ? 'border-gray-700/50' : 'border-gray-100/50'} relative">
                         <!-- Card Glow Effect -->
                         <div class="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         
@@ -1223,43 +1252,43 @@
                             <!-- Enhanced Card Content -->
                             <div class="p-4 sm:p-6">
                                 <!-- Product Title -->
-                                <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors duration-300">
+                                <h3 class="text-lg sm:text-xl font-bold {currentTheme === 'dark' ? 'text-white group-hover:text-blue-400' : 'text-gray-800 group-hover:text-blue-600'} mb-3 line-clamp-2 transition-colors duration-300">
                                     {item.Name}
                                 </h3>
                                 
                                 <!-- Product Details -->
-                                <p class="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                                <p class="text-sm {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-4 line-clamp-2 leading-relaxed">
                                     {item.Details}
                                 </p>
 
                                 <!-- Enhanced Tags -->
                                 <div class="flex flex-wrap gap-2 mb-4">
-                                    <span class="px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-xl text-xs font-semibold flex items-center">
+                                    <span class="px-3 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-800 to-blue-700 text-blue-200' : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'} rounded-xl text-xs font-semibold flex items-center">
                                         🏛️ {item.Province}
                                     </span>
-                                    <span class="px-3 py-1 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800 rounded-xl text-xs font-semibold flex items-center">
+                                    <span class="px-3 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-purple-800 to-purple-700 text-purple-200' : 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800'} rounded-xl text-xs font-semibold flex items-center">
                                         👕 {item.Size}
                                     </span>
                                 </div>
 
                                 <!-- Enhanced Price Display -->
-                                <div class="mb-4 p-3 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-100">
+                                <div class="mb-4 p-3 {currentTheme === 'dark' ? 'bg-gradient-to-r from-gray-800 to-blue-900 border-gray-700' : 'bg-gradient-to-r from-gray-50 to-blue-50 border-gray-100'} rounded-xl border">
                                     <div class="text-center">
                                         {#if item.isPriTest}
                                             <div class="space-y-1">
                                                 <div class="flex items-center justify-between">
-                                                    <span class="text-xs font-medium text-gray-600">ไพร:</span>
-                                                    <span class="text-lg font-bold text-green-600">฿{item.price_pri.toLocaleString()}</span>
+                                                    <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ไพร:</span>
+                                                    <span class="text-lg font-bold {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}">฿{item.price_pri.toLocaleString()}</span>
                                                 </div>
                                                 <div class="flex items-center justify-between">
-                                                    <span class="text-xs font-medium text-gray-600">เทส:</span>
-                                                    <span class="text-lg font-bold text-blue-600">฿{item.price_test.toLocaleString()}</span>
+                                                    <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">เทส:</span>
+                                                    <span class="text-lg font-bold {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}">฿{item.price_test.toLocaleString()}</span>
                                                 </div>
                                             </div>
                                         {:else}
                                             <div class="flex items-center justify-center space-x-2">
-                                                <span class="text-xs font-medium text-gray-600">ราคา:</span>
-                                                <span class="text-xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                                                <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ราคา:</span>
+                                                <span class="text-xl font-bold {currentTheme === 'dark' ? 'bg-gradient-to-r from-green-400 to-blue-400' : 'bg-gradient-to-r from-green-600 to-blue-600'} bg-clip-text text-transparent">
                                                     ฿{item.price.toLocaleString()}
                                                 </span>
                                             </div>
@@ -1311,17 +1340,17 @@
             {:else}
                 <!-- Enhanced Empty State -->
                 <div class="col-span-full text-center py-20">
-                    <div class="bg-gradient-to-br from-white via-gray-50 to-blue-50 rounded-3xl p-16 shadow-xl border border-gray-100/50 relative overflow-hidden">
+                    <div class="{currentTheme === 'dark' ? 'bg-gradient-to-br from-gray-800 via-gray-700 to-blue-800 border-gray-700/50' : 'bg-gradient-to-br from-white via-gray-50 to-blue-50 border-gray-100/50'} rounded-3xl p-16 shadow-xl border relative overflow-hidden">
                         <!-- Background Pattern -->
                         <div class="absolute inset-0 opacity-40">
-                            <div class="absolute top-0 left-0 w-32 h-32 bg-blue-200/30 rounded-full blur-3xl"></div>
-                            <div class="absolute bottom-0 right-0 w-24 h-24 bg-purple-200/30 rounded-full blur-2xl"></div>
+                            <div class="absolute top-0 left-0 w-32 h-32 {currentTheme === 'dark' ? 'bg-blue-700/30' : 'bg-blue-200/30'} rounded-full blur-3xl"></div>
+                            <div class="absolute bottom-0 right-0 w-24 h-24 {currentTheme === 'dark' ? 'bg-purple-700/30' : 'bg-purple-200/30'} rounded-full blur-2xl"></div>
                         </div>
                         
                         <div class="relative z-10">
                             <!-- Animated Icon -->
                             <div class="relative mb-8">
-                                <div class="w-24 h-24 mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-2xl animate-pulse">
+                                <div class="w-24 h-24 mx-auto {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-gradient-to-r from-blue-500 to-purple-500'} rounded-3xl flex items-center justify-center shadow-2xl animate-pulse">
                                     <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                     </svg>
@@ -1331,10 +1360,10 @@
                                 <div class="absolute -bottom-2 -left-2 w-4 h-4 bg-pink-400 rounded-full animate-bounce delay-300"></div>
                             </div>
                             
-                            <h3 class="text-3xl font-bold bg-gradient-to-r from-gray-800 to-blue-600 bg-clip-text text-transparent mb-4">
+                            <h3 class="text-3xl font-bold {currentTheme === 'dark' ? 'bg-gradient-to-r from-white to-blue-200' : 'bg-gradient-to-r from-gray-800 to-blue-600'} bg-clip-text text-transparent mb-4">
                                 ยังไม่มีสินค้าในร้าน
                             </h3>
-                            <p class="text-xl text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+                            <p class="text-xl {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-8 max-w-md mx-auto leading-relaxed">
                                 เริ่มต้นการเดินทางในโลกของการขายออนไลน์ด้วยการเพิ่มสินค้าแรกของคุณ
                             </p>
                             
@@ -1396,6 +1425,153 @@
                 </div>
             {/if}
         </div>
+    </div>
+</section>
+
+<!-- Statistics Dashboard Section (Inspired by the dashboard design) -->
+<section class="py-12 {currentTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Statistics Header -->
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'} mb-4">สถิติการขาย</h2>
+            <p class="text-lg {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ติดตามประสิทธิภาพร้านค้าของคุณ</p>
+        </div>
+        
+        <!-- Statistics Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- Kostum Berdasarkan Ukuran -->
+            <div class="manage-store-card rounded-2xl p-6 border">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="flex items-center justify-center w-10 h-10 bg-blue-100 {currentTheme === 'dark' ? 'bg-blue-900' : 'bg-blue-100'} rounded-lg">
+                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">คอสตูมแยกตามขนาด</h3>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="{currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b">
+                                <th class="text-left py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">ขนาด</th>
+                                <th class="text-right py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">จำนวน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each ['S', 'M', 'L', 'XL', 'XXL'] as size}
+                                {@const count = data.items?.filter(item => item.Size === size).length || 0}
+                                <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
+                                    <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{size}</td>
+                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{count}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Kostum Berdasarkan Gender -->
+            <div class="manage-store-card rounded-2xl p-6 border">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="flex items-center justify-center w-10 h-10 {currentTheme === 'dark' ? 'bg-pink-900' : 'bg-pink-100'} rounded-lg">
+                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-pink-400' : 'text-pink-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">คอสตูมแยกตามเพศ</h3>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="{currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b">
+                                <th class="text-left py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">เพศ</th>
+                                <th class="text-right py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">จำนวน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each ['ชาย', 'หญิง', 'ยูนิเซ็กซ์'] as gender}
+                                {@const count = data.items?.filter(item => item.gender === gender).length || 0}
+                                <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
+                                    <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{gender}</td>
+                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{count}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Statistics Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Kostum Berdasarkan Brand -->
+            <div class="manage-store-card rounded-2xl p-6 border">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="flex items-center justify-center w-10 h-10 {currentTheme === 'dark' ? 'bg-orange-900' : 'bg-orange-100'} rounded-lg">
+                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-orange-400' : 'text-orange-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">คอสตูมแยกตามแบรนด์</h3>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="{currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b">
+                                <th class="text-left py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">แบรนด์</th>
+                                <th class="text-right py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">จำนวน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each [...new Set(data.items?.map(item => item.brand || 'ไม่ระบุ').filter(Boolean))] as brand}
+                                {@const count = data.items?.filter(item => (item.brand || 'ไม่ระบุ') === brand).length || 0}
+                                <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
+                                    <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{brand}</td>
+                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{count}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Kostum Berdasarkan Series -->
+            <div class="manage-store-card rounded-2xl p-6 border">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="flex items-center justify-center w-10 h-10 {currentTheme === 'dark' ? 'bg-green-900' : 'bg-green-100'} rounded-lg">
+                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">คอสตูมแยกตามซีรีส์</h3>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="{currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b">
+                                <th class="text-left py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">ซีรีส์</th>
+                                <th class="text-right py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">จำนวน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each [...new Set(data.items?.map(item => item.series || 'ไม่ระบุ').filter(Boolean))] as series}
+                                {@const count = data.items?.filter(item => (item.series || 'ไม่ระบุ') === series).length || 0}
+                                <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
+                                    <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{series}</td>
+                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{count}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- Edit Modal -->
 {#if editingItem}
