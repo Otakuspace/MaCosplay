@@ -539,7 +539,26 @@
                             </svg>
                         </div>
                         <h3 class="text-2xl font-semibold text-gray-900 mb-2">ไม่มีสินค้า</h3>
-                        <p class="text-gray-600">ร้านค้านี้ยังไม่มีสินค้าให้เช่าในขณะนี้</p>
+                        <p class="text-gray-600 mb-6">ร้านค้านี้ยังไม่มีสินค้าให้เช่าในขณะนี้</p>
+                        
+                        <!-- Demo Links for Testing Image Display -->
+                        <div class="text-center">
+                            <p class="text-sm text-gray-500 mb-3">Test different outfit IDs with image display:</p>
+                            <div class="flex flex-wrap justify-center gap-2">
+                                <a href="/store/{data.userStore?.id || 'demo'}/anime-alya-001" class="btn btn-outline btn-sm">
+                                    Anime Alya
+                                </a>
+                                <a href="/store/{data.userStore?.id || 'demo'}/makima-cosplay-002" class="btn btn-outline btn-sm">
+                                    Makima
+                                </a>
+                                <a href="/store/{data.userStore?.id || 'demo'}/venti-outfit-003" class="btn btn-outline btn-sm">
+                                    Venti
+                                </a>
+                                <a href="/store/{data.userStore?.id || 'demo'}/custom-item-123" class="btn btn-outline btn-sm">
+                                    Custom Item
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {/if}
