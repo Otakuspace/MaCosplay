@@ -24,6 +24,7 @@ export const PUT = async ({ request, locals }) => {
         const price_pri = formData.get('price_pri');
         const price_test = formData.get('price_test');
         const isPriTest = formData.get('isPriTest') === 'price_pri_test';
+        const tags = formData.get('tags');
         console.log(formData.get('isPriTest'))
 
 
@@ -46,7 +47,8 @@ export const PUT = async ({ request, locals }) => {
             public: isPublic,
             price_pri: price_pri,
             price_test: price_test,
-            isPriTest: isPriTest
+            isPriTest: isPriTest,
+            tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : []
         };
 
 

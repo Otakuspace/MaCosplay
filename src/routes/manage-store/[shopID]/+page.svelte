@@ -515,6 +515,18 @@
                             </select>
                         </div>
 
+                        <!-- Tags -->
+                        <div class="mb-4">
+                            <label for="tags" class="mb-2 block text-sm font-bold">แท็ก (คั่นด้วยเครื่องหมายจุลภาค)</label>
+                            <input
+                                type="text"
+                                id="tags"
+                                name="tags"
+                                class="input input-bordered w-full"
+                                placeholder="เช่น: cosplay, genshin, anime"
+                            />
+                        </div>
+
                         <!-- Province -->
                         <div class="mb-4">
                             <label for="province" class="mb-2 block text-sm font-bold">จังหวัด</label>
@@ -1100,6 +1112,20 @@
 							<option value="อุทัยธานี">อุทัยธานี</option>
 							<option value="อุบลราชธานี">อุบลราชธานี</option>
                     </select>
+                </div>
+
+                <!-- Tags -->
+                <div class="form-control mb-4">
+                    <label class="label">
+                        <span class="label-text">แท็ก (คั่นด้วยเครื่องหมายจุลภาค)</span>
+                    </label>
+                    <input
+                        type="text"
+                        name="tags"
+                        bind:value={editingItem.tags ? editingItem.tags.join(', ') : ''}
+                        class="input input-bordered w-full"
+                        placeholder="เช่น: cosplay, genshin, anime"
+                    />
                 </div>
 
                 <!-- Pricing Option Selection -->

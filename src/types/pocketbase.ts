@@ -6,6 +6,7 @@ import type PocketBase from 'pocketbase';
 import type { RecordService } from 'pocketbase';
 
 export enum Collections {
+	ItemList = 'itemList',
 	Mysound = 'Mysound',
 	SoundStore = 'SoundStore',
 	SoundStore2 = 'SoundStore2',
@@ -40,6 +41,23 @@ export type AuthSystemFields<T = never> = {
 } & BaseSystemFields<T>;
 
 // Record types for each collection
+
+export type ItemListRecord = {
+	Name?: string;
+	Desc?: string;
+	Image?: string;
+	Province?: string;
+	Size?: string;
+	Status?: string;
+	isPriTest?: boolean;
+	price?: number;
+	price_pri?: number;
+	price_test?: number;
+	public?: boolean;
+	tags?: string[];
+	user?: RecordIdString;
+	userStore?: RecordIdString;
+};
 
 export type MysoundRecord<Tmysound = unknown> = {
 	mysound?: null | Tmysound;
@@ -101,6 +119,8 @@ export type UsersTestRecord = {
 };
 
 // Response types include system fields and match responses from the PocketBase API
+export type ItemListResponse<Texpand = unknown> = Required<ItemListRecord> &
+	BaseSystemFields<Texpand>;
 export type MysoundResponse<Tmysound = unknown, Texpand = unknown> = Required<
 	MysoundRecord<Tmysound>
 > &
@@ -126,6 +146,7 @@ export type UsersTestResponse<Texpand = unknown> = Required<UsersTestRecord> &
 // Types containing all Records and Responses, useful for creating typing helper functions
 
 export type CollectionRecords = {
+	itemList: ItemListRecord;
 	Mysound: MysoundRecord;
 	SoundStore: SoundStoreRecord;
 	SoundStore2: SoundStore2Record;
@@ -138,6 +159,7 @@ export type CollectionRecords = {
 };
 
 export type CollectionResponses = {
+	itemList: ItemListResponse;
 	Mysound: MysoundResponse;
 	SoundStore: SoundStoreResponse;
 	SoundStore2: SoundStore2Response;
@@ -153,6 +175,7 @@ export type CollectionResponses = {
 // https://github.com/pocketbase/js-sdk#specify-typescript-definitions
 
 export type TypedPocketBase = PocketBase & {
+	collection(idOrName: 'itemList'): RecordService<ItemListResponse>;
 	collection(idOrName: 'Mysound'): RecordService<MysoundResponse>;
 	collection(idOrName: 'SoundStore'): RecordService<SoundStoreResponse>;
 	collection(idOrName: 'SoundStore2'): RecordService<SoundStore2Response>;
