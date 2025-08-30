@@ -33,24 +33,83 @@ export const load = async ({ params }) => {
 	}
 
 			try {
-			// Mock data for demonstration - replace with actual API calls later
-			const mockOutfit = {
-				id: outfitID,
-				Name: `Cosplay Outfit ${outfitID}`,
-				Description: 'This is a beautiful cosplay outfit with high-quality materials and excellent craftsmanship. Perfect for conventions and photo shoots.',
-				Price: 2500,
-				OriginalPrice: 3000,
-				Size: 'M',
-				Gender: 'Female',
-				Series: 'Anime Series',
-				Condition: 'New',
-				Images: [
-					'/images/Example/Anime_alya_cos.png',
-					'/images/Example/MakimaCos.png',
-					'/images/Example/VentiCos.png',
-					'/images/Example/Anime_main.png'
-				]
+			// Generate different mock data based on outfit ID for demonstration
+			const getOutfitData = (id: string) => {
+				const baseData = {
+					id: id,
+					Name: `Cosplay Outfit ${id}`,
+					Description: 'This is a beautiful cosplay outfit with high-quality materials and excellent craftsmanship. Perfect for conventions and photo shoots.',
+					Price: 2500,
+					OriginalPrice: 3000,
+					Size: 'M',
+					Gender: 'Female',
+					Series: 'Anime Series',
+					Condition: 'New'
+				};
+
+				// Different image sets based on outfit ID patterns
+				if (id.includes('anime') || id.includes('alya')) {
+					return {
+						...baseData,
+						Name: `Anime Cosplay ${id}`,
+						Series: 'Anime Series',
+						Images: [
+							// Item ID-based paths (will be checked dynamically)
+							`${id}/main.jpg`,
+							`${id}/detail1.jpg`,
+							`${id}/detail2.jpg`,
+							`${id}/back.jpg`,
+							// Fallback images
+							'/images/Example/Anime_alya_cos.png',
+							'/images/Example/Anime_main.png'
+						]
+					};
+				} else if (id.includes('makima')) {
+					return {
+						...baseData,
+						Name: `Makima Cosplay ${id}`,
+						Series: 'Chainsaw Man',
+						Images: [
+							`${id}/main.jpg`,
+							`${id}/detail1.jpg`,
+							`${id}/detail2.jpg`,
+							'/images/Example/MakimaCos.png',
+							'/images/Example/Makima.png'
+						]
+					};
+				} else if (id.includes('venti')) {
+					return {
+						...baseData,
+						Name: `Venti Cosplay ${id}`,
+						Series: 'Genshin Impact',
+						Gender: 'Male',
+						Images: [
+							`${id}/main.jpg`,
+							`${id}/detail1.jpg`,
+							`${id}/detail2.jpg`,
+							'/images/Example/VentiCos.png'
+						]
+					};
+				} else {
+					return {
+						...baseData,
+						Images: [
+							// Generic item ID-based paths
+							`${id}/main.jpg`,
+							`${id}/detail1.jpg`,
+							`${id}/detail2.jpg`,
+							`${id}/back.jpg`,
+							// Fallback to example images
+							'/images/Example/Anime_alya_cos.png',
+							'/images/Example/MakimaCos.png',
+							'/images/Example/VentiCos.png',
+							'/images/Example/Anime_main.png'
+						]
+					};
+				}
 			};
+
+			const mockOutfit = getOutfitData(outfitID);
 
 		const mockShop = {
 			id: shopID,

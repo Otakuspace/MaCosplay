@@ -1,21 +1,30 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import ImageManager from '../../components/ImageManager.svelte';
+	import type { StorePageData, ItemData, ShopData, ImageCheckResponse } from '../../../types/images';
 	
 
-	export let data: any;
+	export let data: StorePageData;
 
 	let currentImageIndex = 0;
 	let isDarkTheme = false;
 	let imageLoading = true;
 	let imageError = false;
+	let itemSpecificImagesLoaded = false;
+	let showImageManager = false;
 
 	// Extract outfit and shop data
-	$: outfit = data?.itemList?.[0] || null;
-	$: shop = data?.userStore || null;
+	$: outfit: ItemData | null = data?.itemList?.[0] || null;
+	$: shop: ShopData | null = data?.userStore || null;
 	$: productImages = outfit?.Images ? 
 		(outfit.Images.filter((img: string) => img && img.trim() !== '')) : 
 		(outfit?.Image ? [outfit.Image] : []);
+
+	// Reactive statement to check for images when outfit ID changes
+	$: if (outfit?.id && !itemSpecificImagesLoaded) {
+		checkItemImages();
+	}
 
 	onMount(() => {
 		// Check current theme
@@ -33,6 +42,11 @@
 			attributes: true,
 			attributeFilter: ['data-theme']
 		});
+
+		// Check for item-specific images
+		if (outfit?.id || $page.params.outfitID) {
+			checkItemImages();
+		}
 
 		return () => observer.disconnect();
 	});
@@ -70,8 +84,78 @@
 			return image;
 		}
 		
-		// If it's a relative path from PocketBase, construct the full URL using the outfit record id
-		return `https://file.macosplay.com/mxj3660ce5olheb/${outfit?.id || $page.params.outfitID}/${image}`;
+		// Handle item ID-based image paths
+		const itemId = outfit?.id || $page.params.outfitID;
+		
+		// If image path includes item ID pattern, use it directly
+		if (image.includes(itemId)) {
+			return `https://file.macosplay.com/mxj3660ce5olheb/${image}`;
+		}
+		
+		// If it's a relative path from PocketBase, construct the full URL using the item ID
+		return `https://file.macosplay.com/mxj3660ce5olheb/${itemId}/${image}`;
+	}
+
+	function getImageWithFallback(image: string, index: number): string {
+		// Primary image URL based on item ID
+		const primaryUrl = getImageUrl(image);
+		
+		// Return the primary URL - error handling will be done in the img tag's on:error event
+		return primaryUrl;
+	}
+
+	function handleImageError(event: Event, index: number) {
+		const target = event.target as HTMLImageElement;
+		const fallbackImages = [
+			'/images/Example/Anime_alya_cos.png',
+			'/images/Example/MakimaCos.png',
+			'/images/Example/VentiCos.png',
+			'/images/Example/Anime_main.png',
+			'/images/Example/example01.jpg'
+		];
+		
+		// Try fallback images based on index
+		const fallbackImage = fallbackImages[index % fallbackImages.length];
+		if (target.src !== fallbackImage) {
+			target.src = fallbackImage;
+		} else {
+			// If even fallback fails, show placeholder
+			imageError = true;
+		}
+	}
+
+	// Function to preload item-specific images and check availability
+	async function checkItemImages() {
+		const itemId = outfit?.id || $page.params.outfitID;
+		
+		try {
+			// Use our API endpoint to check for available images
+			const response = await fetch(`/api/check-images?itemId=${encodeURIComponent(itemId)}`);
+			const result: ImageCheckResponse = await response.json();
+			
+			// Always mark as loaded to hide the spinner
+			itemSpecificImagesLoaded = true;
+
+			if (response.ok && result.availableImages && result.availableImages.length > 0) {
+				console.log(`Found ${result.count} item-specific images for ${itemId}`);
+				
+				// Extract just the paths from the API response
+				const imagePaths = result.availableImages.map((img) => img.path);
+				
+				// Update outfit images with item-specific images first, then fallbacks
+				if (outfit) {
+					outfit.Images = [
+						...imagePaths,
+						...outfit.Images.filter((img: string) => img.startsWith('/images/Example/'))
+					];
+				}
+			} else {
+				console.log(`No item-specific images found for ${itemId}, using fallback images`);
+			}
+		} catch (error) {
+			console.error('Error checking item images:', error);
+			itemSpecificImagesLoaded = true;
+		}
 	}
 </script>
 
@@ -101,6 +185,15 @@
 				<div class="bg-base-200 rounded-2xl p-6 shadow-lg">
 					<!-- Main Image Display -->
 					<div class="relative mb-6">
+						<!-- Loading indicator for image availability check -->
+						{#if !itemSpecificImagesLoaded && outfit?.id}
+							<div class="absolute top-2 right-2 z-20">
+								<div class="bg-base-100/80 rounded-full p-2">
+									<div class="loading loading-spinner loading-sm text-primary"></div>
+								</div>
+							</div>
+						{/if}
+						
 						{#if productImages.length > 0}
 							<div class="relative aspect-square rounded-xl overflow-hidden bg-base-300">
 								{#if productImages.length > 1}
@@ -126,7 +219,7 @@
 
 								<!-- Main Image -->
 								<img
-									src={getImageUrl(productImages[currentImageIndex])}
+									src={getImageWithFallback(productImages[currentImageIndex], currentImageIndex)}
 									alt={outfit?.Name || 'Outfit Image'}
 									class="w-full h-full object-cover"
 									on:load={() => {
@@ -135,9 +228,7 @@
 									}}
 									on:error={(e) => {
 										imageLoading = false;
-										imageError = true;
-										const target = e.target as HTMLImageElement;
-										target.src = '/images/Example/example01.jpg'; // Fallback image
+										handleImageError(e, currentImageIndex);
 									}}
 								/>
 								
@@ -188,16 +279,52 @@
 									on:click={() => selectImage(index)}
 								>
 									<img
-										src={getImageUrl(image)}
+										src={getImageWithFallback(image, index)}
 										alt={`${outfit?.Name || 'Outfit'} - Image ${index + 1}`}
 										class="w-full h-full object-cover"
-										on:error={(e) => {
-											const target = e.target as HTMLImageElement;
-											target.src = '/images/Example/example01.jpg'; // Fallback image
-										}}
+										on:error={(e) => handleImageError(e, index)}
 									/>
 								</button>
 							{/each}
+						</div>
+					{/if}
+
+					<!-- Image Management Toggle -->
+					<div class="mt-4">
+						<button 
+							class="btn btn-outline btn-sm w-full"
+							on:click={() => showImageManager = !showImageManager}
+						>
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+							</svg>
+							{showImageManager ? 'Hide' : 'Manage'} Images
+						</button>
+					</div>
+
+					<!-- Image Manager -->
+					{#if showImageManager && outfit?.id}
+						<div class="mt-4">
+							<ImageManager 
+								itemId={outfit.id}
+								existingImages={productImages}
+								on:imagesUpdated={() => {
+									// Refresh images when updated
+									checkItemImages();
+								}}
+							/>
+						</div>
+					{/if}
+
+					<!-- Debug Info (for development) -->
+					{#if outfit?.id}
+						<div class="mt-4 p-3 bg-base-300 rounded-lg text-xs">
+							<div class="font-semibold mb-1">Debug Info:</div>
+							<div>Item ID: {outfit.id}</div>
+							<div>Current Image: {productImages[currentImageIndex] || 'None'}</div>
+							<div>Full URL: {productImages.length > 0 ? getImageUrl(productImages[currentImageIndex]) : 'None'}</div>
+							<div>Total Images: {productImages.length}</div>
+							<div>Item-specific images loaded: {itemSpecificImagesLoaded ? 'Yes' : 'No'}</div>
 						</div>
 					{/if}
 				</div>
