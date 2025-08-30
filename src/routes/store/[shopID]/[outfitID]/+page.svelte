@@ -70,8 +70,8 @@
 			return image;
 		}
 		
-		// If it's a relative path from PocketBase, construct the full URL
-		return `https://file.macosplay.com/mxj3660ce5olheb/${$page.params.shopID}/${image}`;
+		// If it's a relative path from PocketBase, construct the full URL using the outfit record id
+		return `https://file.macosplay.com/mxj3660ce5olheb/${outfit?.id || $page.params.outfitID}/${image}`;
 	}
 </script>
 
