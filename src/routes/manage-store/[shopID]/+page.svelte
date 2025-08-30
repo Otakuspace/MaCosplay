@@ -17,6 +17,19 @@
     let editImageFile = null;
     let itemToDelete = null; // Track the item to be deleted
     let showDeleteConfirm = false; // Control the visibility of the delete confirmation modal
+    let tagsString = ''; // String representation of tags for input binding
+
+    // Reactive statement to sync tagsString with editingItem.tags
+    $: if (editingItem && editingItem.tags) {
+        tagsString = editingItem.tags.join(', ');
+    } else if (editingItem) {
+        tagsString = '';
+    }
+
+    // Reactive statement to sync editingItem.tags with tagsString
+    $: if (editingItem && tagsString !== undefined) {
+        editingItem.tags = tagsString ? tagsString.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+    }
 
     function openEditModal(item) {
         editingItem = { ...item }; // Create a copy of the item
@@ -1122,7 +1135,7 @@
                     <input
                         type="text"
                         name="tags"
-                        bind:value={editingItem.tags ? editingItem.tags.join(', ') : ''}
+                        bind:value={tagsString}
                         class="input input-bordered w-full"
                         placeholder="เช่น: cosplay, genshin, anime"
                     />
