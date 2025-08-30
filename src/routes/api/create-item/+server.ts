@@ -21,6 +21,7 @@ export const POST = async ({ locals, request }) => {
         const price_pri = formData.get('price_pri');
         const price_test = formData.get('price_test');
         const isPriTest = formData.get('isPriTest') === 'price_pri_test';
+        const tags = formData.get('tags');
         console.log(formData.get('isPriTest'))
         // Validate required fields
         if (!name || !price || !size || !status || !province) {
@@ -45,7 +46,8 @@ export const POST = async ({ locals, request }) => {
             userStore: userStore,
             price_pri: price_pri,
             price_test: price_test,
-            isPriTest: isPriTest
+            isPriTest: isPriTest,
+            tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : []
         };
 
 
