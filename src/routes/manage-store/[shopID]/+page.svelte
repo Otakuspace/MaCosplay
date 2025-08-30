@@ -633,28 +633,28 @@
 
 
 <!-- Enhanced Product Management Section -->
-<section class="py-20 bg-gradient-to-br from-white via-gray-50 to-blue-50 relative overflow-hidden">
+<section class="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-white via-gray-50 to-blue-50 relative overflow-hidden">
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-30">
         <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-100 to-transparent rounded-full blur-3xl"></div>
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-100 to-transparent rounded-full blur-3xl"></div>
     </div>
     
-    <div class="container mx-auto px-6 relative z-10">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <!-- Enhanced Section Header -->
-        <div class="text-center mb-16">
+        <div class="text-center mb-12 sm:mb-16">
             <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl mb-8 shadow-2xl">
                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                 </svg>
             </div>
-            <h2 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
                 จัดการสินค้า
             </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12">
+            <p class="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12 px-4">
                 เพิ่ม แก้ไข และจัดการสินค้าในร้านของคุณด้วยเครื่องมือที่ทันสมัยและใช้งานง่าย
             </p>
-            <button class="group relative bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-10 py-4 rounded-3xl font-bold text-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 overflow-hidden" 
+            <button class="group relative bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-4 rounded-3xl font-bold text-base sm:text-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 overflow-hidden" 
                     on:click={() => my_modal_5.showModal()}>
                 <!-- Button Background Animation -->
                 <div class="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -946,7 +946,7 @@
         </dialog>
     
         <!-- Enhanced Search and Filter Section -->
-        <div class="bg-white/70 backdrop-blur-md rounded-3xl p-8 mb-16 shadow-xl border border-white/20 relative overflow-hidden">
+        <div class="bg-white/70 backdrop-blur-md rounded-3xl p-6 sm:p-8 mb-12 sm:mb-16 shadow-xl border border-white/20 relative overflow-hidden">
             <!-- Background Decoration -->
             <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100/50 to-transparent rounded-full blur-2xl"></div>
             <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-100/50 to-transparent rounded-full blur-xl"></div>
@@ -958,13 +958,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                     </svg>
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-2">ค้นหาและกรองสินค้า</h3>
-                <p class="text-gray-600">ใช้ตัวกรองเพื่อค้นหาสินค้าที่ต้องการได้อย่างรวดเร็ว</p>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">ค้นหาและกรองสินค้า</h3>
+                <p class="text-sm sm:text-base text-gray-600 px-4">ใช้ตัวกรองเพื่อค้นหาสินค้าที่ต้องการได้อย่างรวดเร็ว</p>
             </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
                 <!-- Enhanced Search Input -->
-                <div class="lg:col-span-2 relative group">
+                <div class="md:col-span-2 lg:col-span-2 relative group">
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative">
                         <div class="absolute left-4 top-1/2 transform -translate-y-1/2 flex items-center">
@@ -1108,7 +1108,7 @@
             </div>
             
             <!-- Filter Summary -->
-            <div class="mt-6 flex flex-wrap gap-2 relative z-10">
+            <div class="mt-6 flex flex-wrap gap-2 justify-center sm:justify-start relative z-10">
                 {#if searchQuery}
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                         🔍 "{searchQuery}"
@@ -1153,7 +1153,7 @@
         </div>
 
         <!-- Enhanced Product Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
             {#if filteredItems().length > 0}
                 {#each filteredItems() as item}
                     <!-- Ultra Modern Product Card -->
@@ -1269,7 +1269,7 @@
 
                                 <!-- Enhanced Action Buttons -->
                                 <div class="space-y-4">
-                                    <div class="grid grid-cols-2 gap-4">
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <button class="group/btn relative px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-sm font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
                                                 on:click={() => openEditModal(item)}>
                                             <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
@@ -1365,7 +1365,7 @@
                             </button>
                             
                             <!-- Additional Tips -->
-                            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
                                 <div class="text-center">
                                     <div class="w-12 h-12 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center mb-3">
                                         <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
