@@ -12,21 +12,25 @@ export const load = async ({ params }) => {
 	// Validate shopID format (should be alphanumeric, no special characters)
 	const shopIDRegex = /^[a-zA-Z0-9_-]+$/;
 	if (!shopIDRegex.test(shopID)) {
+		console.log(`Invalid shop ID format: ${shopID}`);
 		throw error(400, 'Invalid shop ID format');
 	}
 
 	// Validate outfitID format (should be alphanumeric, no special characters)
 	const outfitIDRegex = /^[a-zA-Z0-9_-]+$/;
 	if (!outfitIDRegex.test(outfitID)) {
+		console.log(`Invalid outfit ID format: ${outfitID}`);
 		throw error(400, 'Invalid outfit ID format');
 	}
 
-	// Length validation
-	if (shopID.length < 3 || shopID.length > 50) {
+	// Length validation - allow shorter IDs for flexibility
+	if (shopID.length < 1 || shopID.length > 100) {
+		console.log(`Shop ID length invalid: ${shopID} (length: ${shopID.length})`);
 		throw error(400, 'Shop ID length invalid');
 	}
 
-	if (outfitID.length < 3 || outfitID.length > 50) {
+	if (outfitID.length < 1 || outfitID.length > 100) {
+		console.log(`Outfit ID length invalid: ${outfitID} (length: ${outfitID.length})`);
 		throw error(400, 'Outfit ID length invalid');
 	}
 

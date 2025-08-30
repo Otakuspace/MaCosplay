@@ -3,6 +3,11 @@ import { serializeNonPOJOs } from "$lib/utils";
 import { createAdminClient } from '$lib/pocketbase';
 
 export const load = async ({ locals, params, url }) => {
+	// Basic validation for shopID parameter
+	if (!params.shopID || params.shopID.trim() === '') {
+		throw error(400, 'Shop ID is required');
+	}
+
 	const searchQuery = url.searchParams.get('search') || '';
 	const page = parseInt(url.searchParams.get('page') || '1', 10);
 	const perPage = 10;
@@ -35,7 +40,7 @@ export const load = async ({ locals, params, url }) => {
 				currentPage: page
 			};
 		} catch (err) {
-			console.log('Error fetching user instances: ', err);
+			console.log('Error fetching item list for shop:', params.shopID, err);
 			throw error(err.status || 500, err.message || 'Internal Server Error');
 		}
 	};
@@ -47,6 +52,11 @@ export const load = async ({ locals, params, url }) => {
 				filter: `slug = "${shopSlug}"`,
 				expand: 'user'
 			});
+
+			if (instances.length === 0) {
+				console.log(`Store not found for slug: ${shopSlug}`);
+				throw error(404, 'Store not found');
+			}
 
 			const storeDetails = instances.map(instance => {
 				if (instance.expand?.user) {
@@ -64,6 +74,9 @@ export const load = async ({ locals, params, url }) => {
 			return serializeNonPOJOs(storeDetails[0]);
 		} catch (err) {
 			console.log('Error fetching store details: ', err);
+			if (err.status === 404) {
+				throw err; // Re-throw 404 errors
+			}
 			throw error(err.status || 500, err.message || 'Internal Server Error');
 		}
 	};
