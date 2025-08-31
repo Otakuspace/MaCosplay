@@ -199,6 +199,8 @@
     let selectedProvince = ''; // State to hold the selected province
     let selectedSize = ''; // State to hold the selected size
     let selectedStatus = '';
+    let selectedBrand = ''; // State to hold the selected brand
+    let selectedSeries = ''; // State to hold the selected series
 
     // Function to filter items based on search and selected filters
     const filteredItems = () => {
@@ -207,7 +209,9 @@
             const matchesProvince = !selectedProvince || item.Province === selectedProvince;
             const matchesSize = !selectedSize || item.Size === selectedSize;
             const matchesStatus = !selectedStatus || item.Status === selectedStatus;
-            return matchesSearch && matchesProvince && matchesSize && matchesStatus;
+            const matchesBrand = !selectedBrand || item.brand === selectedBrand;
+            const matchesSeries = !selectedSeries || item.series === selectedSeries;
+            return matchesSearch && matchesProvince && matchesSize && matchesStatus && matchesBrand && matchesSeries;
         });
     };
 
@@ -974,8 +978,8 @@
         </div>
         </dialog>
     
-        <!-- Enhanced Search and Filter Section -->
-        <div class="bg-white/70 backdrop-blur-md rounded-3xl p-6 sm:p-8 mb-12 sm:mb-16 shadow-xl border border-white/20 relative overflow-hidden">
+        <!-- Enhanced Search and Filter Section with 5 Responsive Icon Cards -->
+        <div class="{currentTheme === 'dark' ? 'bg-gray-800/70' : 'bg-white/70'} backdrop-blur-md rounded-3xl p-6 sm:p-8 mb-12 sm:mb-16 shadow-xl border {currentTheme === 'dark' ? 'border-gray-700/20' : 'border-white/20'} relative overflow-hidden">
             <!-- Background Decoration -->
             <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100/50 to-transparent rounded-full blur-2xl"></div>
             <div class="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-purple-100/50 to-transparent rounded-full blur-xl"></div>
@@ -987,13 +991,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2">ค้นหาและกรองสินค้า</h3>
-                <p class="text-sm sm:text-base text-gray-600 px-4">ใช้ตัวกรองเพื่อค้นหาสินค้าที่ต้องการได้อย่างรวดเร็ว</p>
+                <h3 class="text-xl sm:text-2xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} mb-2">ค้นหาและกรองสินค้า</h3>
+                <p class="text-sm sm:text-base {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} px-4">ใช้ตัวกรองเพื่อค้นหาสินค้าที่ต้องการได้อย่างรวดเร็ว</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-                <!-- Enhanced Search Input -->
-                <div class="md:col-span-2 lg:col-span-2 relative group">
+            <!-- Search Input -->
+            <div class="mb-8 relative z-10">
+                <div class="relative group max-w-2xl mx-auto">
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="relative">
                         <div class="absolute left-4 top-1/2 transform -translate-y-1/2 flex items-center">
@@ -1005,143 +1009,202 @@
                             type="text" 
                             placeholder="ค้นหาสินค้า..." 
                             bind:value={searchQuery} 
-                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-gray-200 bg-white/80 backdrop-blur-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:bg-white transition-all duration-300 text-gray-700 placeholder-gray-400 font-medium shadow-sm hover:shadow-md"
+                            class="w-full pl-12 pr-4 py-4 rounded-2xl border-2 {currentTheme === 'dark' ? 'border-gray-600 bg-gray-700/80 text-white placeholder-gray-400 focus:border-blue-500' : 'border-gray-200 bg-white/80 text-gray-700 placeholder-gray-400 focus:border-blue-500'} backdrop-blur-sm focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                         />
                     </div>
                 </div>
-
-                <!-- Enhanced Province Filter -->
-                <div class="relative group">
+            </div>
+            
+            <!-- 5 Responsive Filter Icon Cards -->
+            <div class="filter-cards-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 md:gap-6 relative z-10">
+                <!-- Province Filter Card -->
+                <div class="group relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="relative">
-                        <select bind:value={selectedProvince} class="w-full px-4 py-4 rounded-2xl border-2 border-gray-200 bg-white/80 backdrop-blur-sm focus:border-green-500 focus:ring-4 focus:ring-green-500/20 focus:bg-white transition-all duration-300 text-gray-700 font-medium shadow-sm hover:shadow-md appearance-none cursor-pointer">
-                            <option value="">🏛️ เลือกจังหวัด</option>
-                    <option value="">เลือกจังหวัด</option>
-                <option value="กระบี่">กระบี่</option>
-                <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
-                <option value="กาญจนบุรี">กาญจนบุรี</option>
-                <option value="กาฬสินธุ์">กาฬสินธุ์</option>
-                <option value="กำแพงเพชร">กำแพงเพชร</option>
-                <option value="ขอนแก่น">ขอนแก่น</option>
-                <option value="จันทบุรี">จันทบุรี</option>
-                <option value="ฉะเชิงเทรา">ฉะเชิงเทรา</option>
-                <option value="ชลบุรี">ชลบุรี</option>
-                <option value="ชัยนาท">ชัยนาท</option>
-                <option value="ชัยภูมิ">ชัยภูมิ</option>
-                <option value="ชุมพร">ชุมพร</option>
-                <option value="เชียงราย">เชียงราย</option>
-                <option value="เชียงใหม่">เชียงใหม่</option>
-                <option value="ตรัง">ตรัง</option>
-                <option value="ตราด">ตราด</option>
-                <option value="ตาก">ตาก</option>
-                <option value="นครนายก">นครนายก</option>
-                <option value="นครปฐม">นครปฐม</option>
-                <option value="นครพนม">นครพนม</option>
-                <option value="นครราชสีมา">นครราชสีมา</option>
-                <option value="นครศรีธรรมราช">นครศรีธรรมราช</option>
-                <option value="นครสวรรค์">นครสวรรค์</option>
-                <option value="นนทบุรี">นนทบุรี</option>
-                <option value="นราธิวาส">นราธิวาส</option>
-                <option value="น่าน">น่าน</option>
-                <option value="บึงกาฬ">บึงกาฬ</option>
-                <option value="บุรีรัมย์">บุรีรัมย์</option>
-                <option value="ปทุมธานี">ปทุมธานี</option>
-                <option value="ประจวบคีรีขันธ์">ประจวบคีรีขันธ์</option>
-                <option value="ปราจีนบุรี">ปราจีนบุรี</option>
-                <option value="ปัตตานี">ปัตตานี</option>
-                <option value="พระนครศรีอยุธยา">พระนครศรีอยุธยา</option>
-                <option value="พังงา">พังงา</option>
-                <option value="พัทลุง">พัทลุง</option>
-                <option value="พิจิตร">พิจิตร</option>
-                <option value="พิษณุโลก">พิษณุโลก</option>
-                <option value="เพชรบุรี">เพชรบุรี</option>
-                <option value="เพชรบูรณ์">เพชรบูรณ์</option>
-                <option value="แพร่">แพร่</option>
-                <option value="ภูเก็ต">ภูเก็ต</option>
-                <option value="มหาสารคาม">มหาสารคาม</option>
-                <option value="มุกดาหาร">มุกดาหาร</option>
-                <option value="แม่ฮ่องสอน">แม่ฮ่องสอน</option>
-                <option value="ยโสธร">ยโสธร</option>
-                <option value="ยะลา">ยะลา</option>
-                <option value="ร้อยเอ็ด">ร้อยเอ็ด</option>
-                <option value="ระนอง">ระนอง</option>
-                <option value="ระยอง">ระยอง</option>
-                <option value="ราชบุรี">ราชบุรี</option>
-                <option value="ลพบุรี">ลพบุรี</option>
-                <option value="ลำปาง">ลำปาง</option>
-                <option value="ลำพูน">ลำพูน</option>
-                <option value="เลย">เลย</option>
-                <option value="ศรีสะเกษ">ศรีสะเกษ</option>
-                <option value="สกลนคร">สกลนคร</option>
-                <option value="สงขลา">สงขลา</option>
-                <option value="สตูล">สตูล</option>
-                <option value="สมุทรปราการ">สมุทรปราการ</option>
-                <option value="สมุทรสงคราม">สมุทรสงคราม</option>
-                <option value="สมุทรสาคร">สมุทรสาคร</option>
-                <option value="สระแก้ว">สระแก้ว</option>
-                <option value="สระบุรี">สระบุรี</option>
-                <option value="สิงห์บุรี">สิงห์บุรี</option>
-                <option value="สุโขทัย">สุโขทัย</option>
-                <option value="สุพรรณบุรี">สุพรรณบุรี</option>
-                <option value="สุราษฎร์ธานี">สุราษฎร์ธานี</option>
-                <option value="สุรินทร์">สุรินทร์</option>
-                <option value="หนองคาย">หนองคาย</option>
-                <option value="หนองบัวลำภู">หนองบัวลำภู</option>
-                <option value="อ่างทอง">อ่างทอง</option>
-                <option value="อำนาจเจริญ">อำนาจเจริญ</option>
-                <option value="อุดรธานี">อุดรธานี</option>
-                <option value="อุตรดิตถ์">อุตรดิตถ์</option>
-                <option value="อุทัยธานี">อุทัยธานี</option>
-                <option value="อุบลราชธานี">อุบลราชธานี</option>
-                </select>
-
-                <!-- Enhanced Size Filter -->
-                <div class="relative group">
-                    <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="relative">
-                        <select bind:value={selectedSize} class="w-full px-4 py-4 rounded-2xl border-2 border-gray-200 bg-white/80 backdrop-blur-sm focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 focus:bg-white transition-all duration-300 text-gray-700 font-medium shadow-sm hover:shadow-md appearance-none cursor-pointer">
-                            <option value="">👕 เลือกขนาด</option>
-                            <option value="S">S</option>
-                            <option value="M">M</option>
-                            <option value="L">L</option>
-                            <option value="XL">XL</option>
-                            <option value="XXL">XXL</option>
-                        </select>
-                        <!-- Custom Dropdown Arrow -->
-                        <div class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400 group-hover:text-purple-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
+                    <div class="relative filter-card {currentTheme === 'dark' ? 'bg-gray-700/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl p-4 border {currentTheme === 'dark' ? 'border-gray-600' : 'border-gray-200'} shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105">
+                        <div class="text-center">
+                            <div class="filter-icon w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="text-xs sm:text-sm font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} mb-2">จังหวัด</h4>
+                            <select bind:value={selectedProvince} class="w-full text-xs px-2 py-1 rounded-lg border {currentTheme === 'dark' ? 'border-gray-600 bg-gray-600 text-white' : 'border-gray-300 bg-white text-gray-700'} focus:outline-none focus:ring-2 focus:ring-green-500/50 transition-all duration-200">
+                                <option value="">ทั้งหมด</option>
+                                <option value="กระบี่">กระบี่</option>
+                                <option value="กรุงเทพมหานคร">กรุงเทพมหานคร</option>
+                                <option value="กาญจนบุรี">กาญจนบุรี</option>
+                                <option value="กาฬสินธุ์">กาฬสินธุ์</option>
+                                <option value="กำแพงเพชร">กำแพงเพชร</option>
+                                <option value="ขอนแก่น">ขอนแก่น</option>
+                                <option value="จันทบุรี">จันทบุรี</option>
+                                <option value="ฉะเชิงเทรา">ฉะเชิงเทรา</option>
+                                <option value="ชลบุรี">ชลบุรี</option>
+                                <option value="ชัยนาท">ชัยนาท</option>
+                                <option value="ชัยภูมิ">ชัยภูมิ</option>
+                                <option value="ชุมพร">ชุมพร</option>
+                                <option value="เชียงราย">เชียงราย</option>
+                                <option value="เชียงใหม่">เชียงใหม่</option>
+                                <option value="ตรัง">ตรัง</option>
+                                <option value="ตราด">ตราด</option>
+                                <option value="ตาก">ตาก</option>
+                                <option value="นครนายก">นครนายก</option>
+                                <option value="นครปฐม">นครปฐม</option>
+                                <option value="นครพนม">นครพนม</option>
+                                <option value="นครราชสีมา">นครราชสีมา</option>
+                                <option value="นครศรีธรรมราช">นครศรีธรรมราช</option>
+                                <option value="นครสวรรค์">นครสวรรค์</option>
+                                <option value="นนทบุรี">นนทบุรี</option>
+                                <option value="นราธิวาส">นราธิวาส</option>
+                                <option value="น่าน">น่าน</option>
+                                <option value="บึงกาฬ">บึงกาฬ</option>
+                                <option value="บุรีรัมย์">บุรีรัมย์</option>
+                                <option value="ปทุมธานี">ปทุมธานี</option>
+                                <option value="ประจวบคีรีขันธ์">ประจวบคีรีขันธ์</option>
+                                <option value="ปราจีนบุรี">ปราจีนบุรี</option>
+                                <option value="ปัตตานี">ปัตตานี</option>
+                                <option value="พระนครศรีอยุธยา">พระนครศรีอยุธยา</option>
+                                <option value="พังงา">พังงา</option>
+                                <option value="พัทลุง">พัทลุง</option>
+                                <option value="พิจิตร">พิจิตร</option>
+                                <option value="พิษณุโลก">พิษณุโลก</option>
+                                <option value="เพชรบุรี">เพชรบุรี</option>
+                                <option value="เพชรบูรณ์">เพชรบูรณ์</option>
+                                <option value="แพร่">แพร่</option>
+                                <option value="ภูเก็ต">ภูเก็ต</option>
+                                <option value="มหาสารคาม">มหาสารคาม</option>
+                                <option value="มุกดาหาร">มุกดาหาร</option>
+                                <option value="แม่ฮ่องสอน">แม่ฮ่องสอน</option>
+                                <option value="ยโสธร">ยโสธร</option>
+                                <option value="ยะลา">ยะลา</option>
+                                <option value="ร้อยเอ็ด">ร้อยเอ็ด</option>
+                                <option value="ระนอง">ระนอง</option>
+                                <option value="ระยอง">ระยอง</option>
+                                <option value="ราชบุรี">ราชบุรี</option>
+                                <option value="ลพบุรี">ลพบุรี</option>
+                                <option value="ลำปาง">ลำปาง</option>
+                                <option value="ลำพูน">ลำพูน</option>
+                                <option value="เลย">เลย</option>
+                                <option value="ศรีสะเกษ">ศรีสะเกษ</option>
+                                <option value="สกลนคร">สกลนคร</option>
+                                <option value="สงขลา">สงขลา</option>
+                                <option value="สตูล">สตูล</option>
+                                <option value="สมุทรปราการ">สมุทรปราการ</option>
+                                <option value="สมุทรสงคราม">สมุทรสงคราม</option>
+                                <option value="สมุทรสาคร">สมุทรสาคร</option>
+                                <option value="สระแก้ว">สระแก้ว</option>
+                                <option value="สระบุรี">สระบุรี</option>
+                                <option value="สิงห์บุรี">สิงห์บุรี</option>
+                                <option value="สุโขทัย">สุโขทัย</option>
+                                <option value="สุพรรณบุรี">สุพรรณบุรี</option>
+                                <option value="สุราษฎร์ธานี">สุราษฎร์ธานี</option>
+                                <option value="สุรินทร์">สุรินทร์</option>
+                                <option value="หนองคาย">หนองคาย</option>
+                                <option value="หนองบัวลำภู">หนองบัวลำภู</option>
+                                <option value="อ่างทอง">อ่างทอง</option>
+                                <option value="อำนาจเจริญ">อำนาจเจริญ</option>
+                                <option value="อุดรธานี">อุดรธานี</option>
+                                <option value="อุตรดิตถ์">อุตรดิตถ์</option>
+                                <option value="อุทัยธานี">อุทัยธานี</option>
+                                <option value="อุบลราชธานี">อุบลราชธานี</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- Enhanced Status Filter -->
-                <div class="relative group">
+                <!-- Size Filter Card -->
+                <div class="group relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative filter-card {currentTheme === 'dark' ? 'bg-gray-700/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl p-4 border {currentTheme === 'dark' ? 'border-gray-600' : 'border-gray-200'} shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105">
+                        <div class="text-center">
+                            <div class="filter-icon w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="text-xs sm:text-sm font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} mb-2">ขนาด</h4>
+                            <select bind:value={selectedSize} class="w-full text-xs px-2 py-1 rounded-lg border {currentTheme === 'dark' ? 'border-gray-600 bg-gray-600 text-white' : 'border-gray-300 bg-white text-gray-700'} focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-200">
+                                <option value="">ทั้งหมด</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Filter Card -->
+                <div class="group relative">
                     <div class="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="relative">
-                        <select bind:value={selectedStatus} class="w-full px-4 py-4 rounded-2xl border-2 border-gray-200 bg-white/80 backdrop-blur-sm focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20 focus:bg-white transition-all duration-300 text-gray-700 font-medium shadow-sm hover:shadow-md appearance-none cursor-pointer">
-                            <option value="">⚡ เลือกสถานะ</option>
-                            <option value="พร้อมให้เช่า">✅ พร้อมให้เช่า</option>
-                            <option value="กำลังถูกเช่า">🔄 กำลังถูกเช่า</option>
-                            <option value="อยู่ระหว่างการซ่อมบำรุง">🔧 อยู่ระหว่างการซ่อมบำรุง</option>
-                        </select>
-                        <!-- Custom Dropdown Arrow -->
-                        <div class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400 group-hover:text-orange-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
+                    <div class="relative filter-card {currentTheme === 'dark' ? 'bg-gray-700/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl p-4 border {currentTheme === 'dark' ? 'border-gray-600' : 'border-gray-200'} shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105">
+                        <div class="text-center">
+                            <div class="filter-icon w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="text-xs sm:text-sm font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} mb-2">สถานะ</h4>
+                            <select bind:value={selectedStatus} class="w-full text-xs px-2 py-1 rounded-lg border {currentTheme === 'dark' ? 'border-gray-600 bg-gray-600 text-white' : 'border-gray-300 bg-white text-gray-700'} focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-200">
+                                <option value="">ทั้งหมด</option>
+                                <option value="พร้อมให้เช่า">พร้อมให้เช่า</option>
+                                <option value="กำลังถูกเช่า">กำลังถูกเช่า</option>
+                                <option value="อยู่ระหว่างการซ่อมบำรุง">ซ่อมบำรุง</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brand Filter Card -->
+                <div class="group relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative filter-card {currentTheme === 'dark' ? 'bg-gray-700/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl p-4 border {currentTheme === 'dark' ? 'border-gray-600' : 'border-gray-200'} shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105">
+                        <div class="text-center">
+                            <div class="filter-icon w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="text-xs sm:text-sm font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} mb-2">แบรนด์</h4>
+                            <select bind:value={selectedBrand} class="w-full text-xs px-2 py-1 rounded-lg border {currentTheme === 'dark' ? 'border-gray-600 bg-gray-600 text-white' : 'border-gray-300 bg-white text-gray-700'} focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-200">
+                                <option value="">ทั้งหมด</option>
+                                {#each [...new Set(data.items?.map(item => item.brand).filter(Boolean))] as brand}
+                                    <option value={brand}>{brand}</option>
+                                {/each}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Series Filter Card -->
+                <div class="group relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative filter-card {currentTheme === 'dark' ? 'bg-gray-700/80' : 'bg-white/80'} backdrop-blur-sm rounded-2xl p-4 border {currentTheme === 'dark' ? 'border-gray-600' : 'border-gray-200'} shadow-sm hover:shadow-md transition-all duration-300 group-hover:scale-105">
+                        <div class="text-center">
+                            <div class="filter-icon w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                            </div>
+                            <h4 class="text-xs sm:text-sm font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} mb-2">ซีรีส์</h4>
+                            <select bind:value={selectedSeries} class="w-full text-xs px-2 py-1 rounded-lg border {currentTheme === 'dark' ? 'border-gray-600 bg-gray-600 text-white' : 'border-gray-300 bg-white text-gray-700'} focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all duration-200">
+                                <option value="">ทั้งหมด</option>
+                                {#each [...new Set(data.items?.map(item => item.series).filter(Boolean))] as series}
+                                    <option value={series}>{series}</option>
+                                {/each}
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Filter Summary -->
+            <!-- Filter Summary with Enhanced Responsive Tags -->
             <div class="mt-6 flex flex-wrap gap-2 justify-center sm:justify-start relative z-10">
                 {#if searchQuery}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {currentTheme === 'dark' ? 'bg-blue-900 text-blue-300' : 'bg-blue-100 text-blue-800'}">
                         🔍 "{searchQuery}"
-                        <button on:click={() => searchQuery = ''} class="ml-2 hover:text-blue-600">
+                        <button on:click={() => searchQuery = ''} class="ml-2 {currentTheme === 'dark' ? 'hover:text-blue-200' : 'hover:text-blue-600'}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
@@ -1149,9 +1212,9 @@
                     </span>
                 {/if}
                 {#if selectedProvince}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                        🏛️ {selectedProvince}
-                        <button on:click={() => selectedProvince = ''} class="ml-2 hover:text-green-600">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {currentTheme === 'dark' ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-800'}">
+                        📍 {selectedProvince}
+                        <button on:click={() => selectedProvince = ''} class="ml-2 {currentTheme === 'dark' ? 'hover:text-green-200' : 'hover:text-green-600'}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
@@ -1159,9 +1222,9 @@
                     </span>
                 {/if}
                 {#if selectedSize}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-                        👕 Size {selectedSize}
-                        <button on:click={() => selectedSize = ''} class="ml-2 hover:text-purple-600">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {currentTheme === 'dark' ? 'bg-purple-900 text-purple-300' : 'bg-purple-100 text-purple-800'}">
+                        👕 {selectedSize}
+                        <button on:click={() => selectedSize = ''} class="ml-2 {currentTheme === 'dark' ? 'hover:text-purple-200' : 'hover:text-purple-600'}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
@@ -1169,14 +1232,51 @@
                     </span>
                 {/if}
                 {#if selectedStatus}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {currentTheme === 'dark' ? 'bg-orange-900 text-orange-300' : 'bg-orange-100 text-orange-800'}">
                         ⚡ {selectedStatus}
-                        <button on:click={() => selectedStatus = ''} class="ml-2 hover:text-orange-600">
+                        <button on:click={() => selectedStatus = ''} class="ml-2 {currentTheme === 'dark' ? 'hover:text-orange-200' : 'hover:text-orange-600'}">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
                     </span>
+                {/if}
+                {#if selectedBrand}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {currentTheme === 'dark' ? 'bg-indigo-900 text-indigo-300' : 'bg-indigo-100 text-indigo-800'}">
+                        🏷️ {selectedBrand}
+                        <button on:click={() => selectedBrand = ''} class="ml-2 {currentTheme === 'dark' ? 'hover:text-indigo-200' : 'hover:text-indigo-600'}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </span>
+                {/if}
+                {#if selectedSeries}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {currentTheme === 'dark' ? 'bg-teal-900 text-teal-300' : 'bg-teal-100 text-teal-800'}">
+                        📺 {selectedSeries}
+                        <button on:click={() => selectedSeries = ''} class="ml-2 {currentTheme === 'dark' ? 'hover:text-teal-200' : 'hover:text-teal-600'}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </span>
+                {/if}
+                
+                <!-- Clear All Filters Button -->
+                {#if searchQuery || selectedProvince || selectedSize || selectedStatus || selectedBrand || selectedSeries}
+                    <button 
+                        on:click={() => {
+                            searchQuery = '';
+                            selectedProvince = '';
+                            selectedSize = '';
+                            selectedStatus = '';
+                            selectedBrand = '';
+                            selectedSeries = '';
+                        }}
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {currentTheme === 'dark' ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'} transition-colors duration-200"
+                    >
+                        🗑️ ล้างตัวกรองทั้งหมด
+                    </button>
                 {/if}
             </div>
         </div>
@@ -1965,6 +2065,63 @@
 
     .btn-modern:hover::before {
         left: 100%;
+    }
+
+    /* Enhanced Responsive Filter Cards */
+    @media (max-width: 640px) {
+        /* Mobile: 2 columns */
+        .filter-cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .filter-card {
+            padding: 0.75rem;
+        }
+        
+        .filter-card h4 {
+            font-size: 0.75rem;
+        }
+        
+        .filter-card select {
+            font-size: 0.625rem;
+            padding: 0.25rem;
+        }
+    }
+
+    @media (min-width: 641px) and (max-width: 768px) {
+        /* Tablet: 3 columns */
+        .filter-cards-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+    }
+
+    @media (min-width: 769px) {
+        /* Desktop: 5 columns */
+        .filter-cards-grid {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+        }
+    }
+
+    /* Filter Card Hover Effects */
+    .filter-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Icon scaling for better mobile visibility */
+    @media (max-width: 640px) {
+        .filter-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+        
+        .filter-icon svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
     }
 
     /* Card Hover Effects */
