@@ -23,7 +23,7 @@ export const load = async ({ locals, url }) => {
 	console.log('selectedSize:', selectedSize);
 	console.log('selectedStatus:', selectedStatus);
 
-	// Determine if any filter is applied
+	// Determine if any filter is applied or search query exists
 	const isFilterApplied = Boolean(searchQuery || selectedProvince || selectedSize || selectedStatus);
 	console.log('isFilterApplied:', isFilterApplied);
 
@@ -34,18 +34,61 @@ export const load = async ({ locals, url }) => {
 			let totalPages = 1;
 			let currentPage = 1;
 
-			if (isFilterApplied) {
-				// Use getFullList when filters are applied
+			// Build filter string
+			let filterString = 'public=True';
+			
+			if (searchQuery) {
+				// Search in both Name and store name, and also in tags
+				filterString += ` && (Name ~ "${searchQuery}" || userStore.Name ~ "${searchQuery}" || tags ~ "${searchQuery}")`;
+			}
+			
+			if (selectedProvince) {
+				filterString += ` && Province="${selectedProvince}"`;
+			}
+			
+			if (selectedSize) {
+				filterString += ` && Size="${selectedSize}"`;
+			}
+			
+			if (selectedStatus) {
+				filterString += ` && Status="${selectedStatus}"`;
+			}
+
+			if (searchQuery) {
+				// Always use getFullList when search query is present to search across all items
 				const response = await adminClient.collection('itemList').getFullList({
-					filter: `public=True${searchQuery ? ` && Name ~ "${searchQuery}"` : ''}`
-						+ `${selectedProvince ? ` && Province="${selectedProvince}"` : ''}`
-						+ `${selectedSize ? ` && Size="${selectedSize}"` : ''}`
-						+ `${selectedStatus ? ` && Status="${selectedStatus}"` : ''}`,
+					filter: filterString,
 					expand: 'user,userStore',
 					sort: '-created'
 				});
 
-				console.log('API Response (Full List):', response);
+				console.log('API Response (Full List - Search Mode):', response);
+
+				items = response.map(item => {
+					if (item.expand?.user) {
+						item.expand.user = {
+							id: item.expand.user.id,
+							name: item.expand.user.name,
+							fbProfile: item.expand.user.fbProfile,
+							VerifyShop: item.expand.user.VerifyShop,
+							avatar: item.expand.user.avatar
+						};
+					}
+					return item;
+				});
+
+				// For search results, we'll show all results without pagination
+				totalPages = 1;
+				currentPage = 1;
+			} else if (isFilterApplied) {
+				// Use getFullList when other filters are applied (but no search)
+				const response = await adminClient.collection('itemList').getFullList({
+					filter: filterString,
+					expand: 'user,userStore',
+					sort: '-created'
+				});
+
+				console.log('API Response (Full List - Filter Mode):', response);
 
 				items = response.map(item => {
 					if (item.expand?.user) {
@@ -62,10 +105,7 @@ export const load = async ({ locals, url }) => {
 			} else {
 				// Use getList when no filters are applied
 				const response = await adminClient.collection('itemList').getList(page, perPage, {
-					filter: `public=True${searchQuery ? ` && Name ~ "${searchQuery}"` : ''}`
-						+ `${selectedProvince ? ` && Province="${selectedProvince}"` : ''}`
-						+ `${selectedSize ? ` && Size="${selectedSize}"` : ''}`
-						+ `${selectedStatus ? ` && Status="${selectedStatus}"` : ''}`,
+					filter: filterString,
 					expand: 'user,userStore',
 					sort: '-created'
 				});
