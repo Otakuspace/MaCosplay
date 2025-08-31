@@ -359,125 +359,121 @@
     }
 </script>
 
-	
+<!-- Clean Store Management Section -->
+<div class="max-w-6xl mx-auto px-6 py-8">
+    <!-- Breadcrumb Header -->
+    <div class="flex items-center justify-between mb-8">
+        <nav class="text-sm text-gray-600">
+            <span class="hover:text-gray-900">/</span>
+            <a href="/dashboard" class="hover:text-gray-900">Dashboard</a>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900 font-medium">Manage Store</span>
+        </nav>
+        <a href="/create-shop" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            สร้างร้านใหม่
+        </a>
+    </div>
 
+    <!-- Store Banner Card -->
+    <div class="relative mb-8 group">
+        <div class="aspect-[16/9] w-full rounded-2xl overflow-hidden shadow-lg">
+            <img 
+                src={data?.StoreDetails.banner 
+                    ? `https://file.macosplay.com/nrxs44dis9q1tgb/${data.StoreDetails.id}/${data.StoreDetails.banner}` 
+                    : '/images/Example/Cosshop.png'} 
+                alt="Store Banner" 
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            >
+            <!-- Dark overlay for text readability -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            
+            <!-- Store info centered on banner -->
+            <div class="absolute inset-0 flex flex-col items-center justify-end pb-8 text-white">
+                <div class="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full mb-4 flex items-center justify-center">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+                <h1 class="text-4xl font-bold mb-2">{data?.StoreDetails.Name || 'Cosshop sample'}</h1>
+                <p class="text-lg opacity-90">{data?.StoreDetails.Details || 'Example shop'}</p>
+            </div>
+        </div>
+    </div>
 
-<!-- Enhanced Hero Section with Store Banner -->
-<section class="relative min-h-[70vh] {currentTheme === 'dark' ? 'bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900' : 'bg-gradient-to-br from-slate-100 via-blue-100 to-indigo-200'} overflow-hidden">
-	<!-- Animated Background Elements -->
-	<div class="absolute inset-0">
-		<div class="absolute top-20 left-10 w-32 h-32 {currentTheme === 'dark' ? 'bg-blue-400/20' : 'bg-blue-300/30'} rounded-full blur-3xl animate-pulse"></div>
-		<div class="absolute bottom-20 right-10 w-48 h-48 {currentTheme === 'dark' ? 'bg-purple-400/15' : 'bg-purple-300/25'} rounded-full blur-3xl animate-pulse delay-1000"></div>
-		<div class="absolute top-1/2 left-1/4 w-24 h-24 {currentTheme === 'dark' ? 'bg-cyan-400/25' : 'bg-cyan-300/35'} rounded-full blur-2xl animate-pulse delay-500"></div>
-		<div class="absolute bottom-1/3 left-1/2 w-16 h-16 {currentTheme === 'dark' ? 'bg-pink-400/20' : 'bg-pink-300/30'} rounded-full blur-xl animate-pulse delay-700"></div>
-	</div>
-	
-	<!-- Overlay -->
-	<div class="absolute inset-0 {currentTheme === 'dark' ? 'bg-gradient-to-b from-black/20 via-transparent to-black/30' : 'bg-gradient-to-b from-white/10 via-transparent to-white/20'}"></div>
-	
-	<div class="container mx-auto px-6 py-16 relative z-10">
-		<!-- Store Banner with Enhanced Design -->
-		<div class="relative mb-12 group">
-			<div class="aspect-[16/9] w-full max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/10 transition-all duration-500 group-hover:ring-white/20">
-				<img 
-					src={data?.StoreDetails.banner 
-						? `https://file.macosplay.com/nrxs44dis9q1tgb/${data.StoreDetails.id}/${data.StoreDetails.banner}` 
-						: '/images/Example/Cosshop.png'} 
-					alt="Store Banner" 
-					class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-				>
-			</div>
-			
-			<!-- Enhanced Banner Upload Overlay -->
-			<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 opacity-0 group-hover:opacity-100 transition-all duration-300 rounded-3xl flex items-center justify-center">
-				<div class="text-center text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-					<div class="bg-white/20 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-						<svg class="w-16 h-16 mx-auto mb-4 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-						</svg>
-						<p class="text-xl font-bold mb-2">เปลี่ยนรูปภาพหน้าร้าน</p>
-						<p class="text-sm opacity-90">คลิกเพื่ออัปโหลดภาพใหม่</p>
-					</div>
-				</div>
-			</div>
-		</div>
+    <!-- Upload New Image Button -->
+    <div class="text-center mb-8">
+        <label class="inline-block">
+            <input type="file" class="hidden" on:change={handleBannerUpload} accept="image/*" />
+            <div class="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                อัปโหลดรูปภาพใหม่
+            </div>
+        </label>
+    </div>
 
-		<!-- Enhanced File Input -->
-		<div class="text-center mb-12">
-			<label class="inline-block">
-				<input type="file" class="hidden" on:change={handleBannerUpload} accept="image/*" />
-				<div class="{currentTheme === 'dark' ? 'bg-white/10 border-white/20 text-white hover:bg-white/20' : 'bg-black/10 border-black/20 text-gray-800 hover:bg-black/20'} backdrop-blur-md border rounded-2xl px-8 py-4 font-semibold transition-all duration-300 cursor-pointer inline-flex items-center space-x-3 shadow-lg hover:shadow-xl">
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-					</svg>
-					<span>อัปโหลดรูปภาพใหม่</span>
-				</div>
-			</label>
-		</div>
+    <!-- Store Information Card -->
+    <div class="bg-gray-50 rounded-2xl p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">{data?.StoreDetails.Name || 'MaCosplayEx.'}</h2>
+        <p class="text-gray-600 text-lg leading-relaxed">
+            {data?.StoreDetails.Details || 'This is cosplay shop example click manage store to get started'}
+        </p>
+    </div>
 
-		<!-- Enhanced Store Information -->
-		<div class="text-center mb-16">
-			<div class="{currentTheme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-black/5 border-black/10'} backdrop-blur-sm rounded-3xl p-8 max-w-4xl mx-auto border">
-				<h1 class="text-5xl md:text-6xl font-bold mb-6 {currentTheme === 'dark' ? 'bg-gradient-to-r from-white via-blue-100 to-cyan-100' : 'bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800'} bg-clip-text text-transparent drop-shadow-2xl">
-					{data?.StoreDetails.Name}
-				</h1>
-				<p class="text-xl md:text-2xl {currentTheme === 'dark' ? 'text-white opacity-90' : 'text-gray-800 opacity-90'} max-w-3xl mx-auto leading-relaxed font-light">
-					{data?.StoreDetails.Details}
-				</p>
-			</div>
-		</div>
+    <!-- Store Links Section -->
+    <div class="grid md:grid-cols-2 gap-6">
+        <!-- Store Link Card -->
+        <div class="bg-gray-50 rounded-2xl p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">ลิงค์ร้านค้า</h3>
+            </div>
+            <a href={`https://macosplay.com/store/${data?.StoreDetails.slug}`} 
+               class="text-blue-600 hover:text-blue-800 transition-colors duration-200 break-all text-sm font-medium hover:underline">
+                {`https://macosplay.com/store/${data?.StoreDetails.slug}`}
+            </a>
+        </div>
 
-		<!-- Enhanced Store Links -->
-		<div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
-			<!-- Store URL Card -->
-			<div class="{currentTheme === 'dark' ? 'bg-white/10 border-white/20 hover:bg-white/15' : 'bg-black/10 border-black/20 hover:bg-black/15'} backdrop-blur-lg rounded-3xl p-8 border transition-all duration-300 group">
-				<div class="flex items-center mb-6">
-					<div class="{currentTheme === 'dark' ? 'bg-blue-500/20 group-hover:bg-blue-500/30' : 'bg-blue-500/30 group-hover:bg-blue-500/40'} p-4 rounded-2xl mr-4 transition-colors duration-300">
-						<svg class="w-8 h-8 {currentTheme === 'dark' ? 'text-blue-200' : 'text-blue-700'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-						</svg>
-					</div>
-					<h3 class="{currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} font-bold text-xl">ลิงค์ร้านค้า</h3>
-				</div>
-				<a href={`https://macosplay.com/store/${data?.StoreDetails.slug}`} 
-				   class="{currentTheme === 'dark' ? 'text-blue-200 hover:text-blue-100' : 'text-blue-700 hover:text-blue-800'} transition-colors duration-200 break-all text-lg font-medium hover:underline">
-					{`https://macosplay.com/store/${data?.StoreDetails.slug}`}
-				</a>
-			</div>
-
-			<!-- Facebook Page Card -->
-			<div class="{currentTheme === 'dark' ? 'bg-white/10 border-white/20 hover:bg-white/15' : 'bg-black/10 border-black/20 hover:bg-black/15'} backdrop-blur-lg rounded-3xl p-8 border transition-all duration-300 group">
-				<div class="flex items-center mb-6">
-					<div class="{currentTheme === 'dark' ? 'bg-blue-600/20 group-hover:bg-blue-600/30' : 'bg-blue-600/30 group-hover:bg-blue-600/40'} p-4 rounded-2xl mr-4 transition-colors duration-300">
-						<svg class="w-8 h-8 {currentTheme === 'dark' ? 'text-blue-200' : 'text-blue-700'}" fill="currentColor" viewBox="0 0 24 24">
-							<path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-						</svg>
-					</div>
-					<h3 class="{currentTheme === 'dark' ? 'text-white' : 'text-gray-800'} font-bold text-xl">ลิงค์เพจ Facebook</h3>
-				</div>
-				{#if data?.StoreDetails.fbPage}
-					<a href={data?.StoreDetails.fbPage} 
-					   class="text-blue-200 hover:text-blue-100 transition-colors duration-200 block mb-6 break-all text-lg font-medium hover:underline">
-						{data?.StoreDetails.fbPage}
-					</a>
-				{/if}
-				<div class="flex gap-3">
-					<input 
-						type="url" 
-						name="fbProfile" 
-						bind:value={fbPageUrl} 
-						class="flex-1 px-4 py-3 bg-white/20 border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/25 focus:border-white/50 focus:outline-none transition-all duration-200" 
-						placeholder={data?.StoreDetails.fbPage || "กรอกลิงค์เพจ Facebook"}
-					/>
-					<button class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors duration-200 shadow-lg hover:shadow-xl" 
-							on:click={updateFbPage}>
-						อัพเดท
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+        <!-- Facebook Page Link Card -->
+        <div class="bg-gray-50 rounded-2xl p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">ลิงค์เพจ Facebook</h3>
+            </div>
+            {#if data?.StoreDetails.fbPage}
+                <a href={data?.StoreDetails.fbPage} 
+                   class="text-blue-600 hover:text-blue-800 transition-colors duration-200 block mb-4 break-all text-sm font-medium hover:underline">
+                    {data?.StoreDetails.fbPage}
+                </a>
+            {/if}
+            <div class="flex gap-3">
+                <input 
+                    type="url" 
+                    name="fbProfile" 
+                    bind:value={fbPageUrl} 
+                    class="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all duration-200" 
+                    placeholder={data?.StoreDetails.fbPage || "กรอกลิงค์เพจ Facebook"}
+                />
+                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md" 
+                        on:click={updateFbPage}>
+                    อัพเดท
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- Enhanced Stats Section -->
