@@ -70,7 +70,7 @@
 							</svg>
 						</a>
 						<span class="{currentTheme === 'dark' ? 'text-gray-600' : 'text-gray-400'}">/</span>
-						<a href="/dashboard" class="{currentTheme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors">
+						<a href="/manage-store" class="{currentTheme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors">
 							Dashboard
 						</a>
 						<span class="{currentTheme === 'dark' ? 'text-gray-600' : 'text-gray-400'}">/</span>
