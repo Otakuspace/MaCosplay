@@ -61,7 +61,37 @@
 
 	let currentName = data?.user?.name;
 	let currentFbProfile = data?.user?.fbProfile;
-	let currentBodyDetails = data?.user?.bodyDetails ? JSON.stringify(data.user.bodyDetails, null, 2) : '';
+	
+	// Parse existing body details or set defaults
+	let bodyMeasurements = {
+		height: '',
+		weight: '',
+		chest: '',
+		waist: '',
+		hips: '',
+		shoulders: '',
+		neck: '',
+		bicep: '',
+		thigh: '',
+		inseam: ''
+	};
+	
+	// Initialize from existing data
+	if (data?.user?.bodyDetails) {
+		const existing = data.user.bodyDetails;
+		bodyMeasurements = {
+			height: existing.height || '',
+			weight: existing.weight || '',
+			chest: existing.chest || '',
+			waist: existing.waist || '',
+			hips: existing.hips || '',
+			shoulders: existing.shoulders || '',
+			neck: existing.neck || '',
+			bicep: existing.bicep || '',
+			thigh: existing.thigh || '',
+			inseam: existing.inseam || ''
+		};
+	}
 
 
 
@@ -78,9 +108,55 @@
 		}
 	}
 
+	function validateMeasurements() {
+		const errors = [];
+		
+		// Check if height and weight are reasonable if provided
+		if (bodyMeasurements.height && (bodyMeasurements.height < 100 || bodyMeasurements.height > 250)) {
+			errors.push('ส่วนสูงควรอยู่ระหว่าง 100-250 ซม.');
+		}
+		
+		if (bodyMeasurements.weight && (bodyMeasurements.weight < 30 || bodyMeasurements.weight > 200)) {
+			errors.push('น้ำหนักควรอยู่ระหว่าง 30-200 กก.');
+		}
+		
+		// Check if waist is smaller than chest and hips (if all are provided)
+		if (bodyMeasurements.chest && bodyMeasurements.waist && bodyMeasurements.hips) {
+			if (parseFloat(bodyMeasurements.waist) > parseFloat(bodyMeasurements.chest)) {
+				errors.push('รอบเอวควรน้อยกว่ารอบอก');
+			}
+			if (parseFloat(bodyMeasurements.waist) > parseFloat(bodyMeasurements.hips)) {
+				errors.push('รอบเอวควรน้อยกว่ารอบสะโพก');
+			}
+		}
+		
+		return errors;
+	}
+
 	async function handleProfileSubmit(event) {
 		event.preventDefault();
+		
+		// Validate measurements
+		const validationErrors = validateMeasurements();
+		if (validationErrors.length > 0) {
+			errorMessage = validationErrors.join(' ');
+			showAlert = true;
+			return;
+		}
+		
 		const formData = new FormData(event.target);
+		
+		// Filter out empty measurements and convert to JSON string
+		const filteredMeasurements = {};
+		Object.keys(bodyMeasurements).forEach(key => {
+			if (bodyMeasurements[key] && bodyMeasurements[key].toString().trim() !== '') {
+				filteredMeasurements[key] = bodyMeasurements[key];
+			}
+		});
+		
+		const bodyDetailsJson = JSON.stringify(filteredMeasurements);
+		formData.set('bodyDetails', bodyDetailsJson);
+		
 		try {
 			const response = await fetch('/api/update-profile', {
 				method: 'PUT',
@@ -95,6 +171,8 @@
 			console.log('Profile updated successfully');
 			showAlert = false;
 			document.getElementById('profile_modal').close();
+			// Refresh the page to show updated data
+			window.location.reload();
 		} catch (error) {
 			console.error('Error updating profile:', error);
 			errorMessage = error.message;
@@ -140,58 +218,312 @@
 <!-- Profile Modal -->
 <dialog id="profile_modal" class="modal modal-bottom sm:modal-middle">
 	{#if data.user}
-	<div class="modal-box">
-		<h3 class="font-bold text-lg">ตั้งค่าโปรไฟล์</h3>
-		<form on:submit|preventDefault={handleProfileSubmit} enctype="multipart/form-data">
-			<!-- Name -->
-			<div class="form-control mb-4">
-				<label class="label">
-					<span class="label-text">ชื่อ</span>
-				</label>
-				<input type="text" name="name" bind:value={currentName} class="input input-bordered" required />
-			</div>
-
-			<!-- Avatar -->
-			<div class="form-control mb-4">
-				<label class="label">
-					<span class="label-text">อวาตาร์</span>
-				</label>
-				<input type="file" name="avatar" accept="image/*" class="file-input file-input-bordered w-full" on:change={previewProfileImage} />
-				{#if profileImagePreview}
-				<div class="mt-4">
-					<img src={profileImagePreview} alt="Avatar Preview" class="w-48 h-48 object-cover rounded-lg" />
+	<div class="modal-box max-w-4xl max-h-[90vh] overflow-y-auto">
+		<form method="dialog">
+			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+		</form>
+		<div class="flex items-center mb-6">
+			<div class="avatar mr-4">
+				<div class="w-12 h-12 rounded-full">
+					{#if data.user.avatar}
+						<img src={`${data.user.avatar}`} alt="Profile" />
+					{:else}
+						<div class="bg-primary text-primary-content flex items-center justify-center w-full h-full">
+							{data.user.name?.charAt(0)?.toUpperCase() || 'U'}
+						</div>
+					{/if}
 				</div>
-				{/if}
+			</div>
+			<div>
+				<h3 class="font-bold text-xl">ตั้งค่าโปรไฟล์</h3>
+				<p class="text-base-content/70">จัดการข้อมูลส่วนตัวและสัดส่วนร่างกายของคุณ</p>
+			</div>
+		</div>
+		<form on:submit|preventDefault={handleProfileSubmit} enctype="multipart/form-data">
+			<!-- Basic Information Section -->
+			<div class="mb-8">
+				<h4 class="font-semibold text-lg mb-4 flex items-center">
+					<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+					</svg>
+					ข้อมูลพื้นฐาน
+				</h4>
+				
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<!-- Name -->
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">ชื่อ</span>
+							<span class="label-text-alt text-error">*</span>
+						</label>
+						<input type="text" name="name" bind:value={currentName} class="input input-bordered" required />
+					</div>
+
+					<!-- Facebook Profile URL -->
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">Facebook Profile URL</span>
+							<span class="label-text-alt">ไม่บังคับ</span>
+						</label>
+						<input type="url" name="fbProfile" bind:value={currentFbProfile} class="input input-bordered" placeholder="https://www.facebook.com/yourprofile" />
+					</div>
+				</div>
+
+				<!-- Avatar -->
+				<div class="form-control mt-4">
+					<label class="label">
+						<span class="label-text">อวาตาร์</span>
+						<span class="label-text-alt">ไฟล์ภาพ JPG, PNG หรือ GIF</span>
+					</label>
+					<input type="file" name="avatar" accept="image/*" class="file-input file-input-bordered w-full" on:change={previewProfileImage} />
+					{#if profileImagePreview}
+					<div class="mt-4 flex justify-center">
+						<img src={profileImagePreview} alt="Avatar Preview" class="w-32 h-32 object-cover rounded-full border-4 border-base-200" />
+					</div>
+					{/if}
+				</div>
 			</div>
 
-			<!-- Facebook Profile URL -->
-			<div class="form-control mb-4">
-				<label class="label">
-					<span class="label-text">Facebook Profile URL</span>
-				</label>
-				<input type="url" name="fbProfile" bind:value={currentFbProfile} class="input input-bordered text-gray-500" placeholder="https://www.facebook.com/yourprofile" />
+			<!-- Body Measurements -->
+			<div class="mb-6">
+				<h4 class="font-semibold text-lg mb-4 flex items-center">
+					<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+					</svg>
+					ข้อมูลสัดส่วนร่างกาย
+				</h4>
+				
+				<!-- Basic Measurements -->
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text flex items-center">
+								<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4h10M7 4l-1 16h12L17 4M10 8v8M14 8v8"></path>
+								</svg>
+								ส่วนสูง
+							</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.height}
+								class="input input-bordered flex-1" 
+								placeholder="165"
+								min="100"
+								max="250"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+					
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text flex items-center">
+								<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path>
+								</svg>
+								น้ำหนัก
+							</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.weight}
+								class="input input-bordered flex-1" 
+								placeholder="50"
+								min="30"
+								max="200"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">kg</span>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Upper Body Measurements -->
+				<div class="divider">
+					<span class="text-sm text-base-content/70">ส่วนบน</span>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">รอบอก</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.chest}
+								class="input input-bordered flex-1" 
+								placeholder="85"
+								min="60"
+								max="150"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+					
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">รอบเอว</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.waist}
+								class="input input-bordered flex-1" 
+								placeholder="65"
+								min="50"
+								max="120"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+					
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">รอบไหล่</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.shoulders}
+								class="input input-bordered flex-1" 
+								placeholder="38"
+								min="30"
+								max="60"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Lower Body Measurements -->
+				<div class="divider">
+					<span class="text-sm text-base-content/70">ส่วนล่าง</span>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">รอบสะโพก</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.hips}
+								class="input input-bordered flex-1" 
+								placeholder="90"
+								min="60"
+								max="140"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+					
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">รอบต้นขา</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.thigh}
+								class="input input-bordered flex-1" 
+								placeholder="55"
+								min="40"
+								max="80"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+				</div>
+				
+				<!-- Additional Measurements -->
+				<div class="divider">
+					<span class="text-sm text-base-content/70">รายละเอียดเพิ่มเติม</span>
+				</div>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">รอบคอ</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.neck}
+								class="input input-bordered flex-1" 
+								placeholder="35"
+								min="25"
+								max="50"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+					
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">รอบแขน</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.bicep}
+								class="input input-bordered flex-1" 
+								placeholder="28"
+								min="20"
+								max="50"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+					
+					<div class="form-control">
+						<label class="label">
+							<span class="label-text">ความยาวขา</span>
+						</label>
+						<div class="input-group">
+							<input 
+								type="number" 
+								bind:value={bodyMeasurements.inseam}
+								class="input input-bordered flex-1" 
+								placeholder="75"
+								min="60"
+								max="100"
+								step="0.1"
+							/>
+							<span class="bg-base-200 px-3 py-2 text-sm">cm</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="alert alert-info mt-4">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+					</svg>
+					<span>กรอกเฉพาะข้อมูลที่ต้องการเท่านั้น ข้อมูลนี้จะช่วยในการแนะนำเสื้อผ้าที่เหมาะสม</span>
+				</div>
 			</div>
 
-			<!-- Body Details -->
-			<div class="form-control mb-4">
-				<label class="label">
-					<span class="label-text">รายละเอียดสัดส่วนร่างกาย (JSON)</span>
-				</label>
-				<textarea 
-					name="bodyDetails" 
-					bind:value={currentBodyDetails} 
-					class="textarea textarea-bordered text-gray-500" 
-					rows="4"
-					placeholder="{`{\"height\": \"165cm\", \"weight\": \"50kg\", \"chest\": \"85cm\", \"waist\": \"65cm\", \"hips\": \"90cm\"}`}"
-				></textarea>
-				<label class="label">
-					<span class="label-text-alt">กรอกข้อมูลสัดส่วนร่างกายในรูปแบบ JSON เช่น สูง น้ำหนัก รอบอก รอบเอว รอบสะโพก</span>
-				</label>
-			</div>
-
-			<div class="modal-action">
-				<button type="button" class="btn" on:click={() => document.getElementById('profile_modal').close()}>ยกเลิก</button>
-				<button type="submit" class="btn btn-primary">บันทึก</button>
+			<div class="modal-action pt-6 border-t border-base-200">
+				<button type="button" class="btn btn-outline" on:click={() => document.getElementById('profile_modal').close()}>
+					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+					ยกเลิก
+				</button>
+				<button type="submit" class="btn btn-primary">
+					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+					</svg>
+					บันทึกข้อมูล
+				</button>
 			</div>
 		</form>
 	</div>
