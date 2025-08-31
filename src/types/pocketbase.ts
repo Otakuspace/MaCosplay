@@ -110,6 +110,9 @@ export type UsersRecord = {
 	UserNumber?: number;
 	avatar?: string;
 	name?: string;
+	bodyDetails?: any;
+	fbProfile?: string;
+	size?: string;
 };
 
 export type UsersTestRecord = {

@@ -61,6 +61,7 @@
 
 	let currentName = data?.user?.name;
 	let currentFbProfile = data?.user?.fbProfile;
+	let currentBodyDetails = data?.user?.bodyDetails ? JSON.stringify(data.user.bodyDetails, null, 2) : '';
 
 
 
@@ -169,6 +170,23 @@
 					<span class="label-text">Facebook Profile URL</span>
 				</label>
 				<input type="url" name="fbProfile" bind:value={currentFbProfile} class="input input-bordered text-gray-500" placeholder="https://www.facebook.com/yourprofile" />
+			</div>
+
+			<!-- Body Details -->
+			<div class="form-control mb-4">
+				<label class="label">
+					<span class="label-text">รายละเอียดสัดส่วนร่างกาย (JSON)</span>
+				</label>
+				<textarea 
+					name="bodyDetails" 
+					bind:value={currentBodyDetails} 
+					class="textarea textarea-bordered text-gray-500" 
+					rows="4"
+					placeholder="{`{\"height\": \"165cm\", \"weight\": \"50kg\", \"chest\": \"85cm\", \"waist\": \"65cm\", \"hips\": \"90cm\"}`}"
+				></textarea>
+				<label class="label">
+					<span class="label-text-alt">กรอกข้อมูลสัดส่วนร่างกายในรูปแบบ JSON เช่น สูง น้ำหนัก รอบอก รอบเอว รอบสะโพก</span>
+				</label>
 			</div>
 
 			<div class="modal-action">

@@ -11,6 +11,7 @@ export const PUT = async ({ request, locals }) => {
         const avatar = formData.get('avatar');
         const size = formData.get('size');
         const fbProfile = formData.get('fbProfile');
+        const bodyDetails = formData.get('bodyDetails');
 
         console.log(fbProfile)
 
@@ -21,11 +22,22 @@ export const PUT = async ({ request, locals }) => {
         // Fetch existing user profile
         const existingUser = await adminClient.collection('users').getOne(userId);
 
+        // Parse and validate bodyDetails JSON if provided
+        let parsedBodyDetails = null;
+        if (bodyDetails && bodyDetails.trim()) {
+            try {
+                parsedBodyDetails = JSON.parse(bodyDetails);
+            } catch (error) {
+                return json({ error: 'รูปแบบ JSON ของรายละเอียดสัดส่วนร่างกายไม่ถูกต้อง' }, { status: 400 });
+            }
+        }
+
         // Prepare update data
         const updateData = {
             name,
             size,
-            fbProfile
+            fbProfile,
+            bodyDetails: parsedBodyDetails
         };
 
         // Include avatar if it's a File and not null
