@@ -2,6 +2,7 @@
 	import PocketBase from 'pocketbase';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import ItemList from '$lib/components/ItemList.svelte';
 	export let data: { itemList: { items: any[]; totalPages: number; currentPage: number } };
 	
 	let selectedProvince = '';
@@ -355,89 +356,34 @@
 					<p class="text-gray-600 dark:text-gray-400">พบ {filteredItems().length} รายการ</p>
 				</div>
 
-				<!-- Product Grid -->
-				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
-					{#if filteredItems().length > 0}
-						{#each filteredItems() as item}
-							<div class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-gray-200 dark:border-gray-700" on:click={() => navigateToOutfitDetail(item)}>
-								<!-- Product Image -->
-								<div class="relative">
-									{#if item.Image}
-										<img
-											src={getOptimizedImageUrl(item.id, item.Image)}
-											alt="{item.Name}"
-											class="w-full h-48 sm:h-64 object-cover"
-											loading="lazy"
-										/>
-									{:else}
-										<img
-											src="/images/Example/Macosplay.png?w=400&format=webp"
-											alt="{item.Name}"
-											class="w-full h-48 sm:h-64 object-cover"
-											loading="lazy"
-										/>
-									{/if}
-									
-									<!-- Rating Badge -->
-									<div class="absolute top-2 left-2 bg-yellow-400 text-black text-xs px-2 py-1 rounded-full font-semibold">
-										⭐ 3.5
-									</div>
-								</div>
+				<!-- Product Grid using ItemList Component -->
+				<ItemList 
+					items={filteredItems()}
+					loading={false}
+					showRating={true}
+					showTags={true}
+					showLocation={true}
+					showPrice={true}
+					showStoreInfo={true}
+					gridCols="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+					itemHeight="h-48 sm:h-64"
+					compact={false}
+					on:itemClick={({ detail }) => navigateToOutfitDetail(detail.item)}
+					on:storeClick={({ detail }) => navigateToStore(detail.item)}
+					on:imageClick={({ detail }) => openDetailModal(detail.item)}
+				/>
 
-								<!-- Product Info -->
-								<div class="p-3 sm:p-4">
-									<!-- Seller Info -->
-									<div class="flex items-center space-x-2 mb-3">
-										<div class="w-6 h-6 sm:w-8 sm:h-8 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
-										<div>
-											<p class="text-xs sm:text-sm font-medium text-gray-900 dark:text-white">{limitText(item.expand?.userStore?.Name || '', 20)}</p>
-											<p class="text-xs text-gray-500 dark:text-gray-400">@{item.expand?.userStore?.Name?.toLowerCase().replace(/\s+/g, '') || 'store'}</p>
-										</div>
-									</div>
-
-									<!-- Product Title -->
-									<h3 class="font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 text-sm sm:text-base">
-										{item.Name}
-									</h3>
-
-									<!-- Price -->
-									<div class="text-base sm:text-lg font-bold text-green-600 dark:text-green-400 mb-3">
-										{#if item.price == 0}
-											฿{item.price_pri?.toLocaleString() || '0'}
-										{:else}
-											฿{item.price?.toLocaleString() || '0'}
-										{/if}
-										<span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400">/ 3 วัน</span>
-									</div>
-
-									<!-- Tags -->
-									<div class="flex flex-wrap gap-2 mb-3">
-										<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">{item.Size || 'M'}</span>
-										<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">หญิง</span>
-									</div>
-
-									<!-- Location -->
-									<p class="text-xs text-gray-500 dark:text-gray-400">{item.Province || 'ไม่ระบุตำแหน่ง'}</p>
-								</div>
-							</div>
-						{/each}
-					{:else}
-						<div class="col-span-full">
-							<div class="text-center py-12 lg:py-16">
-								<div class="w-20 h-20 lg:w-24 lg:h-24 mx-auto mb-4 lg:mb-6 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-									<svg class="w-10 h-10 lg:w-12 lg:h-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-									</svg>
-								</div>
-								<h3 class="text-xl lg:text-2xl font-semibold text-gray-900 dark:text-white mb-2">ไม่พบสินค้า</h3>
-								<p class="text-gray-600 dark:text-gray-400 mb-4 lg:mb-6 text-sm lg:text-base">ลองเปลี่ยนเงื่อนไขการค้นหาหรือรีเซ็ตตัวกรอง</p>
-								<button class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 lg:px-6 py-2 lg:py-3 rounded-lg transition-colors duration-200 text-sm lg:text-base" on:click={resetFilters}>
-									รีเซ็ตตัวกรอง
-								</button>
-							</div>
-						</div>
-					{/if}
-				</div>
+				<!-- Reset Filters Button (shown when no items found) -->
+				{#if filteredItems().length === 0}
+					<div class="text-center py-8">
+						<button 
+							class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-lg transition-colors duration-200 text-base"
+							on:click={resetFilters}
+						>
+							รีเซ็ตตัวกรอง
+						</button>
+					</div>
+				{/if}
 
 				<!-- Pagination -->
 				{#if data.itemList.totalPages > 1}
