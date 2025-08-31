@@ -1845,7 +1845,6 @@
     </div>
 {/if}
 
-    </div>
 </section>
 
 <style>
