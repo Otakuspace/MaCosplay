@@ -233,7 +233,12 @@
 					{#each series as seriesItem}
 						<button
 							class="w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 {selectedSeries === seriesItem ? 'bg-blue-600 dark:bg-blue-500 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'}"
-							on:click={() => { selectedSeries = seriesItem; handleSearch(); sidebarOpen = false; }}
+							on:click={() => { 
+								selectedSeries = seriesItem; 
+								searchQuery = seriesItem; 
+								handleSearch(); 
+								sidebarOpen = false; 
+							}}
 						>
 							{seriesItem}
 						</button>
