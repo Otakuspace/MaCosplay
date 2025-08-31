@@ -1,6 +1,8 @@
 <script lang="ts">
     import { goto } from '$app/navigation'; // Updated import path
     import { onMount } from 'svelte';
+    import OutfitDetailModal from '../../components/OutfitDetailModal.svelte';
+    import { InspirationManager, showToast } from '$lib/inspiration';
     
 	let username = ''; // Variable to hold the username
 	let Name = ''; // Variable to hold the Name
@@ -21,6 +23,7 @@
     let showDeleteConfirm = false; // Control the visibility of the delete confirmation modal
     let tagsString = ''; // String representation of tags for input binding
     let currentTheme = 'light'; // Theme state
+    let inspirationItems = []; // Store inspiration items
     
     // Function to check current theme
     function getCurrentTheme() {
@@ -32,8 +35,26 @@
         return 'light';
     }
     
+    // Inspiration management functions using utility
+    function addToInspiration(item) {
+        try {
+            InspirationManager.add(item);
+            inspirationItems = InspirationManager.getAll();
+            showToast('เพิ่มเป็นแรงบันดาลใจแล้ว!', 'success', currentTheme);
+        } catch (error) {
+            showToast(error.message || 'เกิดข้อผิดพลาด', 'error', currentTheme);
+        }
+    }
+    
+    function isInInspiration(itemId) {
+        return InspirationManager.isInInspiration(itemId);
+    }
+    
     onMount(() => {
         currentTheme = getCurrentTheme();
+        
+        // Load inspiration items using utility
+        inspirationItems = InspirationManager.getAll();
         
         // Listen for theme changes
         const observer = new MutationObserver(() => {
@@ -226,6 +247,8 @@
     let createImagePreview = '';
     let editImagePreview = '';
     let detailItem = null;
+    let showOutfitDetail = false;
+    let selectedOutfit = null;
 
     function previewImage(event, type) {
         const file = event.target.files[0];
@@ -262,6 +285,16 @@
     function openDetailModal(item) {
 		detailItem = item;
 	}
+    
+    function openOutfitDetail(item) {
+        selectedOutfit = item;
+        showOutfitDetail = true;
+    }
+    
+    function closeOutfitDetail() {
+        showOutfitDetail = false;
+        selectedOutfit = null;
+    }
 
     async function updateFbPage() {
         try {
@@ -1421,15 +1454,46 @@
                                         </button>
                                     </div>
                                     
-                                    <!-- Enhanced Facebook Share Button -->
-                                    <button class="group/btn relative w-full px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
-                                            on:click={() => shareToFacebook(item)}>
+                                    <div class="grid grid-cols-2 gap-1">
+                                        <!-- Enhanced Facebook Share Button -->
+                                        <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
+                                                on:click={() => shareToFacebook(item)}>
+                                            <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                            <div class="relative flex items-center justify-center">
+                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                        
+                                        <!-- Add to Inspiration Button -->
+                                        <button 
+                                            class="group/btn relative px-2 py-1.5 bg-gradient-to-r {isInInspiration(item.id) ? 'from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800' : 'from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700'} text-white rounded-lg transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden {isInInspiration(item.id) ? 'opacity-75' : ''}" 
+                                            on:click={() => !isInInspiration(item.id) && addToInspiration(item)}
+                                            disabled={isInInspiration(item.id)}
+                                            title={isInInspiration(item.id) ? 'อยู่ในแรงบันดาลใจแล้ว' : 'เพิ่มเป็นแรงบันดาลใจ'}
+                                        >
+                                            <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                            <div class="relative flex items-center justify-center">
+                                                <svg class="w-3 h-3" fill={isInInspiration(item.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- View Details Button -->
+                                    <button 
+                                        class="group/btn relative w-full px-3 py-1.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
+                                        on:click={() => openOutfitDetail(item)}
+                                    >
                                         <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
                                         <div class="relative flex items-center justify-center space-x-1">
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                             </svg>
-                                            <span>แชร์ FB</span>
+                                            <span>ดูรายละเอียด</span>
                                         </div>
                                     </button>
                                 </div>
@@ -2223,4 +2287,15 @@
             </div>
         </div>
     </div>
+{/if}
+
+<!-- Outfit Detail Modal -->
+{#if showOutfitDetail && selectedOutfit}
+    <OutfitDetailModal 
+        outfit={selectedOutfit}
+        {currentTheme}
+        onClose={closeOutfitDetail}
+        onAddToInspiration={addToInspiration}
+        isInInspiration={isInInspiration(selectedOutfit.id)}
+    />
 {/if}

@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import ManageStoreSidebar from '../components/ManageStoreSidebar.svelte';
 	
 	let { children, data } = $props();
 	let currentTheme = 'light';
+	let inspirationItems = [];
 	
 	// Function to check current theme
 	function getCurrentTheme() {
@@ -17,6 +19,19 @@
 	// Update theme reactively
 	onMount(() => {
 		currentTheme = getCurrentTheme();
+		
+		// Load inspiration items from localStorage
+		if (typeof window !== 'undefined') {
+			const saved = localStorage.getItem('cosplay_inspiration');
+			if (saved) {
+				try {
+					inspirationItems = JSON.parse(saved);
+				} catch (e) {
+					console.error('Error loading inspiration items:', e);
+					inspirationItems = [];
+				}
+			}
+		}
 		
 		// Listen for theme changes
 		const observer = new MutationObserver(() => {
@@ -33,44 +48,54 @@
 </script>
 
 <div class="min-h-screen transition-colors duration-300 {currentTheme === 'dark' ? 'bg-gray-900' : 'bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100'}">
-	<!-- Header Section with Breadcrumb -->
-	<div class="sticky top-0 z-40 backdrop-blur-md {currentTheme === 'dark' ? 'bg-gray-900/80 border-gray-700' : 'bg-white/80 border-gray-200'} border-b transition-colors duration-300">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-			<div class="flex items-center justify-between h-16">
-				<!-- Breadcrumb -->
-				<nav class="flex items-center space-x-2 text-sm">
-					<a href="/" class="{currentTheme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors">
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4"></path>
-						</svg>
-					</a>
-					<span class="{currentTheme === 'dark' ? 'text-gray-600' : 'text-gray-400'}">/</span>
-					<a href="/dashboard" class="{currentTheme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors">
-						Dashboard
-					</a>
-					<span class="{currentTheme === 'dark' ? 'text-gray-600' : 'text-gray-400'}">/</span>
-					<span class="{currentTheme === 'dark' ? 'text-white' : 'text-gray-900'} font-medium">Manage Store</span>
-				</nav>
-				
-				<!-- Quick Actions -->
-				<div class="flex items-center space-x-3">
-					<a href="/create-shop" 
-					   class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 {currentTheme === 'dark' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'} shadow-sm hover:shadow-md">
-						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-						</svg>
-						สร้างร้านใหม่
-					</a>
+	<!-- Sidebar -->
+	<ManageStoreSidebar 
+		{currentTheme} 
+		storeData={data?.StoreDetails}
+		{inspirationItems}
+	/>
+	
+	<!-- Main Content Area with Sidebar Offset -->
+	<div class="lg:ml-80 transition-all duration-300">
+		<!-- Header Section with Breadcrumb -->
+		<div class="sticky top-0 z-30 backdrop-blur-md {currentTheme === 'dark' ? 'bg-gray-900/80 border-gray-700' : 'bg-white/80 border-gray-200'} border-b transition-colors duration-300">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="flex items-center justify-between h-16">
+					<!-- Breadcrumb -->
+					<nav class="flex items-center space-x-2 text-sm">
+						<a href="/" class="{currentTheme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors">
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4"></path>
+							</svg>
+						</a>
+						<span class="{currentTheme === 'dark' ? 'text-gray-600' : 'text-gray-400'}">/</span>
+						<a href="/dashboard" class="{currentTheme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-gray-700'} transition-colors">
+							Dashboard
+						</a>
+						<span class="{currentTheme === 'dark' ? 'text-gray-600' : 'text-gray-400'}">/</span>
+						<span class="{currentTheme === 'dark' ? 'text-white' : 'text-gray-900'} font-medium">Manage Store</span>
+					</nav>
+					
+					<!-- Quick Actions -->
+					<div class="flex items-center space-x-3">
+						<a href="/create-shop" 
+						   class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 {currentTheme === 'dark' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'} shadow-sm hover:shadow-md">
+							<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+							</svg>
+							สร้างร้านใหม่
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
+		
+		<!-- Main Content Area -->
+		<main class="relative">
+			{@render children()}
+		</main>
 	</div>
-	
-	<!-- Main Content Area -->
-	<main class="relative">
-		{@render children()}
-	</main>
 </div>
 
 <style>
