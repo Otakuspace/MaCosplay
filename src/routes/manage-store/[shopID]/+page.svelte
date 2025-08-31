@@ -1315,7 +1315,7 @@
         </div>
 
         <!-- Enhanced Product Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {#if filteredItems().length > 0}
                 {#each filteredItems() as item}
                     <!-- Ultra Modern Product Card -->
