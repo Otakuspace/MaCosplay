@@ -1182,22 +1182,22 @@
         </div>
 
         <!-- Enhanced Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 sm:gap-6 md:gap-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
             {#if filteredItems().length > 0}
                 {#each filteredItems() as item}
                     <!-- Ultra Modern Product Card -->
-                    <div class="group {currentTheme === 'dark' ? 'bg-gray-800/90' : 'bg-white/90'} backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 border {currentTheme === 'dark' ? 'border-gray-700/50' : 'border-gray-100/50'} relative">
+                    <div class="group {currentTheme === 'dark' ? 'bg-gray-800/90' : 'bg-white/90'} backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border {currentTheme === 'dark' ? 'border-gray-700/50' : 'border-gray-100/50'} relative flex flex-col h-full">
                         <!-- Card Glow Effect -->
                         <div class="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         
-                        <div class="relative">
+                        <div class="relative flex flex-col h-full">
                             <!-- Product Image -->
                             <div class="relative overflow-hidden">
                                 <div class="aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
                                     <img 
                                         src={`https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`} 
                                         alt="{item.Name} Thumbnail" 
-                                        class="w-full h-full object-cover cursor-pointer transition-all duration-700 group-hover:scale-110 group-hover:rotate-2" 
+                                        class="w-full h-full object-cover cursor-pointer transition-all duration-500 group-hover:scale-105" 
                                         on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
                                     />
                                 </div>
@@ -1206,43 +1206,41 @@
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 
                                 <!-- Enhanced Status Badge -->
-                                <div class="absolute top-4 right-4 z-10">
-                                    <div class="px-4 py-2 rounded-2xl text-sm font-bold shadow-lg backdrop-blur-sm border border-white/20 {item.Status === 'พร้อมให้เช่า' ? 'bg-green-500/90 text-white' : item.Status === 'กำลังถูกเช่า' ? 'bg-yellow-500/90 text-white' : 'bg-red-500/90 text-white'} transform group-hover:scale-110 transition-transform duration-300">
+                                <div class="absolute top-2 right-2 z-10">
+                                    <div class="px-2 py-1 rounded-lg text-xs font-bold shadow-lg backdrop-blur-sm border border-white/20 {item.Status === 'พร้อมให้เช่า' ? 'bg-green-500/90 text-white' : item.Status === 'กำลังถูกเช่า' ? 'bg-yellow-500/90 text-white' : 'bg-red-500/90 text-white'} transform group-hover:scale-105 transition-transform duration-300">
                                         {#if item.Status === 'พร้อมให้เช่า'}
-                                            ✅ พร้อม
+                                            ✅
                                         {:else if item.Status === 'กำลังถูกเช่า'}
-                                            🔄 เช่าแล้ว
+                                            🔄
                                         {:else}
-                                            ❌ ไม่พร้อม
+                                            ❌
                                         {/if}
                                     </div>
                                 </div>
 
                                 <!-- Enhanced Visibility Indicator -->
-                                <div class="absolute top-4 left-4 z-10">
+                                <div class="absolute top-2 left-2 z-10">
                                     {#if item.public}
-                                        <div class="bg-blue-500/90 text-white px-3 py-2 rounded-2xl text-sm font-bold flex items-center shadow-lg backdrop-blur-sm border border-white/20 transform group-hover:scale-110 transition-transform duration-300">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="bg-blue-500/90 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center shadow-lg backdrop-blur-sm border border-white/20 transform group-hover:scale-105 transition-transform duration-300">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                             </svg>
-                                            สาธารณะ
                                         </div>
                                     {:else}
-                                        <div class="bg-gray-500/90 text-white px-3 py-2 rounded-2xl text-sm font-bold flex items-center shadow-lg backdrop-blur-sm border border-white/20 transform group-hover:scale-110 transition-transform duration-300">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="bg-gray-500/90 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center shadow-lg backdrop-blur-sm border border-white/20 transform group-hover:scale-105 transition-transform duration-300">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
                                             </svg>
-                                            ส่วนตัว
                                         </div>
                                     {/if}
                                 </div>
 
                                 <!-- Quick View Button -->
-                                <div class="absolute bottom-4 right-4 z-10 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                                    <button class="bg-white/90 backdrop-blur-sm text-gray-700 p-3 rounded-2xl shadow-lg hover:bg-white hover:shadow-xl transition-all duration-200"
+                                <div class="absolute bottom-2 right-2 z-10 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                                    <button class="bg-white/90 backdrop-blur-sm text-gray-700 p-2 rounded-lg shadow-lg hover:bg-white hover:shadow-xl transition-all duration-200"
                                             on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}>
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                         </svg>
                                     </button>
@@ -1250,56 +1248,58 @@
                             </div>
 
                             <!-- Enhanced Card Content -->
-                            <div class="p-4 sm:p-6">
-                                <!-- Product Title -->
-                                <h3 class="text-lg sm:text-xl font-bold {currentTheme === 'dark' ? 'text-white group-hover:text-blue-400' : 'text-gray-800 group-hover:text-blue-600'} mb-3 line-clamp-2 transition-colors duration-300">
-                                    {item.Name}
-                                </h3>
-                                
-                                <!-- Product Details -->
-                                <p class="text-sm {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-4 line-clamp-2 leading-relaxed">
-                                    {item.Details}
-                                </p>
+                            <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between">
+                                <div class="space-y-2">
+                                    <!-- Product Title -->
+                                    <h3 class="text-sm sm:text-base font-bold {currentTheme === 'dark' ? 'text-white group-hover:text-blue-400' : 'text-gray-800 group-hover:text-blue-600'} line-clamp-2 transition-colors duration-300 min-h-[2.5rem]">
+                                        {item.Name}
+                                    </h3>
+                                    
+                                    <!-- Product Details -->
+                                    <p class="text-xs {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} line-clamp-2 leading-relaxed min-h-[2rem]">
+                                        {item.Details}
+                                    </p>
 
-                                <!-- Enhanced Tags -->
-                                <div class="flex flex-wrap gap-2 mb-4">
-                                    <span class="px-3 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-800 to-blue-700 text-blue-200' : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'} rounded-xl text-xs font-semibold flex items-center">
-                                        🏛️ {item.Province}
-                                    </span>
-                                    <span class="px-3 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-purple-800 to-purple-700 text-purple-200' : 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800'} rounded-xl text-xs font-semibold flex items-center">
-                                        👕 {item.Size}
-                                    </span>
-                                </div>
+                                    <!-- Enhanced Tags -->
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-800 to-blue-700 text-blue-200' : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'} rounded-lg text-xs font-semibold">
+                                            {item.Province}
+                                        </span>
+                                        <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-purple-800 to-purple-700 text-purple-200' : 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800'} rounded-lg text-xs font-semibold">
+                                            {item.Size}
+                                        </span>
+                                    </div>
 
-                                <!-- Enhanced Price Display -->
-                                <div class="mb-4 p-3 {currentTheme === 'dark' ? 'bg-gradient-to-r from-gray-800 to-blue-900 border-gray-700' : 'bg-gradient-to-r from-gray-50 to-blue-50 border-gray-100'} rounded-xl border">
-                                    <div class="text-center">
-                                        {#if item.isPriTest}
-                                            <div class="space-y-1">
-                                                <div class="flex items-center justify-between">
-                                                    <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ไพร:</span>
-                                                    <span class="text-lg font-bold {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}">฿{item.price_pri.toLocaleString()}</span>
+                                    <!-- Enhanced Price Display -->
+                                    <div class="p-2 {currentTheme === 'dark' ? 'bg-gradient-to-r from-gray-800 to-blue-900 border-gray-700' : 'bg-gradient-to-r from-gray-50 to-blue-50 border-gray-100'} rounded-lg border">
+                                        <div class="text-center">
+                                            {#if item.isPriTest}
+                                                <div class="space-y-1">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ไพร:</span>
+                                                        <span class="text-sm font-bold {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}">฿{item.price_pri.toLocaleString()}</span>
+                                                    </div>
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">เทส:</span>
+                                                        <span class="text-sm font-bold {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}">฿{item.price_test.toLocaleString()}</span>
+                                                    </div>
                                                 </div>
-                                                <div class="flex items-center justify-between">
-                                                    <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">เทส:</span>
-                                                    <span class="text-lg font-bold {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}">฿{item.price_test.toLocaleString()}</span>
+                                            {:else}
+                                                <div class="flex items-center justify-center space-x-1">
+                                                    <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ราคา:</span>
+                                                    <span class="text-sm font-bold {currentTheme === 'dark' ? 'bg-gradient-to-r from-green-400 to-blue-400' : 'bg-gradient-to-r from-green-600 to-blue-600'} bg-clip-text text-transparent">
+                                                        ฿{item.price.toLocaleString()}
+                                                    </span>
                                                 </div>
-                                            </div>
-                                        {:else}
-                                            <div class="flex items-center justify-center space-x-2">
-                                                <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ราคา:</span>
-                                                <span class="text-xl font-bold {currentTheme === 'dark' ? 'bg-gradient-to-r from-green-400 to-blue-400' : 'bg-gradient-to-r from-green-600 to-blue-600'} bg-clip-text text-transparent">
-                                                    ฿{item.price.toLocaleString()}
-                                                </span>
-                                            </div>
-                                        {/if}
+                                            {/if}
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Enhanced Action Buttons -->
-                                <div class="space-y-3">
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <button class="group/btn relative px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-xs font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
+                                <div class="mt-3 space-y-2">
+                                    <div class="grid grid-cols-2 gap-1">
+                                        <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
                                                 on:click={() => openEditModal(item)}>
                                             <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
                                             <div class="relative flex items-center justify-center">
@@ -1309,7 +1309,7 @@
                                                 แก้ไข
                                             </div>
                                         </button>
-                                        <button class="group/btn relative px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 text-xs font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
+                                        <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
                                                 on:click={() => confirmDeleteItem(item.id)}>
                                             <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
                                             <div class="relative flex items-center justify-center">
@@ -1322,11 +1322,11 @@
                                     </div>
                                     
                                     <!-- Enhanced Facebook Share Button -->
-                                    <button class="group/btn relative w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 text-xs font-bold shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden" 
+                                    <button class="group/btn relative w-full px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
                                             on:click={() => shareToFacebook(item)}>
                                         <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                        <div class="relative flex items-center justify-center space-x-2">
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                        <div class="relative flex items-center justify-center space-x-1">
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
                                             </svg>
                                             <span>แชร์ FB</span>
