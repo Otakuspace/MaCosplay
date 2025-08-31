@@ -1845,9 +1845,6 @@
     </div>
 {/if}
 
-    </div>
-</section>
-
 <style>
     /* Enhanced Styling for Modern Store Management */
     :global(html) {
