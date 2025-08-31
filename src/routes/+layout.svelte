@@ -194,15 +194,13 @@
 					<li><a>บทความ</a></li>
 					<li>
 						<details>
-							<summary>เรียนรู้เพิ่มเติม</summary>
+							<summary>บริการ</summary>
 							<ul class="p-2">
-								<li><a>Submenu 1</a></li>
-								<li><a>Submenu 2</a></li>
+								<li><a>รับจ้าง</a></li>
+								<li><a>หาชุดเช่าคอสเพลย์</a></li>
 							</ul>
 						</details>
 					</li>
-					<li><a href="/pricing">อัพเกรด</a></li>
-					<li><a href="/upscaler">AI Upscale</a></li>
 				</ul>
 			</div>
 			<h1 class="btn btn-ghost text-xl"><a href="/">MaCosplay</a></h1>
@@ -212,15 +210,13 @@
 				<li><a>บทความ</a></li>
 				<li>
 					<details>
-						<summary>เรียนรู้เพิ่มเติม</summary>
+						<summary>บริการ</summary>
 						<ul class="p-2">
-							<li><a>Submenu 1</a></li>
-							<li><a>Submenu 2</a></li>
+							<li><a>รับจ้าง</a></li>
+							<li><a>หาชุดเช่าคอสเพลย์</a></li>
 						</ul>
 					</details>
 				</li>
-				<li><a href="/pricing">อัพเกรด</a></li>
-				<li><a href="/upscaler">AI Upscale</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
