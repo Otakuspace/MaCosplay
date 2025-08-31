@@ -1391,12 +1391,33 @@
 
                                     <!-- Enhanced Tags -->
                                     <div class="flex flex-wrap gap-1">
+                                        <!-- Province tag -->
                                         <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-800 to-blue-700 text-blue-200' : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'} rounded-lg text-xs font-semibold">
                                             {item.Province}
                                         </span>
+                                        <!-- Size tag -->
                                         <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-purple-800 to-purple-700 text-purple-200' : 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800'} rounded-lg text-xs font-semibold">
-                                            {item.Size}
+                                            ขนาด {item.Size}
                                         </span>
+                                        <!-- Status tag -->
+                                        {#if item.Status}
+                                            <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-green-800 to-green-700 text-green-200' : 'bg-gradient-to-r from-green-100 to-green-200 text-green-800'} rounded-lg text-xs font-semibold">
+                                                {item.Status}
+                                            </span>
+                                        {/if}
+                                        <!-- Custom outfit tags from item.tags array -->
+                                        {#if item.tags && item.tags.length > 0}
+                                            {#each item.tags.slice(0, 2) as tag}
+                                                <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-orange-800 to-orange-700 text-orange-200 border-orange-600' : 'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 border-orange-300'} rounded-lg text-xs font-semibold border">
+                                                    {tag}
+                                                </span>
+                                            {/each}
+                                            {#if item.tags.length > 2}
+                                                <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-orange-800 to-orange-700 text-orange-200 border-orange-600' : 'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 border-orange-300'} rounded-lg text-xs font-semibold border">
+                                                    +{item.tags.length - 2}
+                                                </span>
+                                            {/if}
+                                        {/if}
                                     </div>
 
                                     <!-- Enhanced Price Display -->

@@ -141,27 +141,27 @@
 			<div class="flex flex-wrap gap-2 mb-3">
 				<!-- Size tag -->
 				{#if item.Size}
-					<span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">
+					<span class="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full font-medium">
 						ขนาด {item.Size}
 					</span>
 				{/if}
 				
 				<!-- Status tag -->
 				{#if item.Status}
-					<span class="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-1 rounded-full">
+					<span class="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-1 rounded-full font-medium">
 						{item.Status}
 					</span>
 				{/if}
 
-				<!-- Custom tags from item.tags array -->
+				<!-- Custom outfit tags from item.tags array -->
 				{#if item.tags && item.tags.length > 0}
 					{#each item.tags.slice(0, 3) as tag}
-						<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">
+						<span class="text-xs bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-700 dark:text-orange-300 px-2 py-1 rounded-full font-medium border border-orange-200 dark:border-orange-700/50">
 							{tag}
 						</span>
 					{/each}
 					{#if item.tags.length > 3}
-						<span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full">
+						<span class="text-xs bg-gradient-to-r from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-700 dark:text-orange-300 px-2 py-1 rounded-full font-medium border border-orange-200 dark:border-orange-700/50">
 							+{item.tags.length - 3}
 						</span>
 					{/if}
