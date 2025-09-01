@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { createAdminClient } from '$lib/pocketbase';
-import type { RentalAvailabilityCheck } from '$lib/types/rental';
-import { isDateRangeOverlapping } from '$lib/types/rental';
+import type { RentalAvailabilityCheck } from '$types/rental';
+import { isDateRangeOverlapping } from '$types/rental';
 
 export const POST: RequestHandler = async ({ request }) => {
 	try {

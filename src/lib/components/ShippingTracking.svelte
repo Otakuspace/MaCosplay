@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { ShippingUpdate, RentalOrder, ShippingStatus } from '$lib/types/rental';
-	import { getShippingStatusConfig, formatDateTime } from '$lib/types/rental';
+	import type { ShippingUpdate, RentalOrder, ShippingStatus } from '$types/rental';
+import { getShippingStatusConfig, formatDateTime } from '$types/rental';
 
 	export let rentalOrderId: string;
 	export let trackingNumber: string | undefined = undefined;
@@ -126,7 +126,7 @@
 			</div>
 		{:else}
 			<div class="space-y-4">
-				{@each shippingUpdates as update, index}
+				{#each shippingUpdates as update, index}
 					<div class="flex items-start space-x-4">
 						<div class="flex-shrink-0">
 							<div class="w-8 h-8 rounded-full bg-base-300 flex items-center justify-center">

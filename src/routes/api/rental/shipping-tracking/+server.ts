@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { createAdminClient } from '$lib/pocketbase';
-import type { ShippingUpdate, ShippingStatus } from '$lib/types/rental';
+import type { ShippingUpdate, ShippingStatus } from '$types/rental';
 
 export const GET: RequestHandler = async ({ url }) => {
 	try {

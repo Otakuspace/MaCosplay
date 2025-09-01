@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { RentalAvailabilityCheck } from '$lib/types/rental';
+	import type { RentalAvailabilityCheck } from '$types/rental';
 
 	export let availability: RentalAvailabilityCheck;
 	export let showDetails = false;
