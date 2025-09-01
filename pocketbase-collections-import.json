@@ -1,12 +1,12 @@
 [
     {
-        "id": "products",
-        "name": "products",
+        "id": "cosplay_products",
+        "name": "cosplay_products",
         "type": "base",
         "system": false,
         "schema": [
             {
-                "id": "name",
+                "id": "product_name_field",
                 "name": "name",
                 "type": "text",
                 "system": false,
@@ -20,7 +20,7 @@
                 }
             },
             {
-                "id": "description",
+                "id": "product_description_field",
                 "name": "description",
                 "type": "text",
                 "system": false,
@@ -34,7 +34,7 @@
                 }
             },
             {
-                "id": "price",
+                "id": "product_price_field",
                 "name": "price",
                 "type": "number",
                 "system": false,
@@ -48,7 +48,7 @@
                 }
             },
             {
-                "id": "image",
+                "id": "product_image_field",
                 "name": "image",
                 "type": "url",
                 "system": false,
@@ -57,21 +57,24 @@
                 "unique": false,
                 "options": {
                     "exceptDomains": null,
-                    "onlyDomains": null
+                    "onlyDomains": null,
+                    "maxSize": 2000
                 }
             },
             {
-                "id": "images",
+                "id": "product_images_field",
                 "name": "images",
                 "type": "json",
                 "system": false,
                 "required": false,
                 "presentable": false,
                 "unique": false,
-                "options": {}
+                "options": {
+                    "maxSize": 200000
+                }
             },
             {
-                "id": "category",
+                "id": "product_category_field",
                 "name": "category",
                 "type": "text",
                 "system": false,
@@ -85,37 +88,43 @@
                 }
             },
             {
-                "id": "tags",
+                "id": "product_tags_field",
                 "name": "tags",
                 "type": "json",
                 "system": false,
                 "required": false,
                 "presentable": false,
                 "unique": false,
-                "options": {}
+                "options": {
+                    "maxSize": 10000
+                }
             },
             {
-                "id": "sizes",
+                "id": "product_sizes_field",
                 "name": "sizes",
                 "type": "json",
                 "system": false,
                 "required": false,
                 "presentable": false,
                 "unique": false,
-                "options": {}
+                "options": {
+                    "maxSize": 10000
+                }
             },
             {
-                "id": "colors",
+                "id": "product_colors_field",
                 "name": "colors",
                 "type": "json",
                 "system": false,
                 "required": false,
                 "presentable": false,
                 "unique": false,
-                "options": {}
+                "options": {
+                    "maxSize": 10000
+                }
             },
             {
-                "id": "inStock",
+                "id": "product_in_stock_field",
                 "name": "inStock",
                 "type": "bool",
                 "system": false,
@@ -125,7 +134,7 @@
                 "options": {}
             },
             {
-                "id": "stockQuantity",
+                "id": "product_stock_quantity_field",
                 "name": "stockQuantity",
                 "type": "number",
                 "system": false,
@@ -148,13 +157,13 @@
         "options": {}
     },
     {
-        "id": "shopping_cart",
+        "id": "shopping_cart_items",
         "name": "shopping_cart",
         "type": "base",
         "system": false,
         "schema": [
             {
-                "id": "user",
+                "id": "cart_user_field",
                 "name": "user",
                 "type": "relation",
                 "system": false,
@@ -170,7 +179,7 @@
                 }
             },
             {
-                "id": "product",
+                "id": "cart_product_field",
                 "name": "product",
                 "type": "relation",
                 "system": false,
@@ -178,7 +187,7 @@
                 "presentable": false,
                 "unique": false,
                 "options": {
-                    "collectionId": "products",
+                    "collectionId": "cosplay_products",
                     "cascadeDelete": false,
                     "minSelect": null,
                     "maxSelect": 1,
@@ -186,7 +195,7 @@
                 }
             },
             {
-                "id": "quantity",
+                "id": "cart_quantity_field",
                 "name": "quantity",
                 "type": "number",
                 "system": false,
@@ -200,7 +209,7 @@
                 }
             },
             {
-                "id": "size",
+                "id": "cart_size_field",
                 "name": "size",
                 "type": "text",
                 "system": false,
@@ -214,7 +223,7 @@
                 }
             },
             {
-                "id": "color",
+                "id": "cart_color_field",
                 "name": "color",
                 "type": "text",
                 "system": false,
@@ -228,14 +237,16 @@
                 }
             },
             {
-                "id": "customizations",
+                "id": "cart_customizations_field",
                 "name": "customizations",
                 "type": "json",
                 "system": false,
                 "required": false,
                 "presentable": false,
                 "unique": false,
-                "options": {}
+                "options": {
+                    "maxSize": 50000
+                }
             }
         ],
         "indexes": [],
@@ -247,13 +258,13 @@
         "options": {}
     },
     {
-        "id": "purchase_items",
+        "id": "purchase_order_items",
         "name": "purchase_items",
         "type": "base",
         "system": false,
         "schema": [
             {
-                "id": "product",
+                "id": "item_product_field",
                 "name": "product",
                 "type": "relation",
                 "system": false,
@@ -261,7 +272,7 @@
                 "presentable": false,
                 "unique": false,
                 "options": {
-                    "collectionId": "products",
+                    "collectionId": "cosplay_products",
                     "cascadeDelete": false,
                     "minSelect": null,
                     "maxSelect": 1,
@@ -269,7 +280,7 @@
                 }
             },
             {
-                "id": "productName",
+                "id": "item_product_name_field",
                 "name": "productName",
                 "type": "text",
                 "system": false,
@@ -283,7 +294,7 @@
                 }
             },
             {
-                "id": "productImage",
+                "id": "item_product_image_field",
                 "name": "productImage",
                 "type": "url",
                 "system": false,
@@ -292,11 +303,12 @@
                 "unique": false,
                 "options": {
                     "exceptDomains": null,
-                    "onlyDomains": null
+                    "onlyDomains": null,
+                    "maxSize": 2000
                 }
             },
             {
-                "id": "quantity",
+                "id": "item_quantity_field",
                 "name": "quantity",
                 "type": "number",
                 "system": false,
@@ -310,7 +322,7 @@
                 }
             },
             {
-                "id": "unitPrice",
+                "id": "item_unit_price_field",
                 "name": "unitPrice",
                 "type": "number",
                 "system": false,
@@ -324,7 +336,7 @@
                 }
             },
             {
-                "id": "totalPrice",
+                "id": "item_total_price_field",
                 "name": "totalPrice",
                 "type": "number",
                 "system": false,
@@ -338,7 +350,7 @@
                 }
             },
             {
-                "id": "size",
+                "id": "item_size_field",
                 "name": "size",
                 "type": "text",
                 "system": false,
@@ -352,7 +364,7 @@
                 }
             },
             {
-                "id": "color",
+                "id": "item_color_field",
                 "name": "color",
                 "type": "text",
                 "system": false,
@@ -366,14 +378,16 @@
                 }
             },
             {
-                "id": "customizations",
+                "id": "item_customizations_field",
                 "name": "customizations",
                 "type": "json",
                 "system": false,
                 "required": false,
                 "presentable": false,
                 "unique": false,
-                "options": {}
+                "options": {
+                    "maxSize": 50000
+                }
             }
         ],
         "indexes": [],
@@ -385,13 +399,13 @@
         "options": {}
     },
     {
-        "id": "purchase_orders",
+        "id": "user_purchase_orders",
         "name": "purchase_orders",
         "type": "base",
         "system": false,
         "schema": [
             {
-                "id": "orderNumber",
+                "id": "order_number_field",
                 "name": "orderNumber",
                 "type": "text",
                 "system": false,
@@ -405,7 +419,7 @@
                 }
             },
             {
-                "id": "user",
+                "id": "order_user_field",
                 "name": "user",
                 "type": "relation",
                 "system": false,
@@ -421,7 +435,7 @@
                 }
             },
             {
-                "id": "items",
+                "id": "order_items_field",
                 "name": "items",
                 "type": "relation",
                 "system": false,
@@ -429,7 +443,7 @@
                 "presentable": false,
                 "unique": false,
                 "options": {
-                    "collectionId": "purchase_items",
+                    "collectionId": "purchase_order_items",
                     "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": null,
@@ -437,7 +451,7 @@
                 }
             },
             {
-                "id": "totalAmount",
+                "id": "order_total_amount_field",
                 "name": "totalAmount",
                 "type": "number",
                 "system": false,
@@ -451,7 +465,7 @@
                 }
             },
             {
-                "id": "status",
+                "id": "order_status_field",
                 "name": "status",
                 "type": "select",
                 "system": false,
@@ -471,7 +485,7 @@
                 }
             },
             {
-                "id": "shippingAddress",
+                "id": "order_shipping_address_field",
                 "name": "shippingAddress",
                 "type": "text",
                 "system": false,
@@ -485,7 +499,7 @@
                 }
             },
             {
-                "id": "estimatedDelivery",
+                "id": "order_estimated_delivery_field",
                 "name": "estimatedDelivery",
                 "type": "date",
                 "system": false,
@@ -498,7 +512,7 @@
                 }
             },
             {
-                "id": "trackingNumber",
+                "id": "order_tracking_number_field",
                 "name": "trackingNumber",
                 "type": "text",
                 "system": false,
@@ -512,7 +526,7 @@
                 }
             },
             {
-                "id": "notes",
+                "id": "order_notes_field",
                 "name": "notes",
                 "type": "text",
                 "system": false,
