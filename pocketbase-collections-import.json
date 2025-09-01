@@ -1,6 +1,6 @@
 [
     {
-        "id": "cosplay_products",
+        "id": "mxj3660ce5olheb1234567890123456",
         "name": "cosplay_products",
         "type": "base",
         "system": false,
@@ -157,7 +157,7 @@
         "options": {}
     },
     {
-        "id": "shopping_cart_items",
+        "id": "mxj3660ce5olheb1234567890123457",
         "name": "shopping_cart",
         "type": "base",
         "system": false,
@@ -187,7 +187,7 @@
                 "presentable": false,
                 "unique": false,
                 "options": {
-                    "collectionId": "cosplay_products",
+                    "collectionId": "mxj3660ce5olheb1234567890123456",
                     "cascadeDelete": false,
                     "minSelect": null,
                     "maxSelect": 1,
@@ -258,7 +258,7 @@
         "options": {}
     },
     {
-        "id": "purchase_order_items",
+        "id": "mxj3660ce5olheb1234567890123458",
         "name": "purchase_items",
         "type": "base",
         "system": false,
@@ -272,7 +272,7 @@
                 "presentable": false,
                 "unique": false,
                 "options": {
-                    "collectionId": "cosplay_products",
+                    "collectionId": "mxj3660ce5olheb1234567890123456",
                     "cascadeDelete": false,
                     "minSelect": null,
                     "maxSelect": 1,
@@ -399,7 +399,7 @@
         "options": {}
     },
     {
-        "id": "user_purchase_orders",
+        "id": "mxj3660ce5olheb1234567890123459",
         "name": "purchase_orders",
         "type": "base",
         "system": false,
@@ -443,7 +443,7 @@
                 "presentable": false,
                 "unique": false,
                 "options": {
-                    "collectionId": "purchase_order_items",
+                    "collectionId": "mxj3660ce5olheb1234567890123458",
                     "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": null,
