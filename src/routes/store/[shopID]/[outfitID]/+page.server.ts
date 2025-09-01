@@ -9,18 +9,29 @@ export const load = async ({ params, locals }) => {
 		throw error(400, 'Missing required parameters');
 	}
 
+	// Check for malformed URLs (like Facebook share URLs)
+	if (shopID.includes('facebook.com') || shopID.includes('share') || shopID.includes('http')) {
+		console.log(`Malformed shop ID detected: ${shopID}`);
+		throw error(400, 'Invalid shop URL format. Please use a valid shop identifier.');
+	}
+
+	if (outfitID.includes('facebook.com') || outfitID.includes('share') || outfitID.includes('http')) {
+		console.log(`Malformed outfit ID detected: ${outfitID}`);
+		throw error(400, 'Invalid outfit URL format. Please use a valid outfit identifier.');
+	}
+
 	// Validate shopID format (should be alphanumeric, no special characters)
 	const shopIDRegex = /^[a-zA-Z0-9_-]+$/;
 	if (!shopIDRegex.test(shopID)) {
 		console.log(`Invalid shop ID format: ${shopID}`);
-		throw error(400, 'Invalid shop ID format');
+		throw error(400, 'Invalid shop ID format. Shop ID should contain only letters, numbers, hyphens, and underscores.');
 	}
 
 	// Validate outfitID format (should be alphanumeric, no special characters)
 	const outfitIDRegex = /^[a-zA-Z0-9_-]+$/;
 	if (!outfitIDRegex.test(outfitID)) {
 		console.log(`Invalid outfit ID format: ${outfitID}`);
-		throw error(400, 'Invalid outfit ID format');
+		throw error(400, 'Invalid outfit ID format. Outfit ID should contain only letters, numbers, hyphens, and underscores.');
 	}
 
 	// Length validation - allow shorter IDs for flexibility
@@ -52,6 +63,8 @@ export const load = async ({ params, locals }) => {
 				userStore = outfit.expand.userStore;
 			}
 		} catch (fetchError) {
+			console.log(`Item not found in database, using fallback data for: ${outfitID}`);
+			
 			// Fallback to mock data if item not found
 			const getOutfitData = (id: string) => {
 				const baseData = {
@@ -158,6 +171,12 @@ export const load = async ({ params, locals }) => {
 		};
 	} catch (err) {
 		console.error('Error in store outfit page:', err);
+		
+		// Check if it's a connection error
+		if (err.message?.includes('fetch') || err.message?.includes('network') || err.message?.includes('ECONNREFUSED')) {
+			throw error(503, 'Database service unavailable. Please try again later.');
+		}
+		
 		throw error(500, 'Internal server error');
 	}
 };
