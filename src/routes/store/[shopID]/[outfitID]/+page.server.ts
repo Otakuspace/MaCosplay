@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { createAdminClient } from '$lib/pocketbase';
 
-export const load = async ({ params }) => {
+export const load = async ({ params, locals }) => {
 	const { shopID, outfitID } = params;
 
 	// Server-side validation and sanitization
@@ -153,7 +153,8 @@ export const load = async ({ params }) => {
 
 		return {
 			itemList: [outfit],
-			userStore: userStore
+			userStore: userStore,
+			user: locals.user
 		};
 	} catch (err) {
 		console.error('Error in store outfit page:', err);

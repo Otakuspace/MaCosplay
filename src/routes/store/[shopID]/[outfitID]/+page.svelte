@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import type { StorePageData, ItemData, ShopData, ImageCheckResponse } from '../../../types/images';
 	import RentalAvailabilityChecker from '$lib/components/RentalAvailabilityChecker.svelte';
 	
@@ -12,10 +13,12 @@
 	let imageLoading = true;
 	let imageError = false;
 	let itemSpecificImagesLoaded = false;
+	let addingToCart = false;
 
 	// Extract outfit and shop data
 	$: outfit = data?.itemList?.[0] || null;
 	$: shop = data?.userStore || null;
+	$: user = data?.user || null;
 	$: productImages = outfit?.Images ? 
 		(outfit.Images.filter((img: string) => img && img.trim() !== '')) : 
 		(outfit?.Image ? [outfit.Image] : []);
@@ -93,6 +96,63 @@
 		
 		// If it's a relative path from PocketBase, construct the full URL using the item ID
 		return `https://file.macosplay.com/mxj3660ce5olheb/${itemId}/${image}`;
+	}
+
+	async function addToCart() {
+		if (!user) {
+			alert('กรุณาเข้าสู่ระบบก่อนเพิ่มสินค้าลงตะกร้า');
+			goto('/login');
+			return;
+		}
+
+		if (!outfit?.id) {
+			alert('ไม่สามารถเพิ่มสินค้าลงตะกร้าได้');
+			return;
+		}
+
+		addingToCart = true;
+		
+		try {
+			const response = await fetch('/api/shopping-cart', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					productId: outfit.id,
+					quantity: 1,
+					size: outfit.Size || '',
+					color: outfit.Color || ''
+				})
+			});
+
+			if (response.status === 401) {
+				// User not authenticated, redirect to login
+				alert('กรุณาเข้าสู่ระบบก่อนเพิ่มสินค้าลงตะกร้า');
+				goto('/login');
+				return;
+			}
+
+			if (!response.ok) {
+				throw new Error('Failed to add to cart');
+			}
+
+			const result = await response.json();
+			
+			if (result.success) {
+				// Show success message
+				alert('เพิ่มลงตะกร้าเรียบร้อยแล้ว');
+				// Optionally redirect to cart
+				// goto('/cart');
+			} else {
+				throw new Error(result.message || 'Failed to add to cart');
+			}
+		} catch (error) {
+			console.error('Error adding to cart:', error);
+			alert('เกิดข้อผิดพลาดในการเพิ่มลงตะกร้า');
+		} finally {
+			addingToCart = false;
+		}
 	}
 
 	function getImageWithFallback(image: string, index: number): string {
@@ -387,19 +447,51 @@
 
 					<!-- Action Buttons -->
 					<div class="space-y-3">
-						<button class="btn btn-primary w-full">
-							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
-							</svg>
-							เพิ่มลงตะกร้า
-						</button>
+						{#if user}
+							<button 
+								class="btn btn-primary w-full" 
+								on:click={addToCart}
+								disabled={addingToCart}
+							>
+								{#if addingToCart}
+									<div class="loading loading-spinner loading-sm"></div>
+								{:else}
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+									</svg>
+								{/if}
+								{addingToCart ? 'กำลังเพิ่ม...' : 'เพิ่มลงตะกร้า'}
+							</button>
+						{:else}
+							<a href="/login" class="btn btn-primary w-full">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+								</svg>
+								เข้าสู่ระบบเพื่อเพิ่มลงตะกร้า
+							</a>
+						{/if}
 						
-						<button class="btn btn-outline w-full">
-							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-							</svg>
-							เพิ่มในรายการโปรด
-						</button>
+						{#if user}
+							<div class="grid grid-cols-2 gap-3">
+								<button class="btn btn-outline">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+									</svg>
+									เพิ่มในรายการโปรด
+								</button>
+								
+								<a href="/cart" class="btn btn-outline">
+									<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+									</svg>
+									ดูตะกร้า
+								</a>
+							</div>
+						{:else}
+							<div class="text-center text-base-content/70 text-sm">
+								เข้าสู่ระบบเพื่อดูตะกร้าสินค้าและรายการโปรด
+							</div>
+						{/if}
 					</div>
 				</div>
 			</div>
