@@ -64,6 +64,12 @@
         // Load inspiration items using utility
         inspirationItems = InspirationManager.getAll();
         
+        // Calculate initial statistics
+        calculateStats();
+        
+        // Set up real-time updates every 5 seconds
+        const statsInterval = setInterval(calculateStats, 5000);
+        
         // Listen for theme changes
         const observer = new MutationObserver(() => {
             currentTheme = getCurrentTheme();
@@ -74,7 +80,10 @@
             attributeFilter: ['data-theme']
         });
         
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+            clearInterval(statsInterval);
+        };
     });
 
     // Reactive statement to sync tagsString with editingItem.tags
@@ -82,6 +91,11 @@
         tagsString = editingItem.tags.join(', ');
     } else if (editingItem) {
         tagsString = '';
+    }
+
+    // Reactive statement to recalculate stats when data changes
+    $: if (data.itemList) {
+        calculateStats();
     }
 
     // Reactive statement to sync editingItem.tags with tagsString
@@ -134,6 +148,9 @@
 
             if (response.ok) {
                 console.log('Item updated successfully'); // Log success
+                // Update statistics immediately after successful edit
+                calculateStats();
+                // Reload page to show updated data
                 location.reload();
             } else {
                 const errorData = await response.json();
@@ -162,6 +179,8 @@
                 body: formData
             });
             if (response.ok) {
+                // Refresh store data after banner update
+                calculateStats();
                 location.reload();
             } else {
                 const errorData = await response.json();
@@ -211,6 +230,8 @@
 			});
 
 			if (response.ok) {
+				// Update statistics immediately after successful creation
+				calculateStats();
 				location.reload();
 			} else {
 				const errorData = await response.json();
@@ -230,6 +251,68 @@
     let selectedStatus = '';
     let selectedBrand = ''; // State to hold the selected brand
     let selectedSeries = ''; // State to hold the selected series
+
+    // Real-time statistics state
+    let stats = {
+        sizeStats: { S: 0, M: 0, L: 0, XL: 0, XXL: 0 },
+        genderStats: { 'ชาย': 0, 'หญิง': 0, 'ยูนิเซ็กซ์': 0 },
+        brandStats: {},
+        seriesStats: {}
+    };
+    let lastUpdateTime = new Date();
+    let isUpdating = false;
+
+    // Function to calculate statistics from current data
+    function calculateStats() {
+        const items = data.itemList || [];
+        
+        // Reset stats
+        stats.sizeStats = { S: 0, M: 0, L: 0, XL: 0, XXL: 0 };
+        stats.genderStats = { 'ชาย': 0, 'หญิง': 0, 'ยูนิเซ็กซ์': 0 };
+        stats.brandStats = {};
+        stats.seriesStats = {};
+        
+        items.forEach(item => {
+            // Count by size
+            if (item.Size && stats.sizeStats.hasOwnProperty(item.Size)) {
+                stats.sizeStats[item.Size]++;
+            }
+            
+            // Count by gender
+            if (item.gender && stats.genderStats.hasOwnProperty(item.gender)) {
+                stats.genderStats[item.gender]++;
+            }
+            
+            // Count by brand
+            const brand = item.brand || 'ไม่ระบุ';
+            stats.brandStats[brand] = (stats.brandStats[brand] || 0) + 1;
+            
+            // Count by series
+            const series = item.series || 'ไม่ระบุ';
+            stats.seriesStats[series] = (stats.seriesStats[series] || 0) + 1;
+        });
+        
+        // Update timestamp and trigger reactivity
+        lastUpdateTime = new Date();
+        stats = { ...stats };
+        
+        // Reset updating status after a short delay
+        setTimeout(() => {
+            isUpdating = false;
+        }, 500);
+    }
+
+    // Function to refresh data from server
+    async function refreshData() {
+        try {
+            isUpdating = true;
+            // Reload the page data
+            await window.location.reload();
+        } catch (error) {
+            console.error('Error refreshing data:', error);
+            isUpdating = false;
+        }
+    }
 
     // Function to filter items based on search and selected filters
     const filteredItems = () => {
@@ -441,7 +524,10 @@
 
             if (response.ok) {
                 console.log('Item deleted successfully');
-                location.reload(); // Reload the page or update the UI to reflect the deletion
+                // Update statistics immediately after successful deletion
+                calculateStats();
+                // Reload the page or update the UI to reflect the deletion
+                location.reload();
             } else {
                 const errorData = await response.json();
                 console.error('Error response from server:', errorData);
@@ -1989,17 +2075,92 @@
             <p class="text-lg {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ติดตามประสิทธิภาพร้านค้าของคุณ</p>
         </div>
         
+        <!-- Real-time Update Indicator -->
+        <div class="flex items-center justify-center gap-3 mb-8 p-4 {currentTheme === 'dark' ? 'bg-gray-800' : 'bg-blue-50'} rounded-lg border max-w-md mx-auto">
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full {isUpdating ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'}"></div>
+                <span class="text-sm {currentTheme === 'dark' ? 'text-gray-300' : 'text-blue-700'}">
+                    {isUpdating ? 'กำลังอัปเดต...' : 'อัปเดตล่าสุด'}
+                </span>
+            </div>
+            <span class="text-xs {currentTheme === 'dark' ? 'text-gray-400' : 'text-blue-600'}">
+                {lastUpdateTime.toLocaleTimeString('th-TH')}
+            </span>
+            <button 
+                on:click={calculateStats}
+                class="btn btn-sm {currentTheme === 'dark' ? 'btn-outline' : 'btn-primary'}"
+                disabled={isUpdating}
+                title="อัปเดตสถิติ"
+            >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                อัปเดต
+            </button>
+            <button 
+                on:click={refreshData}
+                class="btn btn-sm {currentTheme === 'dark' ? 'btn-outline' : 'btn-secondary'}"
+                disabled={isUpdating}
+                title="โหลดข้อมูลใหม่จากเซิร์ฟเวอร์"
+            >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                โหลดใหม่
+            </button>
+        </div>
+        
+        <!-- Summary Statistics Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Total Items -->
+            <div class="manage-store-card rounded-xl p-4 border text-center">
+                <div class="text-2xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'} mb-1">
+                    {data.itemList?.length || 0}
+                </div>
+                <div class="text-sm {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">รายการทั้งหมด</div>
+            </div>
+            
+            <!-- Total Sizes -->
+            <div class="manage-store-card rounded-xl p-4 border text-center">
+                <div class="text-2xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'} mb-1">
+                    {Object.values(stats.sizeStats).reduce((a, b) => a + b, 0)}
+                </div>
+                <div class="text-sm {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ขนาดที่ใช้</div>
+            </div>
+            
+            <!-- Total Brands -->
+            <div class="manage-store-card rounded-xl p-4 border text-center">
+                <div class="text-2xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'} mb-1">
+                    {Object.keys(stats.brandStats).length}
+                </div>
+                <div class="text-sm {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">แบรนด์</div>
+            </div>
+            
+            <!-- Total Series -->
+            <div class="manage-store-card rounded-xl p-4 border text-center">
+                <div class="text-2xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'} mb-1">
+                    {Object.keys(stats.seriesStats).length}
+                </div>
+                <div class="text-sm {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ซีรีส์</div>
+            </div>
+        </div>
+        
         <!-- Statistics Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             <!-- Kostum Berdasarkan Ukuran -->
-            <div class="manage-store-card rounded-2xl p-6 border">
+            <div class="manage-store-card rounded-2xl p-6 border {isUpdating ? 'opacity-75' : ''} transition-opacity duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="flex items-center justify-center w-10 h-10 bg-blue-100 {currentTheme === 'dark' ? 'bg-blue-900' : 'bg-blue-100'} rounded-lg">
-                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'} {isUpdating ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">คอสตูมแยกตามขนาด</h3>
+                    {#if isUpdating}
+                        <div class="ml-auto">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                        </div>
+                    {/if}
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -2008,14 +2169,23 @@
                             <tr class="{currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b">
                                 <th class="text-left py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">ขนาด</th>
                                 <th class="text-right py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">จำนวน</th>
+                                <th class="text-center py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">สัดส่วน</th>
                             </tr>
                         </thead>
                         <tbody>
                             {#each ['S', 'M', 'L', 'XL', 'XXL'] as size}
-                                {@const count = data.items?.filter(item => item.Size === size).length || 0}
+                                {@const totalItems = data.itemList?.length || 1}
+                                {@const percentage = totalItems > 0 ? (stats.sizeStats[size] || 0) / totalItems * 100 : 0}
                                 <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
                                     <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{size}</td>
-                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{count}</td>
+                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{stats.sizeStats[size] || 0}</td>
+                                    <td class="py-3 px-2 w-24">
+                                        {#if totalItems > 0}
+                                            <div class="w-full bg-gray-200 rounded-full h-2 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}">
+                                                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {percentage}%"></div>
+                                            </div>
+                                        {/if}
+                                    </td>
                                 </tr>
                             {/each}
                         </tbody>
@@ -2024,14 +2194,19 @@
             </div>
             
             <!-- Kostum Berdasarkan Gender -->
-            <div class="manage-store-card rounded-2xl p-6 border">
+            <div class="manage-store-card rounded-2xl p-6 border {isUpdating ? 'opacity-75' : ''} transition-opacity duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="flex items-center justify-center w-10 h-10 {currentTheme === 'dark' ? 'bg-pink-900' : 'bg-pink-100'} rounded-lg">
-                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-pink-400' : 'text-pink-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-pink-400' : 'text-pink-600'} {isUpdating ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">คอสตูมแยกตามเพศ</h3>
+                    {#if isUpdating}
+                        <div class="ml-auto">
+                            <div class="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></div>
+                        </div>
+                    {/if}
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -2040,14 +2215,23 @@
                             <tr class="{currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b">
                                 <th class="text-left py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">เพศ</th>
                                 <th class="text-right py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">จำนวน</th>
+                                <th class="text-center py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">สัดส่วน</th>
                             </tr>
                         </thead>
                         <tbody>
                             {#each ['ชาย', 'หญิง', 'ยูนิเซ็กซ์'] as gender}
-                                {@const count = data.items?.filter(item => item.gender === gender).length || 0}
+                                {@const totalItems = data.itemList?.length || 1}
+                                {@const percentage = totalItems > 0 ? (stats.genderStats[gender] || 0) / totalItems * 100 : 0}
                                 <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
                                     <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{gender}</td>
-                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{count}</td>
+                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{stats.genderStats[gender] || 0}</td>
+                                    <td class="py-3 px-2 w-24">
+                                        {#if totalItems > 0}
+                                            <div class="w-full bg-gray-200 rounded-full h-2 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}">
+                                                <div class="bg-pink-600 h-2 rounded-full transition-all duration-300" style="width: {percentage}%"></div>
+                                            </div>
+                                        {/if}
+                                    </td>
                                 </tr>
                             {/each}
                         </tbody>
@@ -2059,14 +2243,19 @@
         <!-- Additional Statistics Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Kostum Berdasarkan Brand -->
-            <div class="manage-store-card rounded-2xl p-6 border">
+            <div class="manage-store-card rounded-2xl p-6 border {isUpdating ? 'opacity-75' : ''} transition-opacity duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="flex items-center justify-center w-10 h-10 {currentTheme === 'dark' ? 'bg-orange-900' : 'bg-orange-100'} rounded-lg">
-                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-orange-400' : 'text-orange-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-orange-400' : 'text-orange-600'} {isUpdating ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">คอสตูมแยกตามแบรนด์</h3>
+                    {#if isUpdating}
+                        <div class="ml-auto">
+                            <div class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                        </div>
+                    {/if}
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -2075,30 +2264,57 @@
                             <tr class="{currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b">
                                 <th class="text-left py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">แบรนด์</th>
                                 <th class="text-right py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">จำนวน</th>
+                                <th class="text-center py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">สัดส่วน</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {#each [...new Set(data.items?.map(item => item.brand || 'ไม่ระบุ').filter(Boolean))] as brand}
-                                {@const count = data.items?.filter(item => (item.brand || 'ไม่ระบุ') === brand).length || 0}
-                                <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
-                                    <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{brand}</td>
-                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{count}</td>
+                            {#if Object.keys(stats.brandStats).length === 0}
+                                <tr>
+                                    <td colspan="2" class="py-8 text-center {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}">
+                                        <div class="flex flex-col items-center gap-2">
+                                            <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                                            </svg>
+                                            <span>ไม่มีข้อมูลแบรนด์</span>
+                                        </div>
+                                    </td>
                                 </tr>
-                            {/each}
+                            {:else}
+                                {#each Object.keys(stats.brandStats) as brand}
+                                    {@const totalItems = data.itemList?.length || 1}
+                                    {@const percentage = totalItems > 0 ? (stats.brandStats[brand] || 0) / totalItems * 100 : 0}
+                                    <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
+                                        <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{brand}</td>
+                                        <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{stats.brandStats[brand] || 0}</td>
+                                        <td class="py-3 px-2 w-24">
+                                            {#if totalItems > 0}
+                                                <div class="w-full bg-gray-200 rounded-full h-2 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}">
+                                                    <div class="bg-orange-600 h-2 rounded-full transition-all duration-300" style="width: {percentage}%"></div>
+                                                </div>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                {/each}
+                            {/if}
                         </tbody>
                     </table>
                 </div>
             </div>
             
             <!-- Kostum Berdasarkan Series -->
-            <div class="manage-store-card rounded-2xl p-6 border">
+            <div class="manage-store-card rounded-2xl p-6 border {isUpdating ? 'opacity-75' : ''} transition-opacity duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="flex items-center justify-center w-10 h-10 {currentTheme === 'dark' ? 'bg-green-900' : 'bg-green-100'} rounded-lg">
-                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'} {isUpdating ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">คอสตูมแยกตามซีรีส์</h3>
+                    {#if isUpdating}
+                        <div class="ml-auto">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        </div>
+                    {/if}
                 </div>
                 
                 <div class="overflow-x-auto">
@@ -2107,16 +2323,38 @@
                             <tr class="{currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b">
                                 <th class="text-left py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">ซีรีส์</th>
                                 <th class="text-right py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">จำนวน</th>
+                                <th class="text-center py-3 px-2 font-semibold {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">สัดส่วน</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {#each [...new Set(data.items?.map(item => item.series || 'ไม่ระบุ').filter(Boolean))] as series}
-                                {@const count = data.items?.filter(item => (item.series || 'ไม่ระบุ') === series).length || 0}
-                                <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
-                                    <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{series}</td>
-                                    <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{count}</td>
+                            {#if Object.keys(stats.seriesStats).length === 0}
+                                <tr>
+                                    <td colspan="2" class="py-8 text-center {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-500'}">
+                                        <div class="flex flex-col items-center gap-2">
+                                            <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                            </svg>
+                                            <span>ไม่มีข้อมูลซีรีส์</span>
+                                        </div>
+                                    </td>
                                 </tr>
-                            {/each}
+                            {:else}
+                                {#each Object.keys(stats.seriesStats) as series}
+                                    {@const totalItems = data.itemList?.length || 1}
+                                    {@const percentage = totalItems > 0 ? (stats.seriesStats[series] || 0) / totalItems * 100 : 0}
+                                    <tr class="{currentTheme === 'dark' ? 'border-gray-800 hover:bg-gray-800/50' : 'border-gray-100 hover:bg-gray-50'} border-b transition-colors">
+                                        <td class="py-3 px-2 {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">{series}</td>
+                                        <td class="py-3 px-2 text-right font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">{stats.seriesStats[series] || 0}</td>
+                                        <td class="py-3 px-2 w-24">
+                                            {#if totalItems > 0}
+                                                <div class="w-full bg-gray-200 rounded-full h-2 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'}">
+                                                    <div class="bg-green-600 h-2 rounded-full transition-all duration-300" style="width: {percentage}%"></div>
+                                                </div>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                {/each}
+                            {/if}
                         </tbody>
                     </table>
                 </div>
