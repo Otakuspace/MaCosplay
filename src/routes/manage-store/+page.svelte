@@ -596,8 +596,6 @@
                 </div>
             </div>
         {/if}
-    </div>
-</div>
 
 
 <!-- Enhanced Image Modal -->
