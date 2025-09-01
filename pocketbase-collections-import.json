@@ -1,0 +1,537 @@
+[
+    {
+        "id": "products",
+        "name": "products",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "name",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "description",
+                "name": "description",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "price",
+                "name": "price",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "image",
+                "name": "image",
+                "type": "url",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "exceptDomains": null,
+                    "onlyDomains": null
+                }
+            },
+            {
+                "id": "images",
+                "name": "images",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {}
+            },
+            {
+                "id": "category",
+                "name": "category",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "tags",
+                "name": "tags",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {}
+            },
+            {
+                "id": "sizes",
+                "name": "sizes",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {}
+            },
+            {
+                "id": "colors",
+                "name": "colors",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {}
+            },
+            {
+                "id": "inStock",
+                "name": "inStock",
+                "type": "bool",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {}
+            },
+            {
+                "id": "stockQuantity",
+                "name": "stockQuantity",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": null,
+        "options": {}
+    },
+    {
+        "id": "shopping_cart",
+        "name": "shopping_cart",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "user",
+                "name": "user",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "users",
+                    "cascadeDelete": true,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "product",
+                "name": "product",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "products",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "quantity",
+                "name": "quantity",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 1,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "size",
+                "name": "size",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "color",
+                "name": "color",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "customizations",
+                "name": "customizations",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {}
+            }
+        ],
+        "indexes": [],
+        "listRule": "user = @request.auth.id",
+        "viewRule": "user = @request.auth.id",
+        "createRule": "user = @request.auth.id",
+        "updateRule": "user = @request.auth.id",
+        "deleteRule": "user = @request.auth.id",
+        "options": {}
+    },
+    {
+        "id": "purchase_items",
+        "name": "purchase_items",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "product",
+                "name": "product",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "products",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "productName",
+                "name": "productName",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "productImage",
+                "name": "productImage",
+                "type": "url",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "exceptDomains": null,
+                    "onlyDomains": null
+                }
+            },
+            {
+                "id": "quantity",
+                "name": "quantity",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 1,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "unitPrice",
+                "name": "unitPrice",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "totalPrice",
+                "name": "totalPrice",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "size",
+                "name": "size",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "color",
+                "name": "color",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "customizations",
+                "name": "customizations",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {}
+            }
+        ],
+        "indexes": [],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": null,
+        "options": {}
+    },
+    {
+        "id": "purchase_orders",
+        "name": "purchase_orders",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "orderNumber",
+                "name": "orderNumber",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": "^ORD-\\d{4}-\\d{3,}$"
+                }
+            },
+            {
+                "id": "user",
+                "name": "user",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "users",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "items",
+                "name": "items",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "purchase_items",
+                    "cascadeDelete": true,
+                    "minSelect": null,
+                    "maxSelect": null,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "totalAmount",
+                "name": "totalAmount",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "status",
+                "name": "status",
+                "type": "select",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "maxSelect": 1,
+                    "values": [
+                        "pending",
+                        "confirmed",
+                        "processing",
+                        "shipped",
+                        "delivered",
+                        "cancelled"
+                    ]
+                }
+            },
+            {
+                "id": "shippingAddress",
+                "name": "shippingAddress",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "estimatedDelivery",
+                "name": "estimatedDelivery",
+                "type": "date",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": "",
+                    "max": ""
+                }
+            },
+            {
+                "id": "trackingNumber",
+                "name": "trackingNumber",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "notes",
+                "name": "notes",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "user = @request.auth.id",
+        "viewRule": "user = @request.auth.id",
+        "createRule": "user = @request.auth.id",
+        "updateRule": "user = @request.auth.id && (@request.data.status:isset = false || @request.data.user:isset = false)",
+        "deleteRule": "user = @request.auth.id && status = \"pending\"",
+        "options": {}
+    }
+]
