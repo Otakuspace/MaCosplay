@@ -31,7 +31,7 @@
     let selectAll = false; // Select all checkbox state
     
     // View toggle state
-    let viewMode = 'grid'; // 'grid' or 'list'
+    let viewMode = 'list'; // 'grid' or 'list' - default to list view
     
     // Function to check current theme
     function getCurrentTheme() {
@@ -852,22 +852,28 @@
                 </button>
                 
                 <!-- View Toggle -->
-                <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-2xl p-1 border border-white/20">
+                <div class="flex items-center view-toggle-container rounded-2xl p-1" data-theme={currentTheme}>
                     <button 
-                        class="px-4 py-2 rounded-xl transition-all duration-300 {viewMode === 'grid' ? 'bg-white text-gray-800 shadow-sm' : 'text-white hover:bg-white/10'}"
+                        class="view-toggle-button {viewMode === 'grid' ? 'active' : 'inactive'}" 
+                        data-theme={currentTheme}
                         on:click={() => viewMode = 'grid'}
+                        title="Grid View"
                     >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                         </svg>
+                        <span class="text-sm">Grid</span>
                     </button>
                     <button 
-                        class="px-4 py-2 rounded-xl transition-all duration-300 {viewMode === 'list' ? 'bg-white text-gray-800 shadow-sm' : 'text-white hover:bg-white/10'}"
+                        class="view-toggle-button {viewMode === 'list' ? 'active' : 'inactive'}" 
+                        data-theme={currentTheme}
                         on:click={() => viewMode = 'list'}
+                        title="List View"
                     >
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                         </svg>
+                        <span class="text-sm">List</span>
                     </button>
                 </div>
             </div>

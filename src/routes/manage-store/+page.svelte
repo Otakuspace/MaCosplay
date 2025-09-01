@@ -10,6 +10,9 @@
     // Enhanced interaction states
     let hoveredCard = null;
     
+    // View toggle state for store overview
+    let viewMode = 'list'; // 'grid' or 'list' - default to list view
+    
     // Dashboard stats
     let stats = {
         totalPosts: 0,
@@ -212,47 +215,120 @@
                 </div>
             </div>
         </div>
+        
+        <!-- View Toggle Section -->
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-semibold {currentTheme === 'dark' ? 'text-white' : 'text-gray-900'}">
+                ร้านค้าของคุณ
+            </h2>
+            
+            <!-- View Toggle -->
+            <div class="flex items-center view-toggle-container rounded-2xl p-1" data-theme={currentTheme}>
+                <button 
+                    class="view-toggle-button {viewMode === 'grid' ? 'active' : 'inactive'}" 
+                    data-theme={currentTheme}
+                    on:click={() => viewMode = 'grid'}
+                    title="Grid View"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                    </svg>
+                    <span class="text-sm">Grid</span>
+                </button>
+                <button 
+                    class="view-toggle-button {viewMode === 'list' ? 'active' : 'inactive'}" 
+                    data-theme={currentTheme}
+                    on:click={() => viewMode = 'list'}
+                    title="List View"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    </svg>
+                    <span class="text-sm">List</span>
+                </button>
+            </div>
+        </div>
+        
         <!-- Store Grid -->
         {#if isLoading}
             <!-- Skeleton Loading State -->
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {#each Array(3) as _, index}
-                    <div class="manage-store-card rounded-2xl overflow-hidden shadow-lg border animate-pulse">
-                        <!-- Skeleton Banner -->
-                        <div class="w-full h-48 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} loading-shimmer"></div>
-                        
-                        <!-- Skeleton Content -->
-                        <div class="p-6">
-                            <div class="h-6 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg mb-4 loading-shimmer"></div>
-                            <div class="space-y-3 mb-6">
-                                <div class="flex gap-2">
-                                    <div class="w-4 h-4 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mt-1"></div>
-                                    <div class="flex-1">
-                                        <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2"></div>
-                                        <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded w-3/4"></div>
+            {#if viewMode === 'grid'}
+                <!-- Grid Skeleton -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {#each Array(3) as _, index}
+                        <div class="manage-store-card rounded-2xl overflow-hidden shadow-lg border animate-pulse">
+                            <!-- Skeleton Banner -->
+                            <div class="w-full h-48 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} loading-shimmer"></div>
+                            
+                            <!-- Skeleton Content -->
+                            <div class="p-6">
+                                <div class="h-6 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg mb-4 loading-shimmer"></div>
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex gap-2">
+                                        <div class="w-4 h-4 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mt-1"></div>
+                                        <div class="flex-1">
+                                            <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2"></div>
+                                            <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded w-3/4"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <div class="w-4 h-4 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded"></div>
+                                        <div class="flex-1">
+                                            <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2"></div>
+                                            <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded w-1/2"></div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="flex gap-2">
-                                    <div class="w-4 h-4 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded"></div>
-                                    <div class="flex-1">
-                                        <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2"></div>
-                                        <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded w-1/2"></div>
+                                <div class="h-12 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-xl loading-shimmer"></div>
+                            </div>
+                        </div>
+                    {/each}
+                </div>
+            {:else}
+                <!-- List Skeleton -->
+                <div class="space-y-4">
+                    {#each Array(3) as _, index}
+                        <div class="manage-store-card rounded-2xl overflow-hidden shadow-lg border animate-pulse">
+                            <div class="flex flex-col md:flex-row">
+                                <!-- Skeleton Banner -->
+                                <div class="md:w-48 md:h-32 w-full h-48 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} loading-shimmer"></div>
+                                
+                                <!-- Skeleton Content -->
+                                <div class="flex-1 p-6">
+                                    <div class="h-6 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-lg mb-4 loading-shimmer"></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div class="flex gap-2">
+                                            <div class="w-4 h-4 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mt-1"></div>
+                                            <div class="flex-1">
+                                                <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2"></div>
+                                                <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded w-1/2"></div>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <div class="w-4 h-4 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded"></div>
+                                            <div class="flex-1">
+                                                <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded mb-2"></div>
+                                                <div class="h-3 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded w-1/2"></div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <div class="h-12 w-32 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-xl loading-shimmer"></div>
                                 </div>
                             </div>
-                            <div class="h-12 {currentTheme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} rounded-xl loading-shimmer"></div>
                         </div>
-                    </div>
-                {/each}
-            </div>
+                    {/each}
+                </div>
+            {/if}
         {:else if data.userStore && data.userStore.length > 0}
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {#each data.userStore as shop, index}
-                    <div 
-                        class="group relative manage-store-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border"
-                        on:mouseenter={() => hoveredCard = index}
-                        on:mouseleave={() => hoveredCard = null}
-                    >
+            {#if viewMode === 'grid'}
+                <!-- Grid View -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {#each data.userStore as shop, index}
+                        <div 
+                            class="group relative manage-store-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border"
+                            on:mouseenter={() => hoveredCard = index}
+                            on:mouseleave={() => hoveredCard = null}
+                        >
                         <!-- Store Banner -->
                         <div class="relative overflow-hidden">
                             <!-- Image Loading Placeholder -->
@@ -339,6 +415,113 @@
                                     </svg>
                                 </button>
                             </a>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+        {:else if viewMode === 'list'}
+            <!-- List View -->
+            <div class="space-y-4">
+                {#each data.userStore as shop, index}
+                    <div 
+                        class="group relative manage-store-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 border"
+                        on:mouseenter={() => hoveredCard = index}
+                        on:mouseleave={() => hoveredCard = null}
+                    >
+                        <div class="flex flex-col md:flex-row">
+                            <!-- Store Banner (Smaller for list view) -->
+                            <div class="relative overflow-hidden md:w-48 md:h-32 w-full h-48">
+                                <!-- Image Loading Placeholder -->
+                                {#if !imagesLoaded.has(shop.id)}
+                                    <div class="absolute inset-0 bg-gray-200 loading-shimmer flex items-center justify-center">
+                                        <svg class="w-12 h-12 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    </div>
+                                {/if}
+                                
+                                <img 
+                                    src={`https://file.macosplay.com/nrxs44dis9q1tgb/${shop.id}/${shop.banner}`} 
+                                    alt="{shop.Name} Banner" 
+                                    class="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 cursor-pointer {imagesLoaded.has(shop.id) ? 'opacity-100' : 'opacity-0'}" 
+                                    on:click={() => (fullImage = `https://file.macosplay.com/nrxs44dis9q1tgb/${shop.id}/${shop.banner}`)}
+                                    on:load={() => handleImageLoad(shop.id)}
+                                    loading="lazy"
+                                />
+                                
+                                <!-- Overlay Gradient -->
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                
+                                <!-- Quick View Button -->
+                                <button 
+                                    class="absolute top-2 right-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110"
+                                    on:click={() => (fullImage = `https://file.macosplay.com/nrxs44dis9q1tgb/${shop.id}/${shop.banner}`)}
+                                >
+                                    <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- List Content -->
+                            <div class="flex-1 p-6">
+                                <div class="flex flex-col md:flex-row md:items-center md:justify-between h-full">
+                                    <div class="flex-1 mb-4 md:mb-0">
+                                        <!-- Store Name -->
+                                        <h2 class="text-xl font-bold {currentTheme === 'dark' ? 'text-white group-hover:text-blue-400' : 'text-gray-900 group-hover:text-blue-600'} mb-3 transition-colors duration-300">
+                                            {shop.Name}
+                                        </h2>
+                                        
+                                        <!-- Store Details -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                            <div class="flex items-start gap-3">
+                                                <svg class="w-4 h-4 {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-500'} mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                                </svg>
+                                                <div>
+                                                    <p class="text-sm manage-store-text-muted">ร้านค้า</p>
+                                                    <p class="text-sm font-medium {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">
+                                                        {shop.brand || 'ไม่ระบุ'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="flex items-start gap-3">
+                                                <svg class="w-4 h-4 {currentTheme === 'dark' ? 'text-green-400' : 'text-green-500'} mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                </svg>
+                                                <div>
+                                                    <p class="text-sm manage-store-text-muted">สร้างเมื่อ</p>
+                                                    <p class="text-sm font-medium {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">
+                                                        {new Date(shop.created).toLocaleDateString('th-TH', { 
+                                                            year: 'numeric', 
+                                                            month: 'long', 
+                                                            day: 'numeric' 
+                                                        })}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Button -->
+                                    <div class="flex-shrink-0">
+                                        <a href="/manage-store/{shop.id}" class="block">
+                                            <button class="inline-flex items-center gap-2 {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800' : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'} text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                </svg>
+                                                จัดการร้านค้า
+                                                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                </svg>
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {/each}
