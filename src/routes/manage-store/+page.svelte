@@ -419,6 +419,7 @@
                     </div>
                 {/each}
             </div>
+        {/if}
         {:else if viewMode === 'list'}
             <!-- List View -->
             <div class="space-y-4">
@@ -596,6 +597,8 @@
                 </div>
             </div>
         {/if}
+    </div>
+</div>
 
 
 <!-- Enhanced Image Modal -->
