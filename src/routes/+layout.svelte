@@ -551,6 +551,22 @@
 							</ul>
 						</details>
 					</li>
+					<li>
+						<a href="/cart" class="flex items-center">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.68 4.39a2 2 0 001.92 2.61h9.56a2 2 0 001.92-2.61L17 13M9 19v.01M20 19v.01" />
+							</svg>
+							ตะกร้าสินค้า
+						</a>
+					</li>
+					<li>
+						<a href="/purchase-list" class="flex items-center">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+							</svg>
+							รายการสั่งซื้อ
+						</a>
+					</li>
 				</ul>
 			</div>
 			<h1 class="btn btn-ghost text-xl"><a href="/">MaCosplay</a></h1>
@@ -567,10 +583,42 @@
 						</ul>
 					</details>
 				</li>
+				<li>
+					<a href="/cart" class="flex items-center">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.68 4.39a2 2 0 001.92 2.61h9.56a2 2 0 001.92-2.61L17 13M9 19v.01M20 19v.01" />
+						</svg>
+						ตะกร้าสินค้า
+					</a>
+				</li>
+				<li>
+					<a href="/purchase-list" class="flex items-center">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+						</svg>
+						รายการสั่งซื้อ
+					</a>
+				</li>
 			</ul>
 		</div>
 		<div class="navbar-end">
 			{#if data.user}
+			<!-- Shopping Cart Button -->
+			<a href="/cart" class="btn btn-ghost btn-circle mr-2">
+				<div class="indicator">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.68 4.39a2 2 0 001.92 2.61h9.56a2 2 0 001.92-2.61L17 13M9 19v.01M20 19v.01" />
+					</svg>
+					<!-- Cart badge - can be dynamically updated -->
+					<!-- <span class="badge badge-sm indicator-item">0</span> -->
+				</div>
+			</a>
+			<!-- Purchase List Button -->
+			<a href="/purchase-list" class="btn btn-ghost btn-circle mr-2">
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+				</svg>
+			</a>
 			<div class="dropdown dropdown-end">
 				<button tabindex="0" class="btn btn-ghost flex items-center">
 					ตั้งค่า
