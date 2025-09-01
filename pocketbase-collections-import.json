@@ -171,7 +171,7 @@
                 "presentable": false,
                 "unique": false,
                 "options": {
-                    "collectionId": "users",
+                    "collectionId": "_pb_users_auth_",
                     "cascadeDelete": true,
                     "minSelect": null,
                     "maxSelect": 1,
@@ -427,7 +427,7 @@
                 "presentable": false,
                 "unique": false,
                 "options": {
-                    "collectionId": "users",
+                    "collectionId": "_pb_users_auth_",
                     "cascadeDelete": false,
                     "minSelect": null,
                     "maxSelect": 1,
