@@ -28,6 +28,13 @@
 		return `https://file.macosplay.com/mxj3660ce5olheb/${itemId}/${imageName}?w=400&format=avif&quality=60`;
 	};
 
+	// Helper function to handle image errors
+	function handleImageError(event: Event) {
+		const img = event.target as HTMLImageElement;
+		img.src = "/images/Example/Macosplay.png?w=400&format=webp";
+		img.onerror = null; // Prevent infinite loop
+	}
+
 	// Helper function to get display price
 	const getDisplayPrice = (item: ItemListRecord) => {
 		if (item.price === 0) {
@@ -51,12 +58,16 @@
 	}
 
 	function handleStoreClick(event: Event) {
-		event.stopPropagation();
+		if (event && event.stopPropagation) {
+			event.stopPropagation();
+		}
 		dispatch('storeClick', { item });
 	}
 
 	function handleImageClick(event: Event) {
-		event.stopPropagation();
+		if (event && event.stopPropagation) {
+			event.stopPropagation();
+		}
 		dispatch('imageClick', { item });
 	}
 </script>
@@ -74,6 +85,7 @@
 				class="w-full {itemHeight} object-cover"
 				loading="lazy"
 				on:click={handleImageClick}
+				on:error={handleImageError}
 			/>
 		{:else}
 			<img
@@ -82,6 +94,7 @@
 				class="w-full {itemHeight} object-cover"
 				loading="lazy"
 				on:click={handleImageClick}
+				on:error={handleImageError}
 			/>
 		{/if}
 		

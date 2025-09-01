@@ -30,6 +30,16 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 			throw error(503, 'Database service unavailable. Please try again later.');
 		}
 		
+		// Check if it's an authentication error
+		if (err.message?.includes('Failed to authenticate') || err.status === 401) {
+			throw error(401, 'Authentication failed. Please check your credentials.');
+		}
+		
+		// Check if it's a validation error
+		if (err.status === 400) {
+			throw error(400, err.message || 'Invalid request data');
+		}
+		
 		throw error(500, 'Failed to fetch shopping cart');
 	}
 };
@@ -95,6 +105,11 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			throw error(503, 'Database service unavailable. Please try again later.');
 		}
 		
+		// Check if it's an authentication error
+		if (err.message?.includes('Failed to authenticate') || err.status === 401) {
+			throw error(401, 'Authentication failed. Please check your credentials.');
+		}
+		
 		// Check if it's a validation error
 		if (err.status === 400) {
 			throw error(400, err.message || 'Invalid request data');
@@ -133,6 +148,16 @@ export const DELETE: RequestHandler = async ({ locals }) => {
 		// Check if it's a connection error
 		if (err.message?.includes('fetch') || err.message?.includes('network') || err.message?.includes('ECONNREFUSED')) {
 			throw error(503, 'Database service unavailable. Please try again later.');
+		}
+		
+		// Check if it's an authentication error
+		if (err.message?.includes('Failed to authenticate') || err.status === 401) {
+			throw error(401, 'Authentication failed. Please check your credentials.');
+		}
+		
+		// Check if it's a validation error
+		if (err.status === 400) {
+			throw error(400, err.message || 'Invalid request data');
 		}
 		
 		throw error(500, 'Failed to clear shopping cart');
