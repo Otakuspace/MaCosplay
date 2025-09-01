@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import type { StorePageData, ItemData, ShopData, ImageCheckResponse } from '../../../types/images';
+	import RentalAvailabilityChecker from '$lib/components/RentalAvailabilityChecker.svelte';
 	
 
 	export let data: StorePageData;
@@ -370,6 +371,18 @@
 								</div>
 							{/if}
 						</div>
+					</div>
+
+					<!-- Rental Availability Checker -->
+					<div class="mb-6">
+						<RentalAvailabilityChecker
+							outfitId={outfit?.id || ''}
+							outfitName={outfit?.Name || ''}
+							on:rentalRequested={(event) => {
+								const { outfitId, startDate, endDate } = event.detail;
+								alert(`การขอเช่า: ${outfit?.Name} วันที่ ${startDate} ถึง ${endDate}`);
+							}}
+						/>
 					</div>
 
 					<!-- Action Buttons -->
