@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { RentalAvailabilityCheck } from '$lib/types/rental';
+	import type { RentalAvailabilityCheck } from '$types/rental';
 	import RentalAvailabilityBadge from './RentalAvailabilityBadge.svelte';
 
 	export let outfitId: string;
@@ -186,7 +186,7 @@
 			<div class="mt-4 p-4 bg-base-200 rounded-lg">
 				<h3 class="font-semibold mb-2">การเช่าที่ขัดแย้ง</h3>
 				<div class="space-y-2">
-					{@each availability.conflictingRentals as rental}
+					{#each availability.conflictingRentals as rental}
 						<div class="text-sm">
 							<div class="flex justify-between">
 								<span>ผู้เช่า: {rental.expand?.renter?.name || 'ไม่ระบุ'}</span>

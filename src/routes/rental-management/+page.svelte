@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import RentalAvailabilityChecker from '$lib/components/RentalAvailabilityChecker.svelte';
 	import ShippingTracking from '$lib/components/ShippingTracking.svelte';
-	import type { RentalAvailabilityCheck } from '$lib/types/rental';
+	import type { RentalAvailabilityCheck } from '$types/rental';
 
 	let selectedOutfitId = '';
 	let selectedTrackingNumber = '';
@@ -52,7 +52,7 @@
 				</label>
 				<select class="select select-bordered w-full" bind:value={selectedOutfitId}>
 					<option value="">เลือกชุดคอสเพลย์</option>
-					{@each demoOutfits as outfit}
+					{#each demoOutfits as outfit}
 						<option value={outfit.id}>{outfit.name}</option>
 					{/each}
 				</select>
@@ -128,7 +128,7 @@
 		<div class="mt-8">
 			<h2 class="text-2xl font-semibold mb-4">การตรวจสอบล่าสุด</h2>
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-				{@each recentAvailabilityChecks as check}
+				{#each recentAvailabilityChecks as check}
 					<div class="card bg-base-100 shadow-xl">
 						<div class="card-body">
 							<h3 class="card-title text-sm">
