@@ -27,12 +27,16 @@
 	}
 
 	function handleStoreClick(item: ItemListRecord, event: Event) {
-		event.stopPropagation();
+		if (event && event.stopPropagation) {
+			event.stopPropagation();
+		}
 		dispatch('storeClick', { item });
 	}
 
 	function handleImageClick(item: ItemListRecord, event: Event) {
-		event.stopPropagation();
+		if (event && event.stopPropagation) {
+			event.stopPropagation();
+		}
 		dispatch('imageClick', { item });
 	}
 </script>
