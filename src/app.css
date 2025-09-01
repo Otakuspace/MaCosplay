@@ -63,3 +63,114 @@ textarea:focus-visible {
 [data-theme="dark"] textarea:focus-visible {
     outline-color: theme('colors.blue.400');
 }
+
+/* Manage store text styles */
+.manage-store-text-muted {
+    @apply text-gray-500;
+}
+
+[data-theme="dark"] .manage-store-text-muted {
+    @apply text-gray-400;
+}
+
+/* Enhanced view toggle styles */
+.view-toggle-container {
+    @apply backdrop-blur-sm shadow-lg border transition-all duration-300;
+    @apply hover:shadow-xl;
+}
+
+.view-toggle-container[data-theme="dark"] {
+    @apply bg-gray-800/80 border-gray-600;
+    @apply hover:bg-gray-800/90;
+}
+
+.view-toggle-container[data-theme="light"] {
+    @apply bg-white/80 border-gray-200;
+    @apply hover:bg-white/90;
+}
+
+.view-toggle-button {
+    @apply flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 font-medium relative;
+}
+
+.view-toggle-button.active[data-theme="dark"] {
+    @apply bg-blue-600 text-white shadow-lg;
+}
+
+.view-toggle-button.active[data-theme="light"] {
+    @apply bg-blue-500 text-white shadow-lg;
+}
+
+.view-toggle-button.inactive[data-theme="dark"] {
+    @apply text-gray-300 hover:bg-gray-700/50;
+}
+
+.view-toggle-button.inactive[data-theme="light"] {
+    @apply text-gray-600 hover:bg-gray-100;
+}
+
+/* Active button indicator */
+.view-toggle-button.active::after {
+    content: '';
+    @apply absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full;
+}
+
+.view-toggle-button.active[data-theme="dark"]::after {
+    @apply bg-blue-400;
+}
+
+.view-toggle-button.active[data-theme="light"]::after {
+    @apply bg-blue-300;
+}
+
+/* Hover effects */
+.view-toggle-button:hover {
+    @apply transform scale-105;
+}
+
+.view-toggle-button.active:hover {
+    @apply transform scale-105;
+}
+
+/* Focus styles for accessibility */
+.view-toggle-button:focus-visible {
+    @apply outline-2 outline-offset-2;
+}
+
+.view-toggle-button:focus-visible[data-theme="dark"] {
+    @apply outline-blue-400;
+}
+
+.view-toggle-button:focus-visible[data-theme="light"] {
+    @apply outline-blue-500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .view-toggle-button {
+        @apply px-3 py-2;
+    }
+    
+    .view-toggle-button span {
+        @apply text-xs;
+    }
+}
+
+/* Smooth transitions for theme changes */
+.view-toggle-container,
+.view-toggle-button {
+    @apply transition-all duration-300 ease-in-out;
+}
+
+/* Enhanced active state */
+.view-toggle-button.active {
+    @apply ring-2 ring-offset-2;
+}
+
+.view-toggle-button.active[data-theme="dark"] {
+    @apply ring-blue-400 ring-offset-gray-800;
+}
+
+.view-toggle-button.active[data-theme="light"] {
+    @apply ring-blue-300 ring-offset-white;
+}
