@@ -99,17 +99,8 @@
 	}
 
 	async function addToCart() {
-		if (!user) {
-			alert('กรุณาเข้าสู่ระบบก่อนเพิ่มสินค้าลงตะกร้า');
-			goto('/login');
-			return;
-		}
-
-		if (!outfit?.id) {
-			alert('ไม่สามารถเพิ่มสินค้าลงตะกร้าได้');
-			return;
-		}
-
+		if (addingToCart) return;
+		
 		addingToCart = true;
 		
 		try {
@@ -133,8 +124,22 @@
 				return;
 			}
 
+			if (response.status === 503) {
+				// Database service unavailable
+				alert('บริการฐานข้อมูลไม่พร้อมใช้งาน กรุณาลองใหม่อีกครั้ง');
+				return;
+			}
+
+			if (response.status === 400) {
+				// Bad request
+				const errorData = await response.json();
+				alert(`ข้อมูลไม่ถูกต้อง: ${errorData.message || 'กรุณาตรวจสอบข้อมูล'}`);
+				return;
+			}
+
 			if (!response.ok) {
-				throw new Error('Failed to add to cart');
+				const errorData = await response.json();
+				throw new Error(errorData.message || 'Failed to add to cart');
 			}
 
 			const result = await response.json();
@@ -149,7 +154,15 @@
 			}
 		} catch (error) {
 			console.error('Error adding to cart:', error);
-			alert('เกิดข้อผิดพลาดในการเพิ่มลงตะกร้า');
+			
+			// Show user-friendly error message
+			if (error.message.includes('Database service unavailable')) {
+				alert('บริการฐานข้อมูลไม่พร้อมใช้งาน กรุณาลองใหม่อีกครั้ง');
+			} else if (error.message.includes('network') || error.message.includes('fetch')) {
+				alert('เกิดปัญหาการเชื่อมต่อ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต');
+			} else {
+				alert('เกิดข้อผิดพลาดในการเพิ่มลงตะกร้า: ' + error.message);
+			}
 		} finally {
 			addingToCart = false;
 		}
