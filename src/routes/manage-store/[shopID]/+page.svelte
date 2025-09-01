@@ -25,6 +25,14 @@
     let currentTheme = 'light'; // Theme state
     let inspirationItems = []; // Store inspiration items
     
+    // Multiple selection state
+    let selectedItems = new Set(); // Track selected item IDs
+    let isSelectionMode = false; // Toggle selection mode
+    let selectAll = false; // Select all checkbox state
+    
+    // View toggle state
+    let viewMode = 'grid'; // 'grid' or 'list'
+    
     // Function to check current theme
     function getCurrentTheme() {
         if (typeof window !== 'undefined') {
@@ -294,6 +302,97 @@
     function closeOutfitDetail() {
         showOutfitDetail = false;
         selectedOutfit = null;
+    }
+
+    // Multiple selection functions
+    function toggleSelectionMode() {
+        isSelectionMode = !isSelectionMode;
+        if (!isSelectionMode) {
+            selectedItems.clear();
+            selectedItems = selectedItems;
+            selectAll = false;
+        }
+    }
+
+    function toggleItemSelection(itemId) {
+        if (selectedItems.has(itemId)) {
+            selectedItems.delete(itemId);
+        } else {
+            selectedItems.add(itemId);
+        }
+        selectedItems = selectedItems;
+        
+        // Update select all state
+        const filteredItemsArray = filteredItems();
+        selectAll = filteredItemsArray.length > 0 && filteredItemsArray.every(item => selectedItems.has(item.id));
+    }
+
+    function toggleSelectAll() {
+        const filteredItemsArray = filteredItems();
+        if (selectAll) {
+            // Deselect all
+            filteredItemsArray.forEach(item => selectedItems.delete(item.id));
+        } else {
+            // Select all
+            filteredItemsArray.forEach(item => selectedItems.add(item.id));
+        }
+        selectedItems = selectedItems;
+        selectAll = !selectAll;
+    }
+
+    // Bulk actions
+    async function bulkDelete() {
+        if (selectedItems.size === 0) return;
+        
+        const itemIds = Array.from(selectedItems);
+        try {
+            const response = await fetch('/api/bulk-delete-items', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ itemIds })
+            });
+
+            if (response.ok) {
+                console.log('Items deleted successfully');
+                location.reload();
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to delete items');
+            }
+        } catch (error) {
+            console.error('Error deleting items:', error);
+            errorMessage = error.message;
+            showAlert = true;
+        }
+    }
+
+    async function bulkToggleVisibility(makePublic) {
+        if (selectedItems.size === 0) return;
+        
+        const itemIds = Array.from(selectedItems);
+        try {
+            const response = await fetch('/api/bulk-toggle-visibility', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ itemIds, public: makePublic })
+            });
+
+            if (response.ok) {
+                console.log('Items visibility updated successfully');
+                location.reload();
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to update items visibility');
+            }
+        } catch (error) {
+            console.error('Error updating items visibility:', error);
+            errorMessage = error.message;
+            showAlert = true;
+        }
     }
 
     async function updateFbPage() {
@@ -716,8 +815,12 @@
             <p class="text-lg sm:text-xl {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} max-w-3xl mx-auto leading-relaxed mb-12 px-4">
                 เพิ่ม แก้ไข และจัดการสินค้าในร้านของคุณด้วยเครื่องมือที่ทันสมัยและใช้งานง่าย
             </p>
-            <button class="group relative bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-4 rounded-3xl font-bold text-base sm:text-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 overflow-hidden" 
-                    on:click={() => my_modal_5.showModal()}>
+            
+            <!-- View Controls and Actions -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+                <!-- Add Product Button -->
+                <button class="group relative bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-4 rounded-3xl font-bold text-base sm:text-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 overflow-hidden" 
+                        on:click={() => my_modal_5.showModal()}>
                 <!-- Button Background Animation -->
                 <div class="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -733,7 +836,85 @@
                 
                 <!-- Shine Effect -->
                 <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
-            </button>
+                </button>
+                
+                <!-- Selection Mode Toggle -->
+                <button 
+                    class="group relative bg-gradient-to-r {isSelectionMode ? 'from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' : 'from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700'} text-white px-4 py-3 rounded-2xl font-medium text-sm transition-all duration-300 transform hover:scale-105"
+                    on:click={toggleSelectionMode}
+                >
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>{isSelectionMode ? 'ยกเลิกการเลือก' : 'เลือกหลายรายการ'}</span>
+                    </div>
+                </button>
+                
+                <!-- View Toggle -->
+                <div class="flex items-center bg-white/10 backdrop-blur-sm rounded-2xl p-1 border border-white/20">
+                    <button 
+                        class="px-4 py-2 rounded-xl transition-all duration-300 {viewMode === 'grid' ? 'bg-white text-gray-800 shadow-sm' : 'text-white hover:bg-white/10'}"
+                        on:click={() => viewMode = 'grid'}
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                    </button>
+                    <button 
+                        class="px-4 py-2 rounded-xl transition-all duration-300 {viewMode === 'list' ? 'bg-white text-gray-800 shadow-sm' : 'text-white hover:bg-white/10'}"
+                        on:click={() => viewMode = 'list'}
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Bulk Actions Bar -->
+            {#if isSelectionMode && selectedItems.size > 0}
+                <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 {currentTheme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-2xl border {currentTheme === 'dark' ? 'border-gray-700' : 'border-gray-200'} p-4">
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium {currentTheme === 'dark' ? 'text-gray-300' : 'text-gray-700'}">
+                            เลือกแล้ว {selectedItems.size} รายการ
+                        </span>
+                        
+                        <div class="flex items-center gap-2">
+                            <button 
+                                class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-2"
+                                on:click={bulkDelete}
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                                ลบ
+                            </button>
+                            
+                            <button 
+                                class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-2"
+                                on:click={() => bulkToggleVisibility(true)}
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                เปิดเผย
+                            </button>
+                            
+                            <button 
+                                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-2"
+                                on:click={() => bulkToggleVisibility(false)}
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                                </svg>
+                                ซ่อน
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {/if}
         </div>
         
         <dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle">
@@ -1228,6 +1409,23 @@
                 </div>
             </div>
             
+            <!-- Selection Controls -->
+            {#if isSelectionMode}
+                <div class="mt-6 mb-4 flex items-center justify-center sm:justify-start gap-4 relative z-10">
+                    <label class="flex items-center gap-3 {currentTheme === 'dark' ? 'bg-gray-700/80' : 'bg-white/80'} backdrop-blur-sm rounded-xl px-4 py-3 border {currentTheme === 'dark' ? 'border-gray-600' : 'border-gray-200'} shadow-sm">
+                        <input 
+                            type="checkbox" 
+                            bind:checked={selectAll}
+                            on:change={toggleSelectAll}
+                            class="checkbox checkbox-primary"
+                        />
+                        <span class="font-medium {currentTheme === 'dark' ? 'text-white' : 'text-gray-800'}">
+                            เลือกทั้งหมด ({filteredItems().length} รายการ)
+                        </span>
+                    </label>
+                </div>
+            {/if}
+            
             <!-- Filter Summary with Enhanced Responsive Tags -->
             <div class="mt-6 flex flex-wrap gap-2 justify-center sm:justify-start relative z-10">
                 {#if searchQuery}
@@ -1310,213 +1508,380 @@
             </div>
         </div>
 
-        <!-- Enhanced Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+        <!-- Enhanced Product Grid/List -->
+        <div class="{viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8' : 'space-y-4'}">
             {#if filteredItems().length > 0}
                 {#each filteredItems() as item}
-                    <!-- Ultra Modern Product Card -->
-                    <div class="group {currentTheme === 'dark' ? 'bg-gray-800/90' : 'bg-white/90'} backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border {currentTheme === 'dark' ? 'border-gray-700/50' : 'border-gray-100/50'} relative flex flex-col h-full">
-                        <!-- Card Glow Effect -->
-                        <div class="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        
-                        <div class="relative flex flex-col h-full">
-                            <!-- Product Image -->
-                            <div class="relative overflow-hidden">
-                                <div class="aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-                                    <img 
-                                        src={`https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`} 
-                                        alt="{item.Name} Thumbnail" 
-                                        class="w-full h-full object-cover cursor-pointer transition-all duration-500 group-hover:scale-105" 
-                                        on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
-                                    />
-                                </div>
-                                
-                                <!-- Image Overlay -->
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                
-                                <!-- Enhanced Status Badge -->
-                                <div class="absolute top-2 right-2 z-10">
-                                    <div class="px-2 py-1 rounded-lg text-xs font-bold shadow-lg backdrop-blur-sm border border-white/20 {item.Status === 'พร้อมให้เช่า' ? 'bg-green-500/90 text-white' : item.Status === 'กำลังถูกเช่า' ? 'bg-yellow-500/90 text-white' : 'bg-red-500/90 text-white'} transform group-hover:scale-105 transition-transform duration-300">
-                                        {#if item.Status === 'พร้อมให้เช่า'}
-                                            ✅
-                                        {:else if item.Status === 'กำลังถูกเช่า'}
-                                            🔄
+                    {#if viewMode === 'grid'}
+                        <!-- Grid View Card -->
+                        <div class="group {currentTheme === 'dark' ? 'bg-gray-800/90' : 'bg-white/90'} backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border {currentTheme === 'dark' ? 'border-gray-700/50' : 'border-gray-100/50'} relative flex flex-col h-full {selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}">
+                            <!-- Card Glow Effect -->
+                            <div class="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            
+                            <div class="relative flex flex-col h-full">
+                                <!-- Product Image -->
+                                <div class="relative overflow-hidden">
+                                    <div class="aspect-square overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                                        <img 
+                                            src={`https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`} 
+                                            alt="{item.Name} Thumbnail" 
+                                            class="w-full h-full object-cover cursor-pointer transition-all duration-500 group-hover:scale-105" 
+                                            on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
+                                        />
+                                    </div>
+                                    
+                                    <!-- Selection Checkbox -->
+                                    {#if isSelectionMode}
+                                        <div class="absolute top-2 left-2 z-20">
+                                            <label class="flex items-center">
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={selectedItems.has(item.id)}
+                                                    on:change={() => toggleItemSelection(item.id)}
+                                                    class="checkbox checkbox-primary checkbox-sm bg-white/90 backdrop-blur-sm"
+                                                />
+                                            </label>
+                                        </div>
+                                    {/if}
+                                    
+                                    <!-- Image Overlay -->
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    
+                                    <!-- Enhanced Status Badge -->
+                                    <div class="absolute top-2 right-2 z-10">
+                                        <div class="px-2 py-1 rounded-lg text-xs font-bold shadow-lg backdrop-blur-sm border border-white/20 {item.Status === 'พร้อมให้เช่า' ? 'bg-green-500/90 text-white' : item.Status === 'กำลังถูกเช่า' ? 'bg-yellow-500/90 text-white' : 'bg-red-500/90 text-white'} transform group-hover:scale-105 transition-transform duration-300">
+                                            {#if item.Status === 'พร้อมให้เช่า'}
+                                                ✅
+                                            {:else if item.Status === 'กำลังถูกเช่า'}
+                                                🔄
+                                            {:else}
+                                                ❌
+                                            {/if}
+                                        </div>
+                                    </div>
+
+                                    <!-- Enhanced Visibility Indicator -->
+                                    <div class="absolute {isSelectionMode ? 'top-12' : 'top-2'} left-2 z-10">
+                                        {#if item.public}
+                                            <div class="bg-blue-500/90 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center shadow-lg backdrop-blur-sm border border-white/20 transform group-hover:scale-105 transition-transform duration-300">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                            </div>
                                         {:else}
-                                            ❌
+                                            <div class="bg-gray-500/90 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center shadow-lg backdrop-blur-sm border border-white/20 transform group-hover:scale-105 transition-transform duration-300">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                                                </svg>
+                                            </div>
                                         {/if}
                                     </div>
-                                </div>
 
-                                <!-- Enhanced Visibility Indicator -->
-                                <div class="absolute top-2 left-2 z-10">
-                                    {#if item.public}
-                                        <div class="bg-blue-500/90 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center shadow-lg backdrop-blur-sm border border-white/20 transform group-hover:scale-105 transition-transform duration-300">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                            </svg>
-                                        </div>
-                                    {:else}
-                                        <div class="bg-gray-500/90 text-white px-2 py-1 rounded-lg text-xs font-bold flex items-center shadow-lg backdrop-blur-sm border border-white/20 transform group-hover:scale-105 transition-transform duration-300">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
-                                            </svg>
+                                    <!-- Quick View Button -->
+                                    {#if !isSelectionMode}
+                                        <div class="absolute bottom-2 right-2 z-10 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                                            <button class="bg-white/90 backdrop-blur-sm text-gray-700 p-2 rounded-lg shadow-lg hover:bg-white hover:shadow-xl transition-all duration-200"
+                                                    on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                                </svg>
+                                            </button>
                                         </div>
                                     {/if}
                                 </div>
 
-                                <!-- Quick View Button -->
-                                <div class="absolute bottom-2 right-2 z-10 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                                    <button class="bg-white/90 backdrop-blur-sm text-gray-700 p-2 rounded-lg shadow-lg hover:bg-white hover:shadow-xl transition-all duration-200"
-                                            on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}>
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Enhanced Card Content -->
-                            <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between">
-                                <div class="space-y-2">
-                                    <!-- Product Title -->
-                                    <h3 class="text-sm sm:text-base font-bold {currentTheme === 'dark' ? 'text-white group-hover:text-blue-400' : 'text-gray-800 group-hover:text-blue-600'} line-clamp-2 transition-colors duration-300 min-h-[2.5rem]">
-                                        {item.Name}
-                                    </h3>
-                                    
-                                    <!-- Product Details -->
-                                    <p class="text-xs {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} line-clamp-2 leading-relaxed min-h-[2rem]">
-                                        {item.Details}
-                                    </p>
-
-                                    <!-- Enhanced Tags -->
-                                    <div class="flex flex-wrap gap-1">
-                                        <!-- Province tag -->
-                                        <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-800 to-blue-700 text-blue-200' : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'} rounded-lg text-xs font-semibold">
-                                            {item.Province}
-                                        </span>
-                                        <!-- Size tag -->
-                                        <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-purple-800 to-purple-700 text-purple-200' : 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800'} rounded-lg text-xs font-semibold">
-                                            ขนาด {item.Size}
-                                        </span>
-                                        <!-- Status tag -->
-                                        {#if item.Status}
-                                            <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-green-800 to-green-700 text-green-200' : 'bg-gradient-to-r from-green-100 to-green-200 text-green-800'} rounded-lg text-xs font-semibold">
-                                                {item.Status}
-                                            </span>
-                                        {/if}
-                                        <!-- Custom outfit tags from item.tags array -->
-                                        {#if item.tags && item.tags.length > 0}
-                                            {#each item.tags.slice(0, 2) as tag}
-                                                <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-orange-800 to-orange-700 text-orange-200 border-orange-600' : 'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 border-orange-300'} rounded-lg text-xs font-semibold border">
-                                                    {tag}
-                                                </span>
-                                            {/each}
-                                            {#if item.tags.length > 2}
-                                                <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-orange-800 to-orange-700 text-orange-200 border-orange-600' : 'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 border-orange-300'} rounded-lg text-xs font-semibold border">
-                                                    +{item.tags.length - 2}
-                                                </span>
-                                            {/if}
-                                        {/if}
-                                    </div>
-
-                                    <!-- Enhanced Price Display -->
-                                    <div class="p-2 {currentTheme === 'dark' ? 'bg-gradient-to-r from-gray-800 to-blue-900 border-gray-700' : 'bg-gradient-to-r from-gray-50 to-blue-50 border-gray-100'} rounded-lg border">
-                                        <div class="text-center">
-                                            {#if item.isPriTest}
-                                                <div class="space-y-1">
-                                                    <div class="flex items-center justify-between">
-                                                        <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ไพร:</span>
-                                                        <span class="text-sm font-bold {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}">฿{item.price_pri.toLocaleString()}</span>
-                                                    </div>
-                                                    <div class="flex items-center justify-between">
-                                                        <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">เทส:</span>
-                                                        <span class="text-sm font-bold {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}">฿{item.price_test.toLocaleString()}</span>
-                                                    </div>
-                                                </div>
-                                            {:else}
-                                                <div class="flex items-center justify-center space-x-1">
-                                                    <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ราคา:</span>
-                                                    <span class="text-sm font-bold {currentTheme === 'dark' ? 'bg-gradient-to-r from-green-400 to-blue-400' : 'bg-gradient-to-r from-green-600 to-blue-600'} bg-clip-text text-transparent">
-                                                        ฿{item.price.toLocaleString()}
-                                                    </span>
-                                                </div>
-                                            {/if}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Enhanced Action Buttons -->
-                                <div class="mt-3 space-y-2">
-                                    <div class="grid grid-cols-2 gap-1">
-                                        <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
-                                                on:click={() => openEditModal(item)}>
-                                            <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                            <div class="relative flex items-center justify-center">
-                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                </svg>
-                                                แก้ไข
-                                            </div>
-                                        </button>
-                                        <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
-                                                on:click={() => confirmDeleteItem(item.id)}>
-                                            <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                            <div class="relative flex items-center justify-center">
-                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                                ลบ
-                                            </div>
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="grid grid-cols-2 gap-1">
-                                        <!-- Enhanced Facebook Share Button -->
-                                        <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
-                                                on:click={() => shareToFacebook(item)}>
-                                            <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                            <div class="relative flex items-center justify-center">
-                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                                                    <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
-                                                </svg>
-                                            </div>
-                                        </button>
+                                <!-- Enhanced Card Content -->
+                                <div class="p-3 sm:p-4 flex-1 flex flex-col justify-between">
+                                    <div class="space-y-2">
+                                        <!-- Product Title -->
+                                        <h3 class="text-sm sm:text-base font-bold {currentTheme === 'dark' ? 'text-white group-hover:text-blue-400' : 'text-gray-800 group-hover:text-blue-600'} line-clamp-2 transition-colors duration-300 min-h-[2.5rem]">
+                                            {item.Name}
+                                        </h3>
                                         
-                                        <!-- Add to Inspiration Button -->
-                                        <button 
-                                            class="group/btn relative px-2 py-1.5 bg-gradient-to-r {isInInspiration(item.id) ? 'from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800' : 'from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700'} text-white rounded-lg transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden {isInInspiration(item.id) ? 'opacity-75' : ''}" 
-                                            on:click={() => !isInInspiration(item.id) && addToInspiration(item)}
-                                            disabled={isInInspiration(item.id)}
-                                            title={isInInspiration(item.id) ? 'อยู่ในแรงบันดาลใจแล้ว' : 'เพิ่มเป็นแรงบันดาลใจ'}
-                                        >
-                                            <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                            <div class="relative flex items-center justify-center">
-                                                <svg class="w-3 h-3" fill={isInInspiration(item.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                                </svg>
-                                            </div>
-                                        </button>
-                                    </div>
-                                    
-                                    <!-- View Details Button -->
-                                    <button 
-                                        class="group/btn relative w-full px-3 py-1.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
-                                        on:click={() => openOutfitDetail(item)}
-                                    >
-                                        <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                        <div class="relative flex items-center justify-center space-x-1">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                            </svg>
-                                            <span>ดูรายละเอียด</span>
+                                        <!-- Product Details -->
+                                        <p class="text-xs {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} line-clamp-2 leading-relaxed min-h-[2rem]">
+                                            {item.Details}
+                                        </p>
+
+                                        <!-- Enhanced Tags -->
+                                        <div class="flex flex-wrap gap-1">
+                                            <!-- Province tag -->
+                                            <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-blue-800 to-blue-700 text-blue-200' : 'bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800'} rounded-lg text-xs font-semibold">
+                                                {item.Province}
+                                            </span>
+                                            <!-- Size tag -->
+                                            <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-purple-800 to-purple-700 text-purple-200' : 'bg-gradient-to-r from-purple-100 to-purple-200 text-purple-800'} rounded-lg text-xs font-semibold">
+                                                ขนาด {item.Size}
+                                            </span>
+                                            <!-- Status tag -->
+                                            {#if item.Status}
+                                                <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-green-800 to-green-700 text-green-200' : 'bg-gradient-to-r from-green-100 to-green-200 text-green-800'} rounded-lg text-xs font-semibold">
+                                                    {item.Status}
+                                                </span>
+                                            {/if}
+                                            <!-- Custom outfit tags from item.tags array -->
+                                            {#if item.tags && item.tags.length > 0}
+                                                {#each item.tags.slice(0, 2) as tag}
+                                                    <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-orange-800 to-orange-700 text-orange-200 border-orange-600' : 'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 border-orange-300'} rounded-lg text-xs font-semibold border">
+                                                        {tag}
+                                                    </span>
+                                                {/each}
+                                                {#if item.tags.length > 2}
+                                                    <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-gradient-to-r from-orange-800 to-orange-700 text-orange-200 border-orange-600' : 'bg-gradient-to-r from-orange-100 to-orange-200 text-orange-800 border-orange-300'} rounded-lg text-xs font-semibold border">
+                                                        +{item.tags.length - 2}
+                                                    </span>
+                                                {/if}
+                                            {/if}
                                         </div>
-                                    </button>
+
+                                        <!-- Enhanced Price Display -->
+                                        <div class="p-2 {currentTheme === 'dark' ? 'bg-gradient-to-r from-gray-800 to-blue-900 border-gray-700' : 'bg-gradient-to-r from-gray-50 to-blue-50 border-gray-100'} rounded-lg border">
+                                            <div class="text-center">
+                                                {#if item.isPriTest}
+                                                    <div class="space-y-1">
+                                                        <div class="flex items-center justify-between">
+                                                            <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ไพร:</span>
+                                                            <span class="text-sm font-bold {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}">฿{item.price_pri.toLocaleString()}</span>
+                                                        </div>
+                                                        <div class="flex items-center justify-between">
+                                                            <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">เทส:</span>
+                                                            <span class="text-sm font-bold {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}">฿{item.price_test.toLocaleString()}</span>
+                                                        </div>
+                                                    </div>
+                                                {:else}
+                                                    <div class="flex items-center justify-center space-x-1">
+                                                        <span class="text-xs font-medium {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'}">ราคา:</span>
+                                                        <span class="text-sm font-bold {currentTheme === 'dark' ? 'bg-gradient-to-r from-green-400 to-blue-400' : 'bg-gradient-to-r from-green-600 to-blue-600'} bg-clip-text text-transparent">
+                                                            ฿{item.price.toLocaleString()}
+                                                        </span>
+                                                    </div>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Enhanced Action Buttons -->
+                                    {#if !isSelectionMode}
+                                        <div class="mt-3 space-y-2">
+                                            <div class="grid grid-cols-2 gap-1">
+                                                <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
+                                                        on:click={() => openEditModal(item)}>
+                                                    <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                                    <div class="relative flex items-center justify-center">
+                                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                        </svg>
+                                                        แก้ไข
+                                                    </div>
+                                                </button>
+                                                <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
+                                                        on:click={() => confirmDeleteItem(item.id)}>
+                                                    <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                                    <div class="relative flex items-center justify-center">
+                                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                        </svg>
+                                                        ลบ
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="grid grid-cols-2 gap-1">
+                                                <!-- Enhanced Facebook Share Button -->
+                                                <button class="group/btn relative px-2 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
+                                                        on:click={() => shareToFacebook(item)}>
+                                                    <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                                    <div class="relative flex items-center justify-center">
+                                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
+                                                        </svg>
+                                                    </div>
+                                                </button>
+                                                
+                                                <!-- Add to Inspiration Button -->
+                                                <button 
+                                                    class="group/btn relative px-2 py-1.5 bg-gradient-to-r {isInInspiration(item.id) ? 'from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800' : 'from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700'} text-white rounded-lg transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden {isInInspiration(item.id) ? 'opacity-75' : ''}" 
+                                                    on:click={() => !isInInspiration(item.id) && addToInspiration(item)}
+                                                    disabled={isInInspiration(item.id)}
+                                                    title={isInInspiration(item.id) ? 'อยู่ในแรงบันดาลใจแล้ว' : 'เพิ่มเป็นแรงบันดาลใจ'}
+                                                >
+                                                    <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                                    <div class="relative flex items-center justify-center">
+                                                        <svg class="w-3 h-3" fill={isInInspiration(item.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                                        </svg>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                            
+                                            <!-- View Details Button -->
+                                            <button 
+                                                class="group/btn relative w-full px-3 py-1.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-300 text-xs font-bold shadow-sm hover:shadow-md transform hover:scale-105 overflow-hidden" 
+                                                on:click={() => openOutfitDetail(item)}
+                                            >
+                                                <div class="absolute inset-0 bg-white/10 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
+                                                <div class="relative flex items-center justify-center space-x-1">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                    <span>ดูรายละเอียด</span>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    {/if}
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {:else}
+                        <!-- List View Card -->
+                        <div class="group {currentTheme === 'dark' ? 'bg-gray-800/90' : 'bg-white/90'} backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border {currentTheme === 'dark' ? 'border-gray-700/50' : 'border-gray-100/50'} relative {selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}">
+                            <div class="flex items-center p-4 gap-4">
+                                <!-- Selection Checkbox -->
+                                {#if isSelectionMode}
+                                    <label class="flex items-center">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={selectedItems.has(item.id)}
+                                            on:change={() => toggleItemSelection(item.id)}
+                                            class="checkbox checkbox-primary"
+                                        />
+                                    </label>
+                                {/if}
+                                
+                                <!-- Product Image -->
+                                <div class="relative overflow-hidden flex-shrink-0">
+                                    <div class="w-20 h-20 rounded-xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                                        <img 
+                                            src={`https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`} 
+                                            alt="{item.Name} Thumbnail" 
+                                            class="w-full h-full object-cover cursor-pointer transition-all duration-500 group-hover:scale-105" 
+                                            on:click={() => fullImage = `https://file.macosplay.com/mxj3660ce5olheb/${item.id}/${item.Image}`}
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <!-- Product Info -->
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1 min-w-0">
+                                            <h3 class="text-lg font-bold {currentTheme === 'dark' ? 'text-white group-hover:text-blue-400' : 'text-gray-800 group-hover:text-blue-600'} truncate transition-colors duration-300">
+                                                {item.Name}
+                                            </h3>
+                                            <p class="text-sm {currentTheme === 'dark' ? 'text-gray-400' : 'text-gray-600'} line-clamp-2 mt-1">
+                                                {item.Details}
+                                            </p>
+                                            
+                                            <!-- Tags in List View -->
+                                            <div class="flex flex-wrap gap-1 mt-2">
+                                                <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-blue-800 text-blue-200' : 'bg-blue-100 text-blue-800'} rounded text-xs font-medium">
+                                                    {item.Province}
+                                                </span>
+                                                <span class="px-2 py-1 {currentTheme === 'dark' ? 'bg-purple-800 text-purple-200' : 'bg-purple-100 text-purple-800'} rounded text-xs font-medium">
+                                                    {item.Size}
+                                                </span>
+                                                <span class="px-2 py-1 {item.Status === 'พร้อมให้เช่า' ? currentTheme === 'dark' ? 'bg-green-800 text-green-200' : 'bg-green-100 text-green-800' : currentTheme === 'dark' ? 'bg-red-800 text-red-200' : 'bg-red-100 text-red-800'} rounded text-xs font-medium">
+                                                    {item.Status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Price and Visibility -->
+                                        <div class="text-right ml-4">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                {#if item.public}
+                                                    <span class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                        </svg>
+                                                        เปิดเผย
+                                                    </span>
+                                                {:else}
+                                                    <span class="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+                                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                                                        </svg>
+                                                        ซ่อน
+                                                    </span>
+                                                {/if}
+                                            </div>
+                                            
+                                            <div class="text-right">
+                                                {#if item.isPriTest}
+                                                    <div class="space-y-1">
+                                                        <div class="text-sm font-bold {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}">
+                                                            ไพร: ฿{item.price_pri.toLocaleString()}
+                                                        </div>
+                                                        <div class="text-sm font-bold {currentTheme === 'dark' ? 'text-blue-400' : 'text-blue-600'}">
+                                                            เทส: ฿{item.price_test.toLocaleString()}
+                                                        </div>
+                                                    </div>
+                                                {:else}
+                                                    <div class="text-lg font-bold {currentTheme === 'dark' ? 'text-green-400' : 'text-green-600'}">
+                                                        ฿{item.price.toLocaleString()}
+                                                    </div>
+                                                {/if}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Action Buttons in List View -->
+                                    {#if !isSelectionMode}
+                                        <div class="flex items-center gap-2 mt-3 px-4 pb-4">
+                                            <button class="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1" 
+                                                    on:click={() => openEditModal(item)}>
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                                แก้ไข
+                                            </button>
+                                            
+                                            <button class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1" 
+                                                    on:click={() => confirmDeleteItem(item.id)}>
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                                ลบ
+                                            </button>
+                                            
+                                            <button class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1" 
+                                                    on:click={() => shareToFacebook(item)}>
+                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M22.675 0h-21.35C.597 0 0 .597 0 1.326v21.348C0 23.403.597 24 1.326 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.794.143v3.24l-1.918.001c-1.504 0-1.794.715-1.794 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.729 0 1.326-.597 1.326-1.326V1.326C24 .597 23.403 0 22.675 0z"/>
+                                                </svg>
+                                                แชร์
+                                            </button>
+                                            
+                                            <button 
+                                                class="px-3 py-1.5 bg-pink-500 hover:bg-pink-600 text-white rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1 {isInInspiration(item.id) ? 'opacity-75' : ''}" 
+                                                on:click={() => !isInInspiration(item.id) && addToInspiration(item)}
+                                                disabled={isInInspiration(item.id)}
+                                                title={isInInspiration(item.id) ? 'อยู่ในแรงบันดาลใจแล้ว' : 'เพิ่มเป็นแรงบันดาลใจ'}
+                                            >
+                                                <svg class="w-3 h-3" fill={isInInspiration(item.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                                </svg>
+                                                แรงบันดาลใจ
+                                            </button>
+                                            
+                                            <button 
+                                                class="px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1" 
+                                                on:click={() => openOutfitDetail(item)}
+                                            >
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                                รายละเอียด
+                                            </button>
+                                        </div>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    {/if}
                 {/each}
             {:else}
                 <!-- Enhanced Empty State -->
