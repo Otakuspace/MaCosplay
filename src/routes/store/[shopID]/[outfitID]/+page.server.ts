@@ -138,6 +138,7 @@ export const load = async ({ params, locals }) => {
 			};
 
 			outfit = getOutfitData(outfitID);
+			(outfit as any).isMock = true;
 			
 			userStore = {
 				id: shopID,

@@ -100,6 +100,12 @@
 
 	async function addToCart() {
 		if (addingToCart) return;
+
+		// Prevent adding mock/fallback items that don't exist in DB
+		if (outfit && (outfit as any).isMock) {
+			alert('สินค้านี้เป็นตัวอย่างชั่วคราว ไม่สามารถสั่งซื้อได้');
+			return;
+		}
 		
 		// Resolve productId from outfit or route param
 		const productId = outfit?.id || $page.params.outfitID;

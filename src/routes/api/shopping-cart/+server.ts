@@ -63,6 +63,13 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			throw error(400, 'Valid quantity is required');
 		}
 
+		// Ensure product exists
+		try {
+			await pb.collection('itemList').getOne(itemData.productId);
+		} catch (e) {
+			throw error(404, 'Product not found or unavailable');
+		}
+
 		// Check if item already exists in cart
 		const existingItems = await pb.collection('shopping_cart').getList(1, 1, {
 			filter: `user = "${locals.user.id}" && product = "${itemData.productId}" && size = "${itemData.size || ''}" && color = "${itemData.color || ''}"`

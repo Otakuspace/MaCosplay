@@ -19,9 +19,23 @@ self.addEventListener('install', (event) => {
   console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(STATIC_CACHE_NAME)
-      .then((cache) => {
+      .then(async (cache) => {
         console.log('Caching static files');
-        return cache.addAll(STATIC_FILES);
+        // Cache files individually and ignore failures to prevent install from failing
+        await Promise.all(
+          STATIC_FILES.map(async (url) => {
+            try {
+              const response = await fetch(url, { cache: 'no-cache' });
+              if (response && response.ok) {
+                await cache.put(url, response.clone());
+              } else {
+                console.warn('Skip caching (non-ok):', url, response?.status);
+              }
+            } catch (err) {
+              console.warn('Skip caching (error):', url, err);
+            }
+          })
+        );
       })
       .then(() => {
         console.log('Service Worker installed successfully');
