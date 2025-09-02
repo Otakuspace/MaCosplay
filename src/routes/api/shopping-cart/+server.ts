@@ -112,7 +112,23 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		
 		// Check if it's a validation error
 		if (err.status === 400) {
-			throw error(400, err.message || 'Invalid request data');
+			// Prefer PocketBase detailed validation messages if available
+			let detailedMessage = undefined;
+			const anyErr: any = err as any;
+			const pbData = anyErr?.data;
+			if (pbData?.message) {
+				detailedMessage = pbData.message;
+			} else if (pbData?.data && typeof pbData.data === 'object') {
+				const fieldMessages: string[] = [];
+				for (const [fieldName, fieldErr] of Object.entries(pbData.data)) {
+					const msg = (fieldErr as any)?.message || (fieldErr as any)?.code || '';
+					if (msg) fieldMessages.push(`${fieldName}: ${msg}`);
+				}
+				if (fieldMessages.length > 0) {
+					detailedMessage = fieldMessages.join('; ');
+				}
+			}
+			throw error(400, detailedMessage || anyErr?.message || 'Invalid request data');
 		}
 		
 		throw error(500, 'Failed to add item to cart');
