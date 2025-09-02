@@ -4,14 +4,16 @@ import { createAdminClient } from '$lib/pocketbase';
 
 export const load = async ({ locals }) => {
 	try {
-		const adminClient = await createAdminClient();
-
+		// If no user is authenticated, return basic data
 		if (!locals.user) {
 			console.log("User is not defined");
 			return {
-				user: undefined
+				user: undefined,
+				userStore: []
 			};
 		}
+
+		const adminClient = await createAdminClient();
 
 		const user = await adminClient.collection('users').getOne(locals.user.id);
 		if (user.Upgrade === 1) {
@@ -38,6 +40,10 @@ export const load = async ({ locals }) => {
 		};
 	} catch (err) {
 		console.error('Error in layout load function:', err);
-		throw error(500, 'Internal server error');
+		// Return basic data instead of throwing error
+		return {
+			user: undefined,
+			userStore: []
+		};
 	}
 };
