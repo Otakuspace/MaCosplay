@@ -101,6 +101,13 @@
 	async function addToCart() {
 		if (addingToCart) return;
 		
+		// Resolve productId from outfit or route param
+		const productId = outfit?.id || $page.params.outfitID;
+		if (!productId) {
+			alert('ไม่พบรหัสสินค้า กรุณารีเฟรชหน้าแล้วลองใหม่');
+			return;
+		}
+		
 		addingToCart = true;
 		
 		try {
@@ -110,7 +117,7 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					productId: outfit.id,
+					productId: productId,
 					quantity: 1,
 					size: outfit.Size || '',
 					color: outfit.Color || ''
@@ -132,14 +139,22 @@
 
 			if (response.status === 400) {
 				// Bad request
-				const errorData = await response.json();
-				alert(`ข้อมูลไม่ถูกต้อง: ${errorData.message || 'กรุณาตรวจสอบข้อมูล'}`);
+				let errorMessage = 'กรุณาตรวจสอบข้อมูล';
+				try {
+					const errorData = await response.json();
+					errorMessage = errorData.message || errorMessage;
+				} catch (e) {}
+				alert(`ข้อมูลไม่ถูกต้อง: ${errorMessage}`);
 				return;
 			}
 
 			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.message || 'Failed to add to cart');
+				let message = 'Failed to add to cart';
+				try {
+					const errorData = await response.json();
+					message = errorData.message || message;
+				} catch (e) {}
+				throw new Error(message);
 			}
 
 			const result = await response.json();
