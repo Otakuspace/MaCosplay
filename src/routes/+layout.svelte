@@ -548,6 +548,7 @@
 							<ul class="p-2">
 								<li><a href="/Host">รับจ้าง</a></li>
 								<li><a href="/shops">หาชุดเช่าคอสเพลย์</a></li>
+								<li><a href="/freelance">Freelance Services</a></li>
 							</ul>
 						</details>
 					</li>
@@ -579,6 +580,7 @@
 					<ul class="dropdown-content menu p-2 shadow bg-base-100 rounded-box z-50 mt-2 w-56">
 						<li><a href="/Host">รับจ้าง</a></li>
 						<li><a href="/shops">หาชุดเช่าคอสเพลย์</a></li>
+						<li><a href="/freelance">Freelance Services</a></li>
 					</ul>
 				</li>
 				<li>
