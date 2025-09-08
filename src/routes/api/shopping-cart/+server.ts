@@ -63,10 +63,24 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			throw error(400, 'Valid quantity is required');
 		}
 
-		// Ensure product exists
+		// Ensure product exists - try both collections
+		let productExists = false;
+		let productCollection = null;
 		try {
 			await pb.collection('itemList').getOne(itemData.productId);
+			productExists = true;
+			productCollection = 'itemList';
 		} catch (e) {
+			try {
+				await pb.collection('cosplay_products').getOne(itemData.productId);
+				productExists = true;
+				productCollection = 'cosplay_products';
+			} catch (e2) {
+				throw error(404, 'Product not found or unavailable');
+			}
+		}
+		
+		if (!productExists) {
 			throw error(404, 'Product not found or unavailable');
 		}
 

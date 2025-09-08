@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Basket Functionality</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .item { border: 1px solid #ddd; padding: 20px; margin: 10px 0; border-radius: 8px; }
+        .btn { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .btn:hover { background: #0056b3; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Basket Functionality</h1>
+        
+        <div class="item">
+            <h3>Premium Anime Cosplay Set</h3>
+            <p><strong>Price:</strong> ฿3,500</p>
+            <p><strong>Size:</strong> L</p>
+            <p><strong>Color:</strong> Multi-color</p>
+            <p><strong>Product ID:</strong> ns70yjue9lviy09</p>
+            
+            <button id="loginBtn" class="btn" onclick="login()">Login First</button>
+            <button id="addToCartBtn" class="btn" onclick="addToCart()" disabled>Add to Cart</button>
+            <button id="viewCartBtn" class="btn" onclick="viewCart()">View Cart</button>
+        </div>
+        
+        <div id="results"></div>
+        
+        <div class="item">
+            <h3>Test Authentication</h3>
+            <button class="btn" onclick="testAuth()">Test Auth Status</button>
+        </div>
+        
+        <div class="item">
+            <h3>Test PocketBase Connection</h3>
+            <button class="btn" onclick="testPocketBase()">Test PocketBase</button>
+        </div>
+    </div>
+
+    <script>
+        let authToken = null;
+        
+        function showResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            results.insertBefore(div, results.firstChild);
+        }
+        
+        async function login() {
+            try {
+                showResult('Attempting to login...', 'info');
+                
+                const response = await fetch('http://127.0.0.1:8090/api/collections/users/auth-with-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        identity: 'test@example.com',
+                        password: 'password123'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    authToken = data.token;
+                    showResult('Login successful!', 'success');
+                    document.getElementById('addToCartBtn').disabled = false;
+                    document.getElementById('loginBtn').textContent = 'Logged In ✓';
+                    document.getElementById('loginBtn').disabled = true;
+                } else {
+                    const error = await response.text();
+                    showResult(`Login failed: ${error}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Login error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function addToCart() {
+            if (!authToken) {
+                showResult('Please login first!', 'error');
+                return;
+            }
+            
+            try {
+                showResult('Adding item to cart...', 'info');
+                
+                const response = await fetch('http://localhost:5173/api/shopping-cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        productId: 'ns70yjue9lviy09',
+                        quantity: 1,
+                        size: 'L',
+                        color: 'Multi-color'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(`Success: ${data.message || 'Item added to cart!'}`, 'success');
+                } else {
+                    showResult(`Error: ${data.message || 'Failed to add to cart'}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Cart error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function viewCart() {
+            if (!authToken) {
+                showResult('Please login first to view cart!', 'error');
+                return;
+            }
+            
+            try {
+                showResult('Loading cart...', 'info');
+                
+                const response = await fetch('http://localhost:5173/api/shopping-cart', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const itemCount = data.data ? data.data.length : 0;
+                    showResult(`Cart loaded successfully! Items: ${itemCount}`, 'success');
+                    if (itemCount > 0) {
+                        showResult(`Cart contents: ${JSON.stringify(data.data, null, 2)}`, 'info');
+                    }
+                } else {
+                    showResult(`Error loading cart: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Cart error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testAuth() {
+            try {
+                const response = await fetch('http://localhost:5173/api/shopping-cart');
+                showResult(`Auth test response: ${response.status} - ${response.statusText}`, 'info');
+            } catch (error) {
+                showResult(`Auth test error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testPocketBase() {
+            try {
+                const response = await fetch('http://127.0.0.1:8090/api/health');
+                const data = await response.json();
+                if (response.ok) {
+                    showResult(`PocketBase is healthy: ${data.message}`, 'success');
+                } else {
+                    showResult(`PocketBase error: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showResult(`PocketBase connection error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Test on page load
+        window.onload = function() {
+            showResult('Test page loaded. Click buttons to test functionality.', 'info');
+            testPocketBase();
+        };
+    </script>
+</body>
+</html>
