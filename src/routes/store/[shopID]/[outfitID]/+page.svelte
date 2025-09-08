@@ -154,6 +154,12 @@
 				return;
 			}
 
+			if (response.status === 404) {
+				// Product not found
+				alert('ไม่พบสินค้าในระบบ กรุณาลองใหม่อีกครั้ง');
+				return;
+			}
+
 			if (!response.ok) {
 				let message = 'Failed to add to cart';
 				try {
