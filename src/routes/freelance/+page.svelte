@@ -88,23 +88,27 @@
 		}
 	];
 
-	let selectedCategory = 'all';
-	let searchQuery = '';
+	let selectedCategory = $state('all');
+	let searchQuery = $state('');
 
 	// Filter services based on search and category
-	$: filteredServices = freelanceServices.filter(service => {
-		const matchesSearch = service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-							 service.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-							 service.categories.some(cat => cat.toLowerCase().includes(searchQuery.toLowerCase()));
-		
-		const matchesCategory = selectedCategory === 'all' || 
-							   service.categories.some(cat => cat.toLowerCase().includes(selectedCategory.toLowerCase()));
-		
-		return matchesSearch && matchesCategory;
-	});
+	const filteredServices = $derived(
+		freelanceServices.filter((service) => {
+			const matchesSearch =
+				service.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				service.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				service.categories.some((cat) => cat.toLowerCase().includes(searchQuery.toLowerCase()));
+
+			const matchesCategory =
+				selectedCategory === 'all' ||
+				service.categories.some((cat) => cat.toLowerCase().includes(selectedCategory.toLowerCase()));
+
+			return matchesSearch && matchesCategory;
+		})
+	);
 
 	// Get unique categories for filter
-	$: allCategories = ['all', ...new Set(freelanceServices.flatMap(service => service.categories))];
+	const allCategories = $derived(['all', ...new Set(freelanceServices.flatMap((service) => service.categories))]);
 
 	function contactFreelancer(serviceId: number) {
 		// TODO: Implement contact functionality
