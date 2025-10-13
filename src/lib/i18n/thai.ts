@@ -127,7 +127,33 @@ export const thaiTranslations = {
     medium: '🟡',
     high: '🟠',
     critical: '🔴'
-  }
+  },
+
+  // Authentication and Login
+  login: 'เข้าสู่ระบบ',
+  register: 'ลงทะเบียน',
+  email: 'อีเมล',
+  password: 'รหัสผ่าน',
+  confirmPassword: 'ยืนยันรหัสผ่าน',
+  name: 'ชื่อ',
+  emailPlaceholder: 'ใส่อีเมล',
+  passwordPlaceholder: 'ใส่รหัสผ่าน',
+  namePlaceholder: 'ใส่ชื่อของคุณ',
+  forgotPassword: 'ลืมรหัสผ่าน',
+  loginWithFacebook: 'เข้าสู่ระบบด้วย Facebook',
+  loginWithEmail: 'เข้าสู่ระบบด้วยอีเมล',
+  orLoginWith: 'หรือเข้าสู่ระบบด้วย',
+  alreadyHaveAccount: 'มีบัญชีแล้ว?',
+  dontHaveAccount: 'ยังไม่มีบัญชี?',
+  createAccount: 'สร้างบัญชี',
+  registrationSuccess: 'ลงทะเบียนสำเร็จ โปรดยืนยันอีเมล',
+  invalidCredentials: 'อีเมลหรือรหัสผ่านไม่ถูกต้อง',
+  passwordsDoNotMatch: 'รหัสผ่านไม่ตรงกัน',
+  emailRequired: 'จำเป็นต้องมีอีเมล',
+  passwordRequired: 'จำเป็นต้องมีรหัสผ่าน',
+  nameRequired: 'จำเป็นต้องมีชื่อ',
+  loginOptions: 'ตัวเลือกการเข้าสู่ระบบ',
+  chooseLoginMethod: 'เลือกวิธีการเข้าสู่ระบบ'
 };
 
 export type TranslationKey = keyof typeof thaiTranslations;
