@@ -1,0 +1,551 @@
+[
+    {
+        "id": "mxj3660ce5olheb1234567890123456",
+        "name": "cosplay_products",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "product_name_field",
+                "name": "name",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "product_description_field",
+                "name": "description",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "product_price_field",
+                "name": "price",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "product_image_field",
+                "name": "image",
+                "type": "url",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "exceptDomains": null,
+                    "onlyDomains": null,
+                    "maxSize": 2000
+                }
+            },
+            {
+                "id": "product_images_field",
+                "name": "images",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "maxSize": 200000
+                }
+            },
+            {
+                "id": "product_category_field",
+                "name": "category",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "product_tags_field",
+                "name": "tags",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "maxSize": 10000
+                }
+            },
+            {
+                "id": "product_sizes_field",
+                "name": "sizes",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "maxSize": 10000
+                }
+            },
+            {
+                "id": "product_colors_field",
+                "name": "colors",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "maxSize": 10000
+                }
+            },
+            {
+                "id": "product_in_stock_field",
+                "name": "inStock",
+                "type": "bool",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {}
+            },
+            {
+                "id": "product_stock_quantity_field",
+                "name": "stockQuantity",
+                "type": "number",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": null,
+        "options": {}
+    },
+    {
+        "id": "mxj3660ce5olheb1234567890123457",
+        "name": "shopping_cart",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "cart_user_field",
+                "name": "user",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": true,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "cart_product_field",
+                "name": "product",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "mxj3660ce5olheb1234567890123456",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "cart_quantity_field",
+                "name": "quantity",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 1,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "cart_size_field",
+                "name": "size",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "cart_color_field",
+                "name": "color",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "cart_customizations_field",
+                "name": "customizations",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "maxSize": 50000
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "user = @request.auth.id",
+        "viewRule": "user = @request.auth.id",
+        "createRule": "user = @request.auth.id",
+        "updateRule": "user = @request.auth.id",
+        "deleteRule": "user = @request.auth.id",
+        "options": {}
+    },
+    {
+        "id": "mxj3660ce5olheb1234567890123458",
+        "name": "purchase_items",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "item_product_field",
+                "name": "product",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "mxj3660ce5olheb1234567890123456",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "item_product_name_field",
+                "name": "productName",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "item_product_image_field",
+                "name": "productImage",
+                "type": "url",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "exceptDomains": null,
+                    "onlyDomains": null,
+                    "maxSize": 2000
+                }
+            },
+            {
+                "id": "item_quantity_field",
+                "name": "quantity",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 1,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "item_unit_price_field",
+                "name": "unitPrice",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "item_total_price_field",
+                "name": "totalPrice",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "item_size_field",
+                "name": "size",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "item_color_field",
+                "name": "color",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "item_customizations_field",
+                "name": "customizations",
+                "type": "json",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "maxSize": 50000
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": "",
+        "deleteRule": null,
+        "options": {}
+    },
+    {
+        "id": "mxj3660ce5olheb1234567890123459",
+        "name": "purchase_orders",
+        "type": "base",
+        "system": false,
+        "schema": [
+            {
+                "id": "order_number_field",
+                "name": "orderNumber",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": true,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": "^ORD-\\d{4}-\\d{3,}$"
+                }
+            },
+            {
+                "id": "order_user_field",
+                "name": "user",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "_pb_users_auth_",
+                    "cascadeDelete": false,
+                    "minSelect": null,
+                    "maxSelect": 1,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "order_items_field",
+                "name": "items",
+                "type": "relation",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "collectionId": "mxj3660ce5olheb1234567890123458",
+                    "cascadeDelete": true,
+                    "minSelect": null,
+                    "maxSelect": null,
+                    "displayFields": null
+                }
+            },
+            {
+                "id": "order_total_amount_field",
+                "name": "totalAmount",
+                "type": "number",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": 0,
+                    "max": null,
+                    "noDecimal": false
+                }
+            },
+            {
+                "id": "order_status_field",
+                "name": "status",
+                "type": "select",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "maxSelect": 1,
+                    "values": [
+                        "pending",
+                        "confirmed",
+                        "processing",
+                        "shipped",
+                        "delivered",
+                        "cancelled"
+                    ]
+                }
+            },
+            {
+                "id": "order_shipping_address_field",
+                "name": "shippingAddress",
+                "type": "text",
+                "system": false,
+                "required": true,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "order_estimated_delivery_field",
+                "name": "estimatedDelivery",
+                "type": "date",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": "",
+                    "max": ""
+                }
+            },
+            {
+                "id": "order_tracking_number_field",
+                "name": "trackingNumber",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            },
+            {
+                "id": "order_notes_field",
+                "name": "notes",
+                "type": "text",
+                "system": false,
+                "required": false,
+                "presentable": false,
+                "unique": false,
+                "options": {
+                    "min": null,
+                    "max": null,
+                    "pattern": ""
+                }
+            }
+        ],
+        "indexes": [],
+        "listRule": "user = @request.auth.id",
+        "viewRule": "user = @request.auth.id",
+        "createRule": "user = @request.auth.id",
+        "updateRule": "user = @request.auth.id && (@request.data.status:isset = false || @request.data.user:isset = false)",
+        "deleteRule": "user = @request.auth.id && status = \"pending\"",
+        "options": {}
+    }
+]
